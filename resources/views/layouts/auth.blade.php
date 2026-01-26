@@ -18,23 +18,38 @@
     <style>
         /* VARIABLES GLOBAL */
         :root {
-            --primary-color: #4e73df;
-            --primary-dark: #2e59d9;
-            --primary-light: #eef2ff;
-            --secondary-color: #858796;
-            --secondary-light: #f0f0f0;
-            --light-bg: #f8f9fc;
-            --white: #ffffff;
-            --success-color: #1cc88a;
-            --success-dark: #17a673;
-            --success-light: #e6fff5;
-            --danger-color: #e74a3b;
-            --warning-color: #f6c23e;
-            --info-color: #36b9cc;
-            --border-color: #e3e6f0;
-            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            /* Warna Biru untuk Login */
+            --primary-blue: #0856C8;
+            --primary-blue-dark: #0645A0;
+            --primary-blue-light: #2674E6;
+            --primary-blue-lighter: #E8F0FE;
+            --blue-gradient: linear-gradient(135deg, #0856C8, #2674E6);
+            
+            /* Warna Merah untuk Register */
+            --primary-red: #D74138;
+            --primary-red-dark: #A50F06;
+            --primary-red-light: #F55F56;
+            --primary-red-lighter: #FFEBEE;
+            --red-gradient: linear-gradient(135deg, #F55F56, #D74138);
+            
+            /* Warna Netral */
+            --secondary-color: #5A5C69;
+            --secondary-light: #F8F9FC;
+            --light-bg: #F9FAFB;
+            --white: #FFFFFF;
+            --border-color: #E3E6F0;
+            
+            /* Warna Status */
+            --success-color: #1CC88A;
+            --success-dark: #17A673;
+            --warning-color: #F6C23E;
+            --danger-color: #E74A3B;
+            --info-color: #36B9CC;
+            
+            /* Shadow dan Border */
+            --shadow: 0 0.15rem 1.75rem 0 rgba(8, 86, 200, 0.15);
             --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            --shadow-lg: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
+            --shadow-lg: 0 0.5rem 2rem 0 rgba(8, 86, 200, 0.25);
             --border-radius: 15px;
             --border-radius-sm: 10px;
             --transition: all 0.3s ease;
@@ -55,8 +70,9 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" fill="none"/><circle cx="30" cy="30" r="1" fill="%234e73df" opacity="0.1"/></svg>');
-            background-size: 40px 40px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(38, 116, 230, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(245, 95, 86, 0.05) 0%, transparent 20%);
         }
         
         /* UTILITY CLASSES */
@@ -68,15 +84,18 @@
         
         .auth-card {
             border-radius: var(--border-radius);
-            border: none;
+            border: 1px solid rgba(8, 86, 200, 0.1);
             box-shadow: var(--shadow);
             overflow: hidden;
             background-color: var(--white);
             transition: var(--transition);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
         }
         
         .auth-card:hover {
             box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
         }
         
         .auth-card-body {
@@ -104,7 +123,7 @@
         
         .auth-label {
             font-weight: 500;
-            color: #5a5c69;
+            color: var(--secondary-color);
             margin-bottom: 0.5rem;
             display: block;
         }
@@ -125,8 +144,8 @@
         
         .auth-input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(8, 86, 200, 0.15);
         }
         
         .auth-input-icon {
@@ -135,6 +154,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--secondary-color);
+            transition: var(--transition);
         }
         
         .auth-input.with-icon {
@@ -186,6 +206,7 @@
         
         .auth-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
         .auth-btn:active {
@@ -203,6 +224,12 @@
             margin: 0 auto 1.5rem;
             font-size: 2rem;
             color: var(--white);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .auth-logo:hover {
+            transform: rotate(10deg) scale(1.05);
         }
         
         /* HEADER */
@@ -212,8 +239,19 @@
         }
         
         .auth-title {
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .register-title {
+            background: linear-gradient(135deg, var(--primary-red), var(--primary-red-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .auth-subtitle {
@@ -232,15 +270,43 @@
         }
         
         .auth-link {
-            color: var(--primary-color);
+            color: var(--primary-blue);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .auth-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
             transition: var(--transition);
         }
         
         .auth-link:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
+            color: var(--primary-blue-dark);
+            text-decoration: none;
+        }
+        
+        .auth-link:hover::after {
+            width: 100%;
+        }
+        
+        .register-link {
+            color: var(--primary-red);
+        }
+        
+        .register-link::after {
+            background: var(--primary-red);
+        }
+        
+        .register-link:hover {
+            color: var(--primary-red-dark);
         }
         
         /* PIN INPUT BASE */
@@ -288,11 +354,26 @@
             width: 1.1rem;
             height: 1.1rem;
             cursor: pointer;
+            accent-color: var(--primary-blue);
+        }
+        
+        .register-checkbox input[type="checkbox"] {
+            accent-color: var(--primary-red);
         }
         
         .auth-checkbox-label {
             font-size: 0.9rem;
             color: var(--secondary-color);
+        }
+        
+        /* SPECIAL STYLES FOR REGISTER PAGE */
+        .register-input:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 0.2rem rgba(215, 65, 56, 0.15);
+        }
+        
+        .register-pin-container .auth-input-icon {
+            color: var(--primary-red);
         }
     </style>
     

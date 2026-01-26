@@ -7,13 +7,13 @@
     <div class="auth-card">
         <div class="auth-card-body">
             <!-- Logo -->
-            <div class="auth-logo" style="background: linear-gradient(135deg, var(--success-color), var(--success-dark));">
+            <div class="auth-logo" style="background: var(--red-gradient);">
                 <i class="fas fa-user-plus"></i>
             </div>
             
             <!-- Header -->
             <div class="auth-header">
-                <h1 class="auth-title" style="color: var(--success-dark);">Buat Akun Baru</h1>
+                <h1 class="auth-title register-title">Buat Akun Baru</h1>
                 <p class="auth-subtitle">Daftarkan diri Anda untuk mengakses sistem</p>
             </div>
             
@@ -24,15 +24,15 @@
                 <!-- Nama Lengkap -->
                 <div class="auth-form-group">
                     <label for="fullname" class="auth-label">
-                        <i class="fas fa-user me-1"></i> Nama Lengkap <span class="text-danger">*</span>
+                        <i class="fas fa-user me-1" style="color: var(--primary-red);"></i> Nama Lengkap <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-group">
                         <div class="auth-input-icon">
-                            <i class="fas fa-user"></i>
+                            <i class="fas fa-user" style="color: var(--primary-red);"></i>
                         </div>
                         <input 
                             type="text" 
-                            class="auth-input with-icon" 
+                            class="auth-input with-icon register-input" 
                             id="fullname" 
                             name="fullname" 
                             placeholder="Masukkan nama lengkap Anda"
@@ -46,15 +46,15 @@
                 <!-- Nomor Telepon -->
                 <div class="auth-form-group">
                     <label for="phone" class="auth-label">
-                        <i class="fas fa-phone me-1"></i> Nomor Telepon <span class="text-danger">*</span>
+                        <i class="fas fa-phone me-1" style="color: var(--primary-red);"></i> Nomor Telepon <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-group">
                         <div class="auth-input-icon">
-                            <i class="fas fa-phone"></i>
+                            <i class="fas fa-phone" style="color: var(--primary-red);"></i>
                         </div>
                         <input 
                             type="tel" 
-                            class="auth-input with-icon" 
+                            class="auth-input with-icon register-input" 
                             id="phone" 
                             name="phone" 
                             placeholder="Contoh: 081234567890"
@@ -67,7 +67,7 @@
                 <!-- PIN -->
                 <div class="auth-form-group">
                     <label for="pin" class="auth-label">
-                        <i class="fas fa-key me-1"></i> Buat PIN (4 digit) <span class="text-danger">*</span>
+                        <i class="fas fa-key me-1" style="color: var(--primary-red);"></i> Buat PIN (4 digit) <span class="text-danger">*</span>
                     </label>
                     
                     <div class="pin-container">
@@ -84,7 +84,7 @@
                         <small class="text-muted">
                             <i class="fas fa-info-circle me-1"></i> Masukkan 4 digit PIN
                         </small>
-                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--success-color);">
+                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-red);">
                             <i class="fas fa-backspace me-1"></i> Hapus PIN
                         </button>
                     </div>
@@ -93,7 +93,7 @@
                 <!-- Konfirmasi PIN -->
                 <div class="auth-form-group">
                     <label for="confirmPin" class="auth-label">
-                        <i class="fas fa-key me-1"></i> Konfirmasi PIN <span class="text-danger">*</span>
+                        <i class="fas fa-key me-1" style="color: var(--primary-red);"></i> Konfirmasi PIN <span class="text-danger">*</span>
                     </label>
                     
                     <div class="pin-container">
@@ -110,7 +110,7 @@
                         <small class="text-muted">
                             <i class="fas fa-shield-alt me-1"></i> Ulangi PIN yang sama
                         </small>
-                        <button type="button" id="clearConfirmPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--success-color);">
+                        <button type="button" id="clearConfirmPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-red);">
                             <i class="fas fa-backspace me-1"></i> Hapus
                         </button>
                     </div>
@@ -118,13 +118,13 @@
                 
                 <!-- Terms & Conditions -->
                 <div class="auth-form-group">
-                    <label class="auth-checkbox">
+                    <label class="auth-checkbox register-checkbox">
                         <input type="checkbox" id="terms" name="terms" required>
                         <span class="auth-checkbox-label">
                             Saya menyetujui 
-                            <a href="#" class="auth-link">Syarat & Ketentuan</a> 
+                            <a href="#" class="auth-link register-link">Syarat & Ketentuan</a> 
                             dan 
-                            <a href="#" class="auth-link">Kebijakan Privasi</a>
+                            <a href="#" class="auth-link register-link">Kebijakan Privasi</a>
                         </span>
                     </label>
                     <span id="termsError" class="auth-error"></span>
@@ -132,9 +132,9 @@
                 
                 <!-- Submit Button -->
                 <button type="submit" class="auth-btn" style="
-                    background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+                    background: var(--red-gradient);
                     color: var(--white);
-                    box-shadow: 0 4px 15px rgba(28, 200, 138, 0.3);
+                    box-shadow: 0 4px 15px rgba(215, 65, 56, 0.3);
                 ">
                     <i class="fas fa-user-plus"></i>
                     <span>Daftar Sekarang</span>
@@ -144,7 +144,7 @@
                 <div class="text-center mt-4">
                     <p class="mb-0">
                         Sudah punya akun? 
-                        <a href="{{ route('login') }}" class="auth-link">
+                        <a href="{{ route('login') }}" class="auth-link register-link">
                             <i class="fas fa-sign-in-alt me-1"></i> Masuk di sini
                         </a>
                     </p>
@@ -153,7 +153,7 @@
             
             <!-- Footer -->
             <div class="auth-footer">
-                <p>&copy; {{ date('Y') }} SI Besti. Semua hak dilindungi.</p>
+                <p>&copy; {{ date('Y') }} SI Besti. Hak cipta dilindungi.</p>
             </div>
         </div>
     </div>
@@ -170,23 +170,23 @@
         font-weight: 600;
         border: 2px solid var(--border-color);
         border-radius: var(--border-radius-sm);
-        background-color: var(--success-light);
+        background-color: var(--primary-red-lighter);
         transition: var(--transition);
-        color: var(--success-dark);
+        color: var(--primary-red);
     }
     
     .register-pin:focus,
     .confirm-pin:focus {
-        border-color: var(--success-color);
-        box-shadow: 0 0 0 0.2rem rgba(28, 200, 138, 0.25);
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 0.2rem rgba(215, 65, 56, 0.25);
         background-color: var(--white);
         transform: translateY(-2px);
     }
     
     .register-pin.filled {
-        border-color: var(--success-color);
+        border-color: var(--primary-red);
         background-color: var(--white);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 2px 8px rgba(215, 65, 56, 0.2);
     }
     
     .confirm-pin.filled {
@@ -197,6 +197,7 @@
         border-color: var(--success-color);
         background-color: rgba(28, 200, 138, 0.1);
         color: var(--success-dark);
+        box-shadow: 0 2px 8px rgba(28, 200, 138, 0.2);
     }
     
     .confirm-pin.not-matched {
@@ -213,27 +214,20 @@
     }
     
     .auth-btn:hover {
-        box-shadow: 0 6px 20px rgba(28, 200, 138, 0.4);
+        box-shadow: 0 6px 20px rgba(215, 65, 56, 0.4);
     }
     
-    .password-strength {
+    /* Card decoration */
+    .auth-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
         height: 4px;
-        background-color: var(--border-color);
-        border-radius: 2px;
-        margin-top: 0.5rem;
-        overflow: hidden;
+        background: var(--red-gradient);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
     }
-    
-    .password-strength-bar {
-        height: 100%;
-        width: 0%;
-        transition: width 0.3s ease;
-        border-radius: 2px;
-    }
-    
-    .strength-weak { width: 33%; background-color: var(--danger-color); }
-    .strength-medium { width: 66%; background-color: var(--warning-color); }
-    .strength-strong { width: 100%; background-color: var(--success-color); }
     
     @media (max-width: 576px) {
         .register-pin,
@@ -314,7 +308,7 @@
                 
                 // Visual feedback
                 input.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--success-color)';
+                    this.style.borderColor = 'var(--primary-red)';
                     this.style.backgroundColor = 'var(--white)';
                     this.classList.add('filled');
                 });
@@ -322,7 +316,7 @@
                 input.addEventListener('blur', function() {
                     if (this.value === '') {
                         this.style.borderColor = 'var(--border-color)';
-                        this.style.backgroundColor = 'var(--success-light)';
+                        this.style.backgroundColor = 'var(--primary-red-lighter)';
                         this.classList.remove('filled', 'matched', 'not-matched');
                     }
                 });

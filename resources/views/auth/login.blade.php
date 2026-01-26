@@ -7,13 +7,13 @@
     <div class="auth-card">
         <div class="auth-card-body">
             <!-- Logo -->
-            <div class="auth-logo" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));">
-                <i class="fas fa-sign-in-alt"></i>
+            <div class="auth-logo" style="background: var(--blue-gradient);">
+                <i class="fas fa-lock"></i>
             </div>
             
             <!-- Header -->
             <div class="auth-header">
-                <h1 class="auth-title" style="color: var(--primary-color);">Selamat Datang</h1>
+                <h1 class="auth-title">Selamat Datang</h1>
                 <p class="auth-subtitle">Silakan masuk ke akun Anda</p>
             </div>
             
@@ -28,7 +28,7 @@
                     </label>
                     <div class="auth-input-group">
                         <div class="auth-input-icon">
-                            <i class="fas fa-user"></i>
+                            <i class="fas fa-user" style="color: var(--primary-blue);"></i>
                         </div>
                         <input 
                             type="text" 
@@ -46,7 +46,7 @@
                 <!-- PIN -->
                 <div class="auth-form-group">
                     <label for="pin" class="auth-label">
-                        <i class="fas fa-lock me-1"></i> PIN (4 digit)
+                        <i class="fas fa-key me-1" style="color: var(--primary-blue);"></i> PIN (4 digit)
                     </label>
                     
                     <div class="pin-container">
@@ -63,7 +63,7 @@
                         <small class="text-muted">
                             <i class="fas fa-info-circle me-1"></i> Masukkan 4 digit PIN
                         </small>
-                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-color);">
+                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-blue);">
                             <i class="fas fa-backspace me-1"></i> Hapus PIN
                         </button>
                     </div>
@@ -71,12 +71,12 @@
                 
                 <!-- Submit Button -->
                 <button type="submit" class="auth-btn" style="
-                    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+                    background: var(--blue-gradient);
                     color: var(--white);
-                    box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
+                    box-shadow: 0 4px 15px rgba(8, 86, 200, 0.3);
                 ">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Masuk</span>
+                    <span>Masuk ke Sistem</span>
                 </button>
                 
                 <!-- Register Link -->
@@ -92,7 +92,7 @@
             
             <!-- Footer -->
             <div class="auth-footer">
-                <p>&copy; {{ date('Y') }} SI Besti. Semua hak dilindungi.</p>
+                <p>&copy; {{ date('Y') }} SI Besti. Hak cipta dilindungi.</p>
             </div>
         </div>
     </div>
@@ -108,22 +108,22 @@
         font-weight: 600;
         border: 2px solid var(--border-color);
         border-radius: var(--border-radius-sm);
-        background-color: var(--primary-light);
+        background-color: var(--primary-blue-lighter);
         transition: var(--transition);
-        color: var(--primary-dark);
+        color: var(--primary-blue);
     }
     
     .login-pin:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 0.2rem rgba(8, 86, 200, 0.25);
         background-color: var(--white);
         transform: translateY(-2px);
     }
     
     .login-pin.filled {
-        border-color: var(--primary-color);
+        border-color: var(--primary-blue);
         background-color: var(--white);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 2px 8px rgba(8, 86, 200, 0.2);
     }
     
     .login-pin.shake {
@@ -137,7 +137,19 @@
     }
     
     .auth-btn:hover {
-        box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4);
+        box-shadow: 0 6px 20px rgba(8, 86, 200, 0.4);
+    }
+    
+    /* Card decoration */
+    .auth-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--blue-gradient);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
     }
     
     @media (max-width: 576px) {
@@ -229,7 +241,7 @@
                 
                 // Visual feedback
                 input.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-color)';
+                    this.style.borderColor = 'var(--primary-blue)';
                     this.style.backgroundColor = 'var(--white)';
                     this.classList.add('filled');
                 });
@@ -237,7 +249,7 @@
                 input.addEventListener('blur', function() {
                     if (this.value === '') {
                         this.style.borderColor = 'var(--border-color)';
-                        this.style.backgroundColor = 'var(--primary-light)';
+                        this.style.backgroundColor = 'var(--primary-blue-lighter)';
                         this.classList.remove('filled');
                     }
                 });
