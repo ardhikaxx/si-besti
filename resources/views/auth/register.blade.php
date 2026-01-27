@@ -27,9 +27,6 @@
                         <i class="fas fa-user"></i> Nama Lengkap <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-group">
-                        <div class="auth-input-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
                         <input 
                             type="text" 
                             class="auth-input" 
@@ -49,9 +46,6 @@
                         <i class="fas fa-phone"></i> Nomor Telepon <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-group">
-                        <div class="auth-input-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
                         <input 
                             type="tel" 
                             class="auth-input" 

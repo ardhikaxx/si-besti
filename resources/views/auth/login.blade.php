@@ -27,9 +27,6 @@
                         <i class="fas fa-user"></i> Nama Lengkap
                     </label>
                     <div class="auth-input-group">
-                        <div class="auth-input-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
                         <input 
                             type="text" 
                             class="auth-input" 

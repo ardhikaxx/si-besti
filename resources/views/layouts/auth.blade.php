@@ -103,7 +103,7 @@
         
         /* UTILITY CLASSES */
         .auth-container {
-            max-width: 480px;
+            max-width: 500px;
             width: 100%;
             margin: 0 auto;
         }
@@ -177,7 +177,7 @@
         
         .auth-input {
             width: 100%;
-            padding: 0.9rem 1rem 0.9rem 3rem;
+            padding: 0.9rem;
             font-size: 1rem;
             border: 2px solid var(--border-color);
             border-radius: var(--border-radius-sm);
@@ -191,22 +191,6 @@
             outline: none;
             border-color: var(--blue-600);
             box-shadow: 0 0 0 4px rgba(38, 116, 230, 0.15);
-            transform: translateY(-2px);
-        }
-        
-        .auth-input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--blue-600);
-            transition: var(--transition);
-            font-size: 1.1rem;
-        }
-        
-        .auth-input:focus + .auth-input-icon {
-            color: var(--blue-900);
-            transform: translateY(-50%) scale(1.1);
         }
         
         /* VALIDATION STATES */
