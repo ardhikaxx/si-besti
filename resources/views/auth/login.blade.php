@@ -7,7 +7,7 @@
     <div class="auth-card">
         <div class="auth-card-body">
             <!-- Logo -->
-            <div class="auth-logo" style="background: var(--blue-gradient);">
+            <div class="auth-logo">
                 <i class="fas fa-lock"></i>
             </div>
             
@@ -24,15 +24,15 @@
                 <!-- Nama Lengkap -->
                 <div class="auth-form-group">
                     <label for="fullname" class="auth-label">
-                        <i class="fas fa-user me-1"></i> Nama Lengkap
+                        <i class="fas fa-user"></i> Nama Lengkap
                     </label>
                     <div class="auth-input-group">
                         <div class="auth-input-icon">
-                            <i class="fas fa-user" style="color: var(--primary-blue);"></i>
+                            <i class="fas fa-user"></i>
                         </div>
                         <input 
                             type="text" 
-                            class="auth-input with-icon" 
+                            class="auth-input" 
                             id="fullname" 
                             name="fullname" 
                             placeholder="Masukkan nama lengkap Anda"
@@ -45,35 +45,35 @@
                 
                 <!-- PIN -->
                 <div class="auth-form-group">
-                    <label for="pin" class="auth-label">
-                        <i class="fas fa-key me-1" style="color: var(--primary-blue);"></i> PIN (4 digit)
+                    <label class="auth-label">
+                        <i class="fas fa-key"></i> PIN (4 digit)
                     </label>
                     
                     <div class="pin-container">
-                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="1" autocomplete="off">
-                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="2" autocomplete="off">
-                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="3" autocomplete="off">
-                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="4" autocomplete="off">
+                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="1" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="2" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="3" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input login-pin" maxlength="1" data-index="4" autocomplete="off" inputmode="numeric">
                     </div>
                     
                     <input type="hidden" id="pin" name="pin" value="">
                     <span id="pinError" class="auth-error"></span>
                     
-                    <div class="d-flex justify-content-between align-items-center mt-2">
+                    <div class="d-flex justify-content-between align-items-center mt-3">
                         <small class="text-muted">
                             <i class="fas fa-info-circle me-1"></i> Masukkan 4 digit PIN
                         </small>
-                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-blue);">
+                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--blue-700); font-weight: 500;">
                             <i class="fas fa-backspace me-1"></i> Hapus PIN
                         </button>
                     </div>
                 </div>
                 
                 <!-- Submit Button -->
-                <button type="submit" class="auth-btn" style="
-                    background: var(--blue-gradient);
+                <button type="submit" class="auth-btn mt-4" style="
+                    background: var(--gradient-primary);
                     color: var(--white);
-                    box-shadow: 0 4px 15px rgba(8, 86, 200, 0.3);
+                    box-shadow: 0 6px 20px rgba(8, 86, 200, 0.25);
                 ">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Masuk ke Sistem</span>
@@ -81,7 +81,7 @@
                 
                 <!-- Register Link -->
                 <div class="text-center mt-4">
-                    <p class="mb-0">
+                    <p class="mb-0" style="color: var(--secondary);">
                         Belum punya akun? 
                         <a href="{{ route('register') }}" class="auth-link">
                             <i class="fas fa-user-plus me-1"></i> Daftar di sini
@@ -101,29 +101,29 @@
 <style>
     /* LOGIN-SPECIFIC STYLES */
     .login-pin {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
         text-align: center;
-        font-size: 1.5rem;
-        font-weight: 600;
+        font-size: 1.8rem;
+        font-weight: 700;
         border: 2px solid var(--border-color);
         border-radius: var(--border-radius-sm);
-        background-color: var(--primary-blue-lighter);
+        background-color: var(--primary-lighter);
         transition: var(--transition);
-        color: var(--primary-blue);
+        color: var(--blue-900);
     }
     
     .login-pin:focus {
-        border-color: var(--primary-blue);
-        box-shadow: 0 0 0 0.2rem rgba(8, 86, 200, 0.25);
+        border-color: var(--blue-600);
+        box-shadow: 0 0 0 4px rgba(38, 116, 230, 0.2);
         background-color: var(--white);
         transform: translateY(-2px);
     }
     
     .login-pin.filled {
-        border-color: var(--primary-blue);
+        border-color: var(--blue-700);
         background-color: var(--white);
-        box-shadow: 0 2px 8px rgba(8, 86, 200, 0.2);
+        box-shadow: 0 4px 15px rgba(8, 86, 200, 0.15);
     }
     
     .login-pin.shake {
@@ -132,31 +132,19 @@
     
     @keyframes shake {
         0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
     }
     
     .auth-btn:hover {
-        box-shadow: 0 6px 20px rgba(8, 86, 200, 0.4);
-    }
-    
-    /* Card decoration */
-    .auth-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--blue-gradient);
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        box-shadow: 0 10px 25px rgba(8, 86, 200, 0.35) !important;
     }
     
     @media (max-width: 576px) {
         .login-pin {
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
         }
     }
 </style>
@@ -202,6 +190,8 @@
                     // Backspace
                     if (e.key === 'Backspace' && this.value === '' && index > 0) {
                         pinInputs[index - 1].focus();
+                        pinInputs[index - 1].value = '';
+                        updatePinValue();
                     }
                     
                     // Arrow keys
@@ -241,7 +231,7 @@
                 
                 // Visual feedback
                 input.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-blue)';
+                    this.style.borderColor = 'var(--blue-600)';
                     this.style.backgroundColor = 'var(--white)';
                     this.classList.add('filled');
                 });
@@ -249,7 +239,7 @@
                 input.addEventListener('blur', function() {
                     if (this.value === '') {
                         this.style.borderColor = 'var(--border-color)';
-                        this.style.backgroundColor = 'var(--primary-blue-lighter)';
+                        this.style.backgroundColor = 'var(--primary-lighter)';
                         this.classList.remove('filled');
                     }
                 });
@@ -355,7 +345,22 @@
                     submitBtn.disabled = false;
                     
                     // Demo success
-                    alert('Login berhasil! Selamat datang, ' + fullnameInput.value);
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Login berhasil! Selamat datang, ' + fullnameInput.value
+                    })
                     
                     // In real app: this.submit();
                 }, 1000);
@@ -390,9 +395,25 @@
                 });
                 
                 pinInputs[3].focus();
-                console.log('Demo data: Nama: Administrator, PIN: 1234');
+                
+                // Show demo notification
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                })
+                
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Demo data dimasukkan'
+                })
             }
         });
     });
 </script>
+
+<!-- SweetAlert2 for better notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

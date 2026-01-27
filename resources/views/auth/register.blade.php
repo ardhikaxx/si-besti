@@ -7,13 +7,13 @@
     <div class="auth-card">
         <div class="auth-card-body">
             <!-- Logo -->
-            <div class="auth-logo" style="background: var(--red-gradient);">
+            <div class="auth-logo">
                 <i class="fas fa-user-plus"></i>
             </div>
             
             <!-- Header -->
             <div class="auth-header">
-                <h1 class="auth-title register-title">Buat Akun Baru</h1>
+                <h1 class="auth-title">Buat Akun Baru</h1>
                 <p class="auth-subtitle">Daftarkan diri Anda untuk mengakses sistem</p>
             </div>
             
@@ -24,15 +24,15 @@
                 <!-- Nama Lengkap -->
                 <div class="auth-form-group">
                     <label for="fullname" class="auth-label">
-                        <i class="fas fa-user me-1" style="color: var(--primary-red);"></i> Nama Lengkap <span class="text-danger">*</span>
+                        <i class="fas fa-user"></i> Nama Lengkap <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-group">
                         <div class="auth-input-icon">
-                            <i class="fas fa-user" style="color: var(--primary-red);"></i>
+                            <i class="fas fa-user"></i>
                         </div>
                         <input 
                             type="text" 
-                            class="auth-input with-icon register-input" 
+                            class="auth-input" 
                             id="fullname" 
                             name="fullname" 
                             placeholder="Masukkan nama lengkap Anda"
@@ -46,15 +46,15 @@
                 <!-- Nomor Telepon -->
                 <div class="auth-form-group">
                     <label for="phone" class="auth-label">
-                        <i class="fas fa-phone me-1" style="color: var(--primary-red);"></i> Nomor Telepon <span class="text-danger">*</span>
+                        <i class="fas fa-phone"></i> Nomor Telepon <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-group">
                         <div class="auth-input-icon">
-                            <i class="fas fa-phone" style="color: var(--primary-red);"></i>
+                            <i class="fas fa-phone"></i>
                         </div>
                         <input 
                             type="tel" 
-                            class="auth-input with-icon register-input" 
+                            class="auth-input" 
                             id="phone" 
                             name="phone" 
                             placeholder="Contoh: 081234567890"
@@ -66,25 +66,25 @@
                 
                 <!-- PIN -->
                 <div class="auth-form-group">
-                    <label for="pin" class="auth-label">
-                        <i class="fas fa-key me-1" style="color: var(--primary-red);"></i> Buat PIN (4 digit) <span class="text-danger">*</span>
+                    <label class="auth-label">
+                        <i class="fas fa-key"></i> Buat PIN (4 digit) <span class="text-danger">*</span>
                     </label>
                     
                     <div class="pin-container">
-                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="1" autocomplete="off">
-                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="2" autocomplete="off">
-                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="3" autocomplete="off">
-                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="4" autocomplete="off">
+                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="1" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="2" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="3" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input register-pin" maxlength="1" data-index="4" autocomplete="off" inputmode="numeric">
                     </div>
                     
                     <input type="hidden" id="pin" name="pin" value="">
                     <span id="pinError" class="auth-error"></span>
                     
-                    <div class="d-flex justify-content-between align-items-center mt-2">
+                    <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">
                             <i class="fas fa-info-circle me-1"></i> Masukkan 4 digit PIN
                         </small>
-                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-red);">
+                        <button type="button" id="clearPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--blue-700); font-weight: 500;">
                             <i class="fas fa-backspace me-1"></i> Hapus PIN
                         </button>
                     </div>
@@ -92,25 +92,25 @@
                 
                 <!-- Konfirmasi PIN -->
                 <div class="auth-form-group">
-                    <label for="confirmPin" class="auth-label">
-                        <i class="fas fa-key me-1" style="color: var(--primary-red);"></i> Konfirmasi PIN <span class="text-danger">*</span>
+                    <label class="auth-label">
+                        <i class="fas fa-key"></i> Konfirmasi PIN <span class="text-danger">*</span>
                     </label>
                     
                     <div class="pin-container">
-                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="1" autocomplete="off">
-                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="2" autocomplete="off">
-                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="3" autocomplete="off">
-                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="4" autocomplete="off">
+                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="1" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="2" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="3" autocomplete="off" inputmode="numeric">
+                        <input type="text" class="pin-input confirm-pin" maxlength="1" data-index="4" autocomplete="off" inputmode="numeric">
                     </div>
                     
                     <input type="hidden" id="confirmPin" name="confirm_pin" value="">
                     <span id="confirmPinError" class="auth-error"></span>
                     
-                    <div class="d-flex justify-content-between align-items-center mt-2">
+                    <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">
                             <i class="fas fa-shield-alt me-1"></i> Ulangi PIN yang sama
                         </small>
-                        <button type="button" id="clearConfirmPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--primary-red);">
+                        <button type="button" id="clearConfirmPinBtn" class="btn btn-link text-decoration-none p-0" style="color: var(--blue-700); font-weight: 500;">
                             <i class="fas fa-backspace me-1"></i> Hapus
                         </button>
                     </div>
@@ -118,23 +118,23 @@
                 
                 <!-- Terms & Conditions -->
                 <div class="auth-form-group">
-                    <label class="auth-checkbox register-checkbox">
+                    <label class="auth-checkbox">
                         <input type="checkbox" id="terms" name="terms" required>
                         <span class="auth-checkbox-label">
                             Saya menyetujui 
-                            <a href="#" class="auth-link register-link">Syarat & Ketentuan</a> 
+                            <a href="#" class="auth-link">Syarat & Ketentuan</a> 
                             dan 
-                            <a href="#" class="auth-link register-link">Kebijakan Privasi</a>
+                            <a href="#" class="auth-link">Kebijakan Privasi</a>
                         </span>
                     </label>
                     <span id="termsError" class="auth-error"></span>
                 </div>
                 
                 <!-- Submit Button -->
-                <button type="submit" class="auth-btn" style="
-                    background: var(--red-gradient);
+                <button type="submit" class="auth-btn mt-2" style="
+                    background: var(--gradient-light);
                     color: var(--white);
-                    box-shadow: 0 4px 15px rgba(215, 65, 56, 0.3);
+                    box-shadow: 0 6px 20px rgba(38, 116, 230, 0.25);
                 ">
                     <i class="fas fa-user-plus"></i>
                     <span>Daftar Sekarang</span>
@@ -142,9 +142,9 @@
                 
                 <!-- Login Link -->
                 <div class="text-center mt-4">
-                    <p class="mb-0">
+                    <p class="mb-0" style="color: var(--secondary);">
                         Sudah punya akun? 
-                        <a href="{{ route('login') }}" class="auth-link register-link">
+                        <a href="{{ route('login') }}" class="auth-link">
                             <i class="fas fa-sign-in-alt me-1"></i> Masuk di sini
                         </a>
                     </p>
@@ -163,30 +163,30 @@
     /* REGISTER-SPECIFIC STYLES */
     .register-pin,
     .confirm-pin {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
         text-align: center;
-        font-size: 1.5rem;
-        font-weight: 600;
+        font-size: 1.8rem;
+        font-weight: 700;
         border: 2px solid var(--border-color);
         border-radius: var(--border-radius-sm);
-        background-color: var(--primary-red-lighter);
+        background-color: var(--primary-lighter);
         transition: var(--transition);
-        color: var(--primary-red);
+        color: var(--blue-900);
     }
     
     .register-pin:focus,
     .confirm-pin:focus {
-        border-color: var(--primary-red);
-        box-shadow: 0 0 0 0.2rem rgba(215, 65, 56, 0.25);
+        border-color: var(--blue-600);
+        box-shadow: 0 0 0 4px rgba(38, 116, 230, 0.2);
         background-color: var(--white);
         transform: translateY(-2px);
     }
     
     .register-pin.filled {
-        border-color: var(--primary-red);
+        border-color: var(--blue-700);
         background-color: var(--white);
-        box-shadow: 0 2px 8px rgba(215, 65, 56, 0.2);
+        box-shadow: 0 4px 15px rgba(8, 86, 200, 0.15);
     }
     
     .confirm-pin.filled {
@@ -194,47 +194,35 @@
     }
     
     .confirm-pin.matched {
-        border-color: var(--success-color);
-        background-color: rgba(28, 200, 138, 0.1);
-        color: var(--success-dark);
-        box-shadow: 0 2px 8px rgba(28, 200, 138, 0.2);
+        border-color: var(--success);
+        background-color: rgba(28, 200, 138, 0.15);
+        color: var(--success);
+        box-shadow: 0 4px 15px rgba(28, 200, 138, 0.15);
     }
     
     .confirm-pin.not-matched {
-        border-color: var(--danger-color);
-        background-color: rgba(231, 74, 59, 0.1);
-        color: var(--danger-color);
+        border-color: var(--danger);
+        background-color: rgba(231, 74, 59, 0.15);
+        color: var(--danger);
         animation: shake 0.5s ease-in-out;
     }
     
     @keyframes shake {
         0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
     }
     
     .auth-btn:hover {
-        box-shadow: 0 6px 20px rgba(215, 65, 56, 0.4);
-    }
-    
-    /* Card decoration */
-    .auth-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--red-gradient);
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        box-shadow: 0 10px 25px rgba(38, 116, 230, 0.35) !important;
     }
     
     @media (max-width: 576px) {
         .register-pin,
         .confirm-pin {
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
         }
     }
 </style>
@@ -258,8 +246,8 @@
         const confirmPinError = document.getElementById('confirmPinError');
         const termsError = document.getElementById('termsError');
         
-        // Initialize - focus on first pin input
-        registerPinInputs[0].focus();
+        // Initialize - focus on fullname input
+        fullnameInput.focus();
         
         // PIN Input Handler
         function setupPinInputs(inputs, hiddenInput, isConfirm = false) {
@@ -294,6 +282,8 @@
                     // Backspace
                     if (e.key === 'Backspace' && this.value === '' && index > 0) {
                         inputs[index - 1].focus();
+                        inputs[index - 1].value = '';
+                        updatePinValue(inputs, hiddenInput);
                     }
                     
                     // Arrow keys
@@ -308,7 +298,7 @@
                 
                 // Visual feedback
                 input.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-red)';
+                    this.style.borderColor = 'var(--blue-600)';
                     this.style.backgroundColor = 'var(--white)';
                     this.classList.add('filled');
                 });
@@ -316,7 +306,7 @@
                 input.addEventListener('blur', function() {
                     if (this.value === '') {
                         this.style.borderColor = 'var(--border-color)';
-                        this.style.backgroundColor = 'var(--primary-red-lighter)';
+                        this.style.backgroundColor = 'var(--primary-lighter)';
                         this.classList.remove('filled', 'matched', 'not-matched');
                     }
                 });
@@ -410,6 +400,14 @@
                 return false;
             }
             
+            // Check for simple PIN patterns
+            const simplePatterns = ['0000', '1111', '1234', '4321', '9999'];
+            if (simplePatterns.includes(pin)) {
+                pinError.textContent = 'PIN terlalu mudah, gunakan kombinasi lain';
+                pinError.className = 'auth-error';
+                return false;
+            }
+            
             pinError.textContent = '✓ PIN aman dan valid';
             pinError.className = 'auth-success';
             return true;
@@ -471,7 +469,7 @@
         
         // Validate phone
         function validatePhone() {
-            const phone = phoneInput.value.trim().replace(/\D/g, '');
+            let phone = phoneInput.value.trim().replace(/\D/g, '');
             
             if (phone.length === 0) {
                 phoneError.textContent = 'Nomor telepon harus diisi';
@@ -541,38 +539,68 @@
                 
                 // Simulate registration
                 setTimeout(() => {
-                    // Reset button
-                    submitBtn.innerHTML = originalHTML;
-                    submitBtn.disabled = false;
-                    
-                    // Success message
-                    alert('Pendaftaran berhasil!\n\nNama: ' + fullnameInput.value + 
-                          '\nTelepon: ' + phoneInput.value + 
-                          '\n\nSilakan login dengan PIN Anda.');
-                    
-                    // Reset form
-                    this.reset();
-                    registerPinInputs.forEach(input => {
-                        input.value = '';
-                        input.classList.remove('filled');
+                    // Success message with SweetAlert2
+                    Swal.fire({
+                        title: 'Pendaftaran Berhasil!',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Nama:</strong> ${fullnameInput.value}</p>
+                                <p><strong>Telepon:</strong> ${phoneInput.value}</p>
+                                <p><strong>PIN:</strong> ****</p>
+                            </div>
+                            <p class="mt-3">Silakan login dengan akun yang telah dibuat.</p>
+                        `,
+                        icon: 'success',
+                        confirmButtonColor: 'var(--blue-700)',
+                        confirmButtonText: 'Login Sekarang',
+                        showCancelButton: true,
+                        cancelButtonText: 'Tutup'
+                    }).then((result) => {
+                        // Reset button
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                        
+                        if (result.isConfirmed) {
+                            // Redirect to login
+                            window.location.href = "{{ route('login') }}";
+                        } else {
+                            // Reset form
+                            registerForm.reset();
+                            registerPinInputs.forEach(input => {
+                                input.value = '';
+                                input.classList.remove('filled');
+                            });
+                            confirmPinInputs.forEach(input => {
+                                input.value = '';
+                                input.classList.remove('filled', 'matched', 'not-matched');
+                            });
+                            hiddenPinInput.value = '';
+                            hiddenConfirmPinInput.value = '';
+                            fullnameInput.focus();
+                        }
                     });
-                    confirmPinInputs.forEach(input => {
-                        input.value = '';
-                        input.classList.remove('filled', 'matched', 'not-matched');
-                    });
-                    hiddenPinInput.value = '';
-                    hiddenConfirmPinInput.value = '';
-                    
-                    // Redirect to login
-                    window.location.href = "{{ route('login') }}";
                 }, 1500);
             } else {
                 // Focus on first invalid field
-                if (!isFullnameValid) fullnameInput.focus();
-                else if (!isPhoneValid) phoneInput.focus();
-                else if (!isPinValid) registerPinInputs[0].focus();
-                else if (!isConfirmPinValid) confirmPinInputs[0].focus();
-                else if (!isTermsValid) termsCheckbox.focus();
+                if (!isFullnameValid) {
+                    fullnameInput.focus();
+                    fullnameInput.classList.add('shake');
+                    setTimeout(() => fullnameInput.classList.remove('shake'), 500);
+                } else if (!isPhoneValid) {
+                    phoneInput.focus();
+                    phoneInput.classList.add('shake');
+                    setTimeout(() => phoneInput.classList.remove('shake'), 500);
+                } else if (!isPinValid) {
+                    registerPinInputs[0].focus();
+                    registerPinInputs.forEach(input => input.classList.add('shake'));
+                    setTimeout(() => registerPinInputs.forEach(input => input.classList.remove('shake')), 500);
+                } else if (!isConfirmPinValid) {
+                    confirmPinInputs[0].focus();
+                    confirmPinInputs.forEach(input => input.classList.add('shake'));
+                    setTimeout(() => confirmPinInputs.forEach(input => input.classList.remove('shake')), 500);
+                } else if (!isTermsValid) {
+                    termsCheckbox.focus();
+                }
             }
         });
         
@@ -600,9 +628,20 @@
                 validateTerms();
                 
                 confirmPinInputs[3].focus();
-                console.log('Demo data: Nama: Budi Santoso, Telepon: 081234567890, PIN: 1357');
+                
+                // Show demo notification
+                Swal.fire({
+                    title: 'Demo Data',
+                    text: 'Data demo telah dimasukkan',
+                    icon: 'info',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         });
     });
 </script>
+
+<!-- SweetAlert2 for better notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
