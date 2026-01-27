@@ -1,8 +1,5 @@
 @php
-    // Mendapatkan route aktif saat ini
     $currentRoute = \Request::route()->getName();
-
-    // Definisikan menu navigasi
     $menus = [
         [
             'route' => 'pengguna.dashboard',
@@ -39,7 +36,6 @@
 
 <nav class="floating-navbar">
     <div class="floating-nav-container">
-        <!-- Floating Navigation Bar -->
         <div class="floating-nav">
             <div class="nav-backdrop"></div>
             <ul class="nav-menu">
@@ -59,7 +55,6 @@
 </nav>
 
 <style>
-    /* Floating Navigation Styles */
     .floating-navbar {
         position: fixed;
         bottom: 0;
@@ -170,12 +165,12 @@
     }
 
     .nav-link:hover .nav-icon i {
-        color: var(--primary-light);
+        color: var(--primary);
         transform: scale(1.1);
     }
 
     .nav-link:hover .nav-label {
-        color: var(--primary-light);
+        color: var(--primary);
     }
 
     /* Responsive Adjustments */
