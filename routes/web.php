@@ -17,6 +17,18 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Protected routes
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('pengguna.dashboard');
+    Route::get('/sleep-tracking', function () {
+        return view('pengguna.sleep-tracking.index');
+    })->name('pengguna.sleep-tracking');
+    Route::get('/quality-test', function () {
+        return view('pengguna.quality-test.index');
+    })->name('pengguna.quality-test');
+    Route::get('/murottal', function () {
+        return view('pengguna.murottal.index');
+    })->name('pengguna.murottal');
+    Route::get('/profile', function () {
+        return view('pengguna.profile.index');
+    })->name('pengguna.profile');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

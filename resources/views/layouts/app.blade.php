@@ -16,6 +16,86 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <style>
+        :root {
+            /* Palette Biru dari Gambar */
+            --blue-100: #E8F0FE;
+            --blue-200: #C6DAFC;
+            --blue-300: #A3C4FA;
+            --blue-400: #7FACE8;
+            --blue-500: #5C95E6;
+            --blue-600: #3A7DE4;
+            --blue-700: #2674E6;
+            --blue-800: #1260D2;
+            --blue-900: #0856C8;
+            --blue-950: #0645A0;
+
+            /* Warna Primer (menggunakan dari palette) */
+            --primary: var(--blue-900);
+            --primary-dark: var(--blue-950);
+            --primary-light: var(--blue-700);
+            --primary-lighter: var(--blue-100);
+            --gradient-primary: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+            --gradient-light: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+
+            /* Warna Netral */
+            --secondary: #5A5C69;
+            --secondary-light: #F8F9FC;
+            --light-bg: #F9FAFB;
+            --white: #FFFFFF;
+            --border-color: #E3E6F0;
+
+            /* Warna Status */
+            --success: #1CC88A;
+            --success-dark: #17A673;
+            --warning: #F6C23E;
+            --danger: #E74A3B;
+            --info: #36B9CC;
+
+            /* Shadow dan Border */
+            --shadow: 0 0.15rem 1.75rem 0 rgba(8, 86, 200, 0.15);
+            --shadow-sm: 0 0.125rem 0.25rem rgba(8, 86, 200, 0.1);
+            --shadow-lg: 0 0.5rem 2rem 0 rgba(8, 86, 200, 0.25);
+            --border-radius: 18px;
+            --border-radius-sm: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef1ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Add padding bottom to accommodate floating nav */
+        main.container-fluid {
+            padding-bottom: 100px;
+        }
+
+        @media (max-width: 768px) {
+            main.container-fluid {
+                padding-bottom: 90px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main.container-fluid {
+                padding-bottom: 80px;
+            }
+        }
+    </style>
 
     @stack('styles')
 </head>
@@ -53,6 +133,9 @@
     <main class="container-fluid">
         @yield('content')
     </main>
+
+    <!-- Include Floating Navigation Bottom -->
+    @include('partials.navbottom')
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
