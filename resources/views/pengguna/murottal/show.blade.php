@@ -53,7 +53,7 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0">
                                         <small class="text-muted d-flex align-items-center">
-                                            <i class="fas fa-headphones me-2 shrink-0>
+                                            <i class="fas fa-headphones me-2 shrink-0"></i>
                                             <span class="text-truncate">Sedang diputar: {{ $surah['nama_latin'] }}</span>
                                         </small>
                                     </div>
@@ -180,9 +180,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Spacer for floating nav -->
-        <div class="floating-player-placeholder mt-4"></div>
     </div>
 
     <style>
@@ -452,10 +449,6 @@
         .ayat-list-container::-webkit-scrollbar-thumb {
             background: var(--blue-500);
             border-radius: 4px;
-        }
-
-        .floating-player-placeholder {
-            height: 60px;
         }
     </style>
 

@@ -18,7 +18,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('pengguna.dashboard');
         }
         return view('auth.login');
     }
@@ -77,7 +77,7 @@ class AuthController extends Controller
         Log::info('Login successful:', ['user_id' => $pengguna->id]);
 
         // Redirect to dashboard
-        return redirect()->route('dashboard')->with('success', 'Login berhasil! Selamat datang ' . $pengguna->nama_lengkap);
+        return redirect()->route('pengguna.dashboard')->with('success', 'Login berhasil! Selamat datang ' . $pengguna->nama_lengkap);
     }
 
     /**
@@ -86,7 +86,7 @@ class AuthController extends Controller
     public function showRegisterForm()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('pengguna.dashboard');
         }
         return view('auth.register');
     }
@@ -161,7 +161,7 @@ class AuthController extends Controller
             Session::put('pengguna', $pengguna);
             Session::put('user_id', $pengguna->id);
 
-            return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Selamat datang ' . $pengguna->nama_lengkap);
+            return redirect()->route('pengguna.dashboard')->with('success', 'Registrasi berhasil! Selamat datang ' . $pengguna->nama_lengkap);
 
         } catch (\Exception $e) {
             Log::error('Registration error:', ['error' => $e->getMessage()]);

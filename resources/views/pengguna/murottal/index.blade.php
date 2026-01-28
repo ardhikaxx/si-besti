@@ -3,7 +3,7 @@
 @section('title', 'Murottal Ar-Rahman - SI Besti')
 
 @section('content')
-    <div class="murottal-container">
+    <div class="murottal-container py-3">
         <div class="row">
             <div class="col-12 col-lg-8 mx-auto">
                 <div class="card surah-card border-0 h-100">
@@ -32,7 +32,7 @@
                                             <i class="fas fa-book-open me-1"></i>
                                             {{ $surah['jumlah_ayat'] }} Ayat
                                         </span>
-                                        <span class="badge bg-warning-light text-warning">
+                                        <span class="badge bg-primary text-white">
                                             <i class="fas fa-location-dot me-1"></i>
                                             {{ ucfirst($surah['tempat_turun']) }}
                                         </span>
@@ -122,9 +122,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Spacer for floating nav -->
-        <div class="floating-player-placeholder mt-4"></div>
     </div>
 
     <style>
@@ -396,10 +393,6 @@
             .benefit-icon i {
                 font-size: 1.5rem;
             }
-        }
-
-        .floating-player-placeholder {
-            height: 60px;
         }
 
         /* Responsive adjustments */

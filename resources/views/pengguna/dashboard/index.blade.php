@@ -156,7 +156,7 @@
                         </div>
                         <h5 class="card-title fw-bold">Murottal Al-Qur'an</h5>
                         <p class="card-text text-muted">Putar Murottal Al-Qur'an untuk menemani waktu tidur Anda.</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ route('pengguna.murottal') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-play me-2"></i>Putar Sekarang
                         </a>
                     </div>
