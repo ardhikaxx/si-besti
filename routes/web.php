@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QualityTestController;
 use App\Http\Controllers\MurottalController;
 
 Route::get('/', function () {
@@ -22,9 +23,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/sleep-tracking', function () {
         return view('pengguna.sleep-tracking.index');
     })->name('pengguna.sleep-tracking');
-    Route::get('/quality-test', function () {
-        return view('pengguna.quality-test.index');
-    })->name('pengguna.quality-test');
+
+    // Quality Test Routes
+    Route::prefix('quality-test')->name('pengguna.quality-test.')->group(function () {
+        Route::get('/', [QualityTestController::class, 'index'])->name('index');
+        Route::get('/{type}', [QualityTestController::class, 'showTestPage'])->name('show'); // type: first atau last
+        Route::post('/{type}', [QualityTestController::class, 'storeTest'])->name('store');
+        Route::get('/{type}/edit', [QualityTestController::class, 'editTest'])->name('edit');
+        Route::post('/confirm/{type}', [QualityTestController::class, 'confirmTest'])->name('confirm');
+        Route::post('/start-new', [QualityTestController::class, 'startNewTest'])->name('start-new');
+        Route::get('/result/{test}', [QualityTestController::class, 'viewResult'])->name('result');
+    });
 
     // Murottal routes using controller
     // Route::get('/murottal', [MurottalController::class, 'index'])->name('pengguna.murottal');

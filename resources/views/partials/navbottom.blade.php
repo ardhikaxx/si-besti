@@ -14,7 +14,7 @@
             'active' => strpos($currentRoute, 'sleep') !== false,
         ],
         [
-            'route' => 'pengguna.quality-test',
+            'route' => 'pengguna.quality-test.index',
             'icon' => 'fas fa-file-signature',
             'label' => 'Test',
             'active' => strpos($currentRoute, 'test') !== false,
@@ -389,7 +389,7 @@
                         window.location.href = "{{ route('pengguna.sleep-tracking') }}";
                         break;
                     case 'quick-test':
-                        window.location.href = "{{ route('pengguna.quality-test') }}";
+                        window.location.href = "{{ route('pengguna.quality-test.index') }}";
                         break;
                     case 'play-murottal':
                         window.location.href = "{{ route('pengguna.murottal') }}";
