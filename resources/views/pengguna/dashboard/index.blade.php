@@ -32,197 +32,208 @@
             </div>
         </div>
 
-        <!-- User Information -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-id-card me-2"></i>Informasi Pribadi
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td width="40%" class="text-muted"><i class="fas fa-user me-2"></i>Nama Lengkap
-                                        </td>
-                                        <td class="fw-bold">{{ $pengguna->nama_lengkap }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted"><i class="fas fa-phone me-2"></i>Nomor Telepon</td>
-                                        <td class="fw-bold">{{ $pengguna->nomor_telepon }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted"><i class="fas fa-birthday-cake me-2"></i>Umur</td>
-                                        <td class="fw-bold">{{ $pengguna->umur }} tahun</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted"><i class="fas fa-venus-mars me-2"></i>Jenis Kelamin</td>
-                                        <td class="fw-bold">
-                                            @if ($pengguna->jenis_kelamin == 'L')
-                                                Laki-laki
-                                            @else
-                                                Perempuan
+        <!-- Main Grid Section -->
+        <div class="row g-4">
+            <!-- Left Column: User Information & Charts -->
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <!-- User Information Card -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-id-card me-2"></i>Informasi Pribadi
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td width="40%" class="text-muted"><i class="fas fa-user me-2"></i>Nama Lengkap
+                                                </td>
+                                                <td class="fw-bold">{{ $pengguna->nama_lengkap }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted"><i class="fas fa-phone me-2"></i>Nomor Telepon</td>
+                                                <td class="fw-bold">{{ $pengguna->nomor_telepon }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted"><i class="fas fa-birthday-cake me-2"></i>Umur</td>
+                                                <td class="fw-bold">{{ $pengguna->umur }} tahun</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted"><i class="fas fa-venus-mars me-2"></i>Jenis Kelamin</td>
+                                                <td class="fw-bold">
+                                                    @if ($pengguna->jenis_kelamin == 'L')
+                                                        Laki-laki
+                                                    @else
+                                                        Perempuan
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td width="40%" class="text-muted"><i class="fas fa-home me-2"></i>Alamat</td>
+                                                <td class="fw-bold">{{ $pengguna->alamat }}</td>
+                                            </tr>
+                                            @if ($pengguna->usia_kehamilan)
+                                                <tr>
+                                                    <td class="text-muted"><i class="fas fa-baby me-2"></i>Usia Kehamilan</td>
+                                                    <td class="fw-bold">{{ $pengguna->usia_kehamilan }} minggu</td>
+                                                </tr>
                                             @endif
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td width="40%" class="text-muted"><i class="fas fa-home me-2"></i>Alamat</td>
-                                        <td class="fw-bold">{{ $pengguna->alamat }}</td>
-                                    </tr>
-                                    @if ($pengguna->usia_kehamilan)
-                                        <tr>
-                                            <td class="text-muted"><i class="fas fa-baby me-2"></i>Usia Kehamilan</td>
-                                            <td class="fw-bold">{{ $pengguna->usia_kehamilan }} minggu</td>
-                                        </tr>
-                                    @endif
-                                    @if ($pengguna->hamil_anak_ke)
-                                        <tr>
-                                            <td class="text-muted"><i class="fas fa-baby-carriage me-2"></i>Hamil Anak Ke
-                                            </td>
-                                            <td class="fw-bold">{{ $pengguna->hamil_anak_ke }}</td>
-                                        </tr>
-                                    @endif
-                                    <tr>
-                                        <td class="text-muted"><i class="fas fa-children me-2"></i>Jumlah Anak</td>
-                                        <td class="fw-bold">{{ $pengguna->jumlah_anak }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="col-md-6">
-                <div class="row">
-                    <!-- Grafik Sleep Tracking -->
-                    <div class="col-12 mb-3">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-chart-line me-2"></i>Grafik Sleep Tracking
-                                </h5>
-                            </div>
-                            <div class="card-body" style="min-height: 300px; max-height: 350px;">
-                                @if($sleepTrackingData)
-                                    <div class="chart-container" style="position: relative; height: 250px;">
-                                        <canvas id="sleepTrackingChart"></canvas>
+                                            @if ($pengguna->hamil_anak_ke)
+                                                <tr>
+                                                    <td class="text-muted"><i class="fas fa-baby-carriage me-2"></i>Hamil Anak Ke
+                                                    </td>
+                                                    <td class="fw-bold">{{ $pengguna->hamil_anak_ke }}</td>
+                                                </tr>
+                                            @endif
+                                            <tr>
+                                                <td class="text-muted"><i class="fas fa-children me-2"></i>Jumlah Anak</td>
+                                                <td class="fw-bold">{{ $pengguna->jumlah_anak }}</td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                @else
-                                    <div class="text-center py-4">
-                                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">Belum ada data sleep tracking.</p>
-                                        <a href="{{ route('pengguna.sleep-tracking.index') }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-plus me-1"></i>Tambah Data
-                                        </a>
-                                    </div>
-                                @endif
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Grafik Test Kualitas Tidur -->
-                    <div class="col-12 mb-3">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-chart-bar me-2"></i>Grafik Test Kualitas Tidur
-                                </h5>
-                            </div>
-                            <div class="card-body" style="min-height: 300px; max-height: 350px;">
-                                @if($qualityTestData)
-                                    <div class="chart-container" style="position: relative; height: 200px;">
-                                        <canvas id="qualityTestChart"></canvas>
+                    <!-- Charts Section -->
+                    <div class="col-12">
+                        <div class="row g-4">
+                            <!-- Grafik Sleep Tracking -->
+                            <div class="col-lg-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-chart-line me-2"></i>Grafik Sleep Tracking
+                                        </h5>
                                     </div>
-                                    <div class="mt-3">
-                                        @if($qualityTestData['has_last_test'])
-                                            <div class="text-center">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>
-                                                    Perbandingan: {{ $qualityTestData['first_date'] }} vs {{ $qualityTestData['last_date'] }}
-                                                </small>
+                                    <div class="card-body">
+                                        @if($sleepTrackingData)
+                                            <div class="chart-container" style="position: relative; height: 250px;">
+                                                <canvas id="sleepTrackingChart"></canvas>
                                             </div>
                                         @else
-                                            <div class="alert alert-info mb-0 py-2" role="alert">
-                                                <small>
-                                                    <i class="fas fa-clock me-1"></i>
-                                                    <strong>Status:</strong> Test hari pertama selesai ({{ $qualityTestData['first_date'] }}). 
-                                                    Menunggu test hari terakhir.
-                                                    <a href="{{ route('pengguna.quality-test.index') }}" class="alert-link ms-1">
-                                                        <i class="fas fa-arrow-right"></i>Detail
-                                                    </a>
-                                                </small>
+                                            <div class="text-center py-4">
+                                                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                                                <p class="text-muted">Belum ada data sleep tracking.</p>
+                                                <a href="{{ route('pengguna.sleep-tracking.index') }}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-plus me-1"></i>Tambah Data
+                                                </a>
                                             </div>
                                         @endif
                                     </div>
-                                @else
-                                    <div class="text-center py-4">
-                                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">Belum ada test kualitas tidur yang dimulai.</p>
-                                        <a href="{{ route('pengguna.quality-test.index') }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-play me-1"></i>Mulai Test
-                                        </a>
+                                </div>
+                            </div>
+
+                            <!-- Grafik Test Kualitas Tidur -->
+                            <div class="col-lg-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-chart-bar me-2"></i>Grafik Test Kualitas Tidur
+                                        </h5>
                                     </div>
-                                @endif
+                                    <div class="card-body">
+                                        @if($qualityTestData)
+                                            <div class="chart-container" style="position: relative; height: 200px;">
+                                                <canvas id="qualityTestChart"></canvas>
+                                            </div>
+                                            <div class="mt-3">
+                                                @if($qualityTestData['has_last_test'])
+                                                    <div class="text-center">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Perbandingan: {{ $qualityTestData['first_date'] }} vs {{ $qualityTestData['last_date'] }}
+                                                        </small>
+                                                    </div>
+                                                @else
+                                                    <div class="alert alert-info mb-0 py-2" role="alert">
+                                                        <small>
+                                                            <i class="fas fa-clock me-1"></i>
+                                                            <strong>Status:</strong> Test hari pertama selesai ({{ $qualityTestData['first_date'] }}). 
+                                                            Menunggu test hari terakhir.
+                                                            <a href="{{ route('pengguna.quality-test.index') }}" class="alert-link ms-1">
+                                                                <i class="fas fa-arrow-right"></i>Detail
+                                                            </a>
+                                                        </small>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div class="text-center py-4">
+                                                <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                                                <p class="text-muted">Belum ada test kualitas tidur yang dimulai.</p>
+                                                <a href="{{ route('pengguna.quality-test.index') }}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-play me-1"></i>Mulai Test
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Features -->
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100 hover-lift">
-                    <div class="card-body text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="fas fa-bed text-primary fa-3x"></i>
+            <!-- Right Column: Features -->
+            <div class="col-lg-4">
+                <div class="row g-4">
+                    <!-- Sleep Tracking Feature -->
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card border-0 shadow-sm h-100 hover-lift feature-card">
+                            <div class="card-body text-center d-flex flex-column">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-bed text-primary fa-3x"></i>
+                                </div>
+                                <h5 class="card-title fw-bold mb-2">Sleep Tracking</h5>
+                                <p class="card-text text-muted grow">Input dan tracking jam tidur sampai jam bangun Anda.</p>
+                                <a href="{{ route('pengguna.sleep-tracking.index') }}" class="btn btn-outline-primary btn-sm mt-auto">
+                                    <i class="fas fa-gear me-2"></i>Atur Sekarang
+                                </a>
+                            </div>
                         </div>
-                        <h5 class="card-title fw-bold">Sleep Tracking</h5>
-                        <p class="card-text text-muted">Input dan tracking jam tidur sampai jam bangun Anda.</p>
-                        <a href="{{ route('pengguna.sleep-tracking.index') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-gear me-2"></i>Atur Sekarang
-                        </a>
                     </div>
-                </div>
-            </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100 hover-lift">
-                    <div class="card-body text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="fas fa-file-signature text-primary fa-3x"></i>
+                    <!-- Test Kualitas Tidur Feature -->
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card border-0 shadow-sm h-100 hover-lift feature-card">
+                            <div class="card-body text-center d-flex flex-column">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-file-signature text-primary fa-3x"></i>
+                                </div>
+                                <h5 class="card-title fw-bold mb-2">Test Kualitas Tidur</h5>
+                                <p class="card-text text-muted grow">Segera test kualitas tidur untuk mengetahui kualitas tidur Anda.
+                                </p>
+                                <a href="{{ route('pengguna.quality-test.index') }}" class="btn btn-outline-primary btn-sm mt-auto">
+                                    <i class="fas fa-comments me-2"></i>Mulai Test
+                                </a>
+                            </div>
                         </div>
-                        <h5 class="card-title fw-bold">Test Kualitas Tidur</h5>
-                        <p class="card-text text-muted">Segera test kualitas tidur untuk mengetahui kualitas tidur Anda.
-                        </p>
-                        <a href="{{ route('pengguna.quality-test.index') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-comments me-2"></i>Mulai Test
-                        </a>
                     </div>
-                </div>
-            </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100 hover-lift">
-                    <div class="card-body text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="fas fa-hands-praying text-primary fa-3x"></i>
+                    <!-- Murottal Al-Qur'an Feature -->
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card border-0 shadow-sm h-100 hover-lift feature-card">
+                            <div class="card-body text-center d-flex flex-column">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-hands-praying text-primary fa-3x"></i>
+                                </div>
+                                <h5 class="card-title fw-bold mb-2">Murottal Al-Qur'an</h5>
+                                <p class="card-text text-muted grow">Putar Murottal Al-Qur'an untuk menemani waktu tidur Anda.</p>
+                                <a href="{{ route('pengguna.murottal') }}" class="btn btn-outline-primary btn-sm mt-auto">
+                                    <i class="fas fa-play me-2"></i>Putar Sekarang
+                                </a>
+                            </div>
                         </div>
-                        <h5 class="card-title fw-bold">Murottal Al-Qur'an</h5>
-                        <p class="card-text text-muted">Putar Murottal Al-Qur'an untuk menemani waktu tidur Anda.</p>
-                        <a href="{{ route('pengguna.murottal') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-play me-2"></i>Putar Sekarang
-                        </a>
                     </div>
                 </div>
             </div>
@@ -329,6 +340,23 @@
             height: 100% !important;
         }
 
+        .feature-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-card .card-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .feature-card .btn {
+            margin-top: auto;
+        }
+
+        /* Responsive Grid Improvements */
         @media (max-width: 768px) {
             .navbar-brand {
                 font-size: 1.2rem;
@@ -346,6 +374,48 @@
             
             .chart-container {
                 height: 200px !important;
+            }
+
+            .feature-card {
+                margin-bottom: 1rem;
+            }
+
+            .table-borderless td {
+                padding: 8px 0;
+                font-size: 0.9rem;
+            }
+
+            .card-header h5 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .col-md-6 {
+                margin-bottom: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .feature-icon i {
+                font-size: 2.5rem !important;
+            }
+            
+            .btn-outline-primary {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .col-lg-8 {
+                padding-right: 1rem;
+            }
+            
+            .col-lg-4 {
+                padding-left: 1rem;
             }
         }
 
