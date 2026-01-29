@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SleepTracking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SleepTrackingController extends Controller
 {
@@ -13,13 +14,18 @@ class SleepTrackingController extends Controller
      */
     public function index()
     {
-        $pengguna = Auth::user();
-        $sleepTrackings = SleepTracking::where('pengguna_id', $pengguna->id)
-            ->orderBy('tanggal_tidur', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('pengguna.sleep-tracking.index', compact('sleepTrackings'));
+        try {
+            $pengguna = Auth::user();
+            $sleepTrackings = SleepTracking::where('pengguna_id', $pengguna->id)
+                ->orderBy('tanggal_tidur', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+            
+            return view('pengguna.sleep-tracking.index', compact('sleepTrackings'));
+        } catch (\Exception $e) {
+            Log::error('Error loading sleep tracking index: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat memuat data');
+        }
     }
 
     /**
@@ -27,22 +33,16 @@ class SleepTrackingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'tanggal_tidur' => 'required|date',
-            'waktu_tidur' => 'required|date_format:H:i',
-            'waktu_bangun' => 'required|date_format:H:i',
-            'jumlah_kebangunan' => 'required|integer|min:0',
-            'alasan_kebangunan' => 'nullable|string|max:500',
-            'catatan_lain' => 'nullable|string|max:1000',
-        ]);
-
-        // Validasi waktu bangun harus setelah waktu tidur
-        if (strtotime($request->waktu_bangun) <= strtotime($request->waktu_tidur)) {
-            // Jika waktu bangun <= waktu tidur, anggap melewati tengah malam
-            // Tidak ada error, sistem akan menangani perhitungan durasi
-        }
-
         try {
+            $request->validate([
+                'tanggal_tidur' => 'required|date',
+                'waktu_tidur' => 'required|date_format:H:i',
+                'waktu_bangun' => 'required|date_format:H:i',
+                'jumlah_kebangunan' => 'required|integer|min:0',
+                'alasan_kebangunan' => 'nullable|string|max:500',
+                'catatan_lain' => 'nullable|string|max:1000',
+            ]);
+
             $pengguna = Auth::user();
             
             // Cek apakah sudah ada data untuk tanggal yang sama
@@ -76,11 +76,17 @@ class SleepTrackingController extends Controller
                 'message' => 'Catatan tidur berhasil disimpan!',
                 'data' => $sleepTracking
             ]);
-
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Error storing sleep tracking: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan data'
             ], 500);
         }
     }
@@ -90,15 +96,28 @@ class SleepTrackingController extends Controller
      */
     public function show($id)
     {
-        $pengguna = Auth::user();
-        $sleepTracking = SleepTracking::where('pengguna_id', $pengguna->id)
-            ->where('id', $id)
-            ->firstOrFail();
+        try {
+            $pengguna = Auth::user();
+            $sleepTracking = SleepTracking::where('pengguna_id', $pengguna->id)
+                ->where('id', $id)
+                ->firstOrFail();
 
-        return response()->json([
-            'success' => true,
-            'data' => $sleepTracking
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $sleepTracking
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('Error showing sleep tracking: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memuat data'
+            ], 500);
+        }
     }
 
     /**
@@ -106,22 +125,16 @@ class SleepTrackingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'tanggal_tidur' => 'required|date',
-            'waktu_tidur' => 'required|date_format:H:i',
-            'waktu_bangun' => 'required|date_format:H:i',
-            'jumlah_kebangunan' => 'required|integer|min:0',
-            'alasan_kebangunan' => 'nullable|string|max:500',
-            'catatan_lain' => 'nullable|string|max:1000',
-        ]);
-
-        // Validasi waktu bangun harus setelah waktu tidur
-        if (strtotime($request->waktu_bangun) <= strtotime($request->waktu_tidur)) {
-            // Jika waktu bangun <= waktu tidur, anggap melewati tengah malam
-            // Tidak ada error, sistem akan menangani perhitungan durasi
-        }
-
         try {
+            $request->validate([
+                'tanggal_tidur' => 'required|date',
+                'waktu_tidur' => 'required|date_format:H:i',
+                'waktu_bangun' => 'required|date_format:H:i',
+                'jumlah_kebangunan' => 'required|integer|min:0',
+                'alasan_kebangunan' => 'nullable|string|max:500',
+                'catatan_lain' => 'nullable|string|max:1000',
+            ]);
+
             $pengguna = Auth::user();
             
             $sleepTracking = SleepTracking::where('pengguna_id', $pengguna->id)
@@ -158,11 +171,22 @@ class SleepTrackingController extends Controller
                 'message' => 'Catatan tidur berhasil diperbarui!',
                 'data' => $sleepTracking
             ]);
-
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('Error updating sleep tracking: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui data'
             ], 500);
         }
     }
@@ -185,11 +209,16 @@ class SleepTrackingController extends Controller
                 'success' => true,
                 'message' => 'Catatan tidur berhasil dihapus!'
             ]);
-
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('Error deleting sleep tracking: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus data'
             ], 500);
         }
     }
@@ -199,35 +228,53 @@ class SleepTrackingController extends Controller
      */
     public function getStatistics()
     {
-        $pengguna = Auth::user();
-        
-        $totalRecords = SleepTracking::where('pengguna_id', $pengguna->id)->count();
-        $averageDuration = SleepTracking::where('pengguna_id', $pengguna->id)->avg('durasi_tidur');
-        $averageWakeups = SleepTracking::where('pengguna_id', $pengguna->id)->avg('jumlah_kebangunan');
-        $latestRecord = SleepTracking::where('pengguna_id', $pengguna->id)
-            ->orderBy('tanggal_tidur', 'desc')
-            ->first();
-
-        // Format average duration
-        $formattedAvgDuration = '0 jam';
-        if ($averageDuration) {
-            $hours = floor($averageDuration);
-            $minutes = round(($averageDuration - $hours) * 60);
-            $formattedAvgDuration = "{$hours} jam";
-            if ($minutes > 0) {
-                $formattedAvgDuration .= " {$minutes} menit";
+        try {
+            $pengguna = Auth::user();
+            
+            if (!$pengguna) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User tidak terautentikasi'
+                ], 401);
             }
-        }
+            
+            $totalRecords = SleepTracking::where('pengguna_id', $pengguna->id)->count();
+            $averageDuration = SleepTracking::where('pengguna_id', $pengguna->id)->avg('durasi_tidur');
+            $averageWakeups = SleepTracking::where('pengguna_id', $pengguna->id)->avg('jumlah_kebangunan');
+            $latestRecord = SleepTracking::where('pengguna_id', $pengguna->id)
+                ->orderBy('tanggal_tidur', 'desc')
+                ->first();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'total_records' => $totalRecords,
-                'average_duration' => $averageDuration ? round($averageDuration, 2) : 0,
-                'formatted_average_duration' => $formattedAvgDuration,
-                'average_wakeups' => $averageWakeups ? round($averageWakeups, 1) : 0,
-                'latest_record' => $latestRecord
-            ]
-        ]);
+            // Format average duration
+            $formattedAvgDuration = '0 jam';
+            if ($averageDuration) {
+                $hours = floor($averageDuration);
+                $minutes = round(($averageDuration - $hours) * 60);
+                $formattedAvgDuration = "{$hours} jam";
+                if ($minutes > 0) {
+                    $formattedAvgDuration .= " {$minutes} menit";
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'total_records' => $totalRecords,
+                    'average_duration' => $averageDuration ? round($averageDuration, 2) : 0,
+                    'formatted_average_duration' => $formattedAvgDuration,
+                    'average_wakeups' => $averageWakeups ? round($averageWakeups, 1) : 0,
+                    'latest_record' => $latestRecord
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error getting sleep statistics: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memuat statistik',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

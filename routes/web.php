@@ -25,11 +25,11 @@ Route::middleware('auth')->group(function () {
     // Sleep Tracking Routes
     Route::prefix('sleep-tracking')->name('pengguna.sleep-tracking.')->group(function () {
         Route::get('/', [SleepTrackingController::class, 'index'])->name('index');
+        Route::get('/statistics', [SleepTrackingController::class, 'getStatistics'])->name('statistics');
         Route::post('/', [SleepTrackingController::class, 'store'])->name('store');
         Route::get('/{id}', [SleepTrackingController::class, 'show'])->name('show');
         Route::put('/{id}', [SleepTrackingController::class, 'update'])->name('update');
         Route::delete('/{id}', [SleepTrackingController::class, 'destroy'])->name('destroy');
-        Route::get('/statistics', [SleepTrackingController::class, 'getStatistics'])->name('statistics');
     });
 
     // Quality Test Routes

@@ -400,23 +400,6 @@
             }
         }
 
-        .delete-confirm {
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        .delete-icon {
-            font-size: 3rem;
-            color: var(--danger);
-            margin-bottom: 20px;
-        }
-
-        .delete-message {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            color: var(--blue-900);
-        }
-
         .detail-modal .modal-body {
             max-height: 60vh;
             overflow-y: auto;
@@ -753,39 +736,16 @@
             </div>
         </div>
     </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="delete-confirm">
-                    <div class="delete-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <p class="delete-message" id="deleteMessage">Apakah Anda yakin ingin menghapus catatan tidur ini?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn-primary btn-delete" onclick="deleteTracking()" id="deleteBtn">
-                        <span id="deleteText">Ya, Hapus</span>
-                        <span id="deleteLoading" class="loading-spinner" style="display: none;"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         let currentTrackingId = null;
         const modal = new bootstrap.Modal(document.getElementById('sleepModal'));
         const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 
         // Load statistics on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -885,6 +845,12 @@
                 }
             } catch (error) {
                 console.error('Error loading statistics:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memuat Statistik',
+                    text: 'Terjadi kesalahan saat memuat statistik tidur',
+                    confirmButtonColor: '#3a7de4'
+                });
             }
         }
 
@@ -902,8 +868,6 @@
         // Open edit modal
         async function openEditModal(id) {
             try {
-                showLoading(document.getElementById('submitBtn'), true);
-
                 const response = await fetch(`/sleep-tracking/${id}`);
                 const result = await response.json();
 
@@ -923,13 +887,21 @@
 
                     modal.show();
                 } else {
-                    alert('Gagal memuat data: ' + result.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Memuat Data',
+                        text: result.message,
+                        confirmButtonColor: '#3a7de4'
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat memuat data');
-            } finally {
-                showLoading(document.getElementById('submitBtn'), false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Gagal memuat data untuk diedit',
+                    confirmButtonColor: '#3a7de4'
+                });
             }
         }
 
@@ -1002,24 +974,24 @@
                     </div>
 
                     ${data.alasan_kebangunan ? `
-                        <div class="detail-section">
-                            <div class="detail-section-title">
-                                <i class="fas fa-comment-medical"></i>
-                                Alasan Kebangunan
+                            <div class="detail-section">
+                                <div class="detail-section-title">
+                                    <i class="fas fa-comment-medical"></i>
+                                    Alasan Kebangunan
+                                </div>
+                                <div class="text-content">${data.alasan_kebangunan}</div>
                             </div>
-                            <div class="text-content">${data.alasan_kebangunan}</div>
-                        </div>
-                        ` : ''}
+                            ` : ''}
 
                     ${data.catatan_lain ? `
-                        <div class="detail-section">
-                            <div class="detail-section-title">
-                                <i class="fas fa-sticky-note"></i>
-                                Catatan Lain
+                            <div class="detail-section">
+                                <div class="detail-section-title">
+                                    <i class="fas fa-sticky-note"></i>
+                                    Catatan Lain
+                                </div>
+                                <div class="text-content">${data.catatan_lain}</div>
                             </div>
-                            <div class="text-content">${data.catatan_lain}</div>
-                        </div>
-                        ` : ''}
+                            ` : ''}
 
                     <div class="detail-section">
                         <div class="detail-section-title">
@@ -1040,17 +1012,44 @@
                 `;
 
                     detailModal.show();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Memuat Detail',
+                        text: result.message,
+                        confirmButtonColor: '#3a7de4'
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat memuat detail');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Gagal memuat detail catatan tidur',
+                    confirmButtonColor: '#3a7de4'
+                });
             }
         }
 
-        // Confirm delete
+        // Confirm delete with SweetAlert2
         function confirmDelete(id) {
             currentTrackingId = id;
-            deleteModal.show();
+
+            Swal.fire({
+                title: 'Hapus Catatan Tidur?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3a7de4',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteTracking();
+                }
+            });
         }
 
         // Delete tracking
@@ -1058,7 +1057,16 @@
             if (!currentTrackingId) return;
 
             try {
-                showLoading(document.getElementById('deleteBtn'), true);
+                // Show loading
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
                 const response = await fetch(`/sleep-tracking/${currentTrackingId}`, {
                     method: 'DELETE',
@@ -1078,7 +1086,13 @@
                     }
 
                     // Show success message
-                    alert('Catatan tidur berhasil dihapus!');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil Dihapus!',
+                        text: 'Catatan tidur berhasil dihapus',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
 
                     // Reload statistics
                     loadStatistics();
@@ -1086,17 +1100,27 @@
                     // Check if no cards left
                     const cardsContainer = document.getElementById('sleepCardsContainer');
                     if (!cardsContainer.querySelector('.sleep-card')) {
-                        location.reload();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     }
                 } else {
-                    alert('Gagal menghapus: ' + result.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Menghapus',
+                        text: result.message,
+                        confirmButtonColor: '#3a7de4'
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Gagal menghapus catatan tidur',
+                    confirmButtonColor: '#3a7de4'
+                });
             } finally {
-                showLoading(document.getElementById('deleteBtn'), false);
-                deleteModal.hide();
                 currentTrackingId = null;
             }
         }
@@ -1125,15 +1149,33 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert(result.message);
                     modal.hide();
-                    location.reload(); // Reload page to show updated data
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: result.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
                 } else {
-                    alert('Gagal menyimpan: ' + result.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Menyimpan',
+                        text: result.message,
+                        confirmButtonColor: '#3a7de4'
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan data');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Gagal menyimpan data catatan tidur',
+                    confirmButtonColor: '#3a7de4'
+                });
             } finally {
                 showLoading(document.getElementById('submitBtn'), false);
             }
