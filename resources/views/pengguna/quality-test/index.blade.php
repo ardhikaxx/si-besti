@@ -310,19 +310,6 @@
             overflow: hidden;
         }
 
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-        }
-
         .action-btn:hover::before {
             width: 300px;
             height: 300px;
@@ -337,6 +324,7 @@
         }
 
         .btn-fill-test:hover {
+            color: white;
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(8, 86, 200, 0.4);
         }
