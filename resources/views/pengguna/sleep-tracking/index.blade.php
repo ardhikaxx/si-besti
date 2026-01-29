@@ -1262,24 +1262,24 @@
                     </div>
 
                     ${data.alasan_kebangunan ? `
-                                                        <div class="detail-section">
-                                                            <div class="detail-section-title">
-                                                                <i class="fas fa-comment-medical"></i>
-                                                                Alasan Kebangunan
+                                                            <div class="detail-section">
+                                                                <div class="detail-section-title">
+                                                                    <i class="fas fa-comment-medical"></i>
+                                                                    Alasan Kebangunan
+                                                                </div>
+                                                                <div class="text-content">${data.alasan_kebangunan}</div>
                                                             </div>
-                                                            <div class="text-content">${data.alasan_kebangunan}</div>
-                                                        </div>
-                                                        ` : ''}
+                                                            ` : ''}
 
                     ${data.catatan_lain ? `
-                                                        <div class="detail-section">
-                                                            <div class="detail-section-title">
-                                                                <i class="fas fa-sticky-note"></i>
-                                                                Catatan Lain
+                                                            <div class="detail-section">
+                                                                <div class="detail-section-title">
+                                                                    <i class="fas fa-sticky-note"></i>
+                                                                    Catatan Lain
+                                                                </div>
+                                                                <div class="text-content">${data.catatan_lain}</div>
                                                             </div>
-                                                            <div class="text-content">${data.catatan_lain}</div>
-                                                        </div>
-                                                        ` : ''}
+                                                            ` : ''}
 
                     <div class="detail-section">
                         <div class="detail-section-title">
