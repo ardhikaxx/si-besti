@@ -12,7 +12,12 @@
 
         .page-header {
             text-align: center;
-            margin-bottom: 30px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
         }
 
         .page-title {
@@ -532,8 +537,18 @@
     <div class="sleep-tracking-container">
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">📊 Sleep Tracking</h1>
-            <p class="page-subtitle">Pantau dan catat kualitas tidur Anda setiap hari</p>
+            <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between">
+                <div class="text-center text-lg-start">
+                    <h1 class="page-title">📊 Sleep Tracking</h1>
+                    <p class="page-subtitle">Pantau dan catat kualitas tidur Anda setiap hari</p>
+                </div>
+                <div class="add-button-container">
+                    <button class="add-button" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i>
+                        Tambah Catatan Tidur
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Statistics -->
@@ -554,14 +569,6 @@
                     <div class="stat-label">Rata-rata Kebangunan</div>
                 </div>
             </div>
-        </div>
-
-        <!-- Add Button -->
-        <div class="add-button-container">
-            <button class="add-button" onclick="openAddModal()">
-                <i class="fas fa-plus"></i>
-                Tambah Catatan Tidur
-            </button>
         </div>
 
         <!-- Sleep Cards -->
@@ -974,24 +981,24 @@
                     </div>
 
                     ${data.alasan_kebangunan ? `
-                            <div class="detail-section">
-                                <div class="detail-section-title">
-                                    <i class="fas fa-comment-medical"></i>
-                                    Alasan Kebangunan
-                                </div>
-                                <div class="text-content">${data.alasan_kebangunan}</div>
-                            </div>
-                            ` : ''}
+                                        <div class="detail-section">
+                                            <div class="detail-section-title">
+                                                <i class="fas fa-comment-medical"></i>
+                                                Alasan Kebangunan
+                                            </div>
+                                            <div class="text-content">${data.alasan_kebangunan}</div>
+                                        </div>
+                                        ` : ''}
 
                     ${data.catatan_lain ? `
-                            <div class="detail-section">
-                                <div class="detail-section-title">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Catatan Lain
-                                </div>
-                                <div class="text-content">${data.catatan_lain}</div>
-                            </div>
-                            ` : ''}
+                                        <div class="detail-section">
+                                            <div class="detail-section-title">
+                                                <i class="fas fa-sticky-note"></i>
+                                                Catatan Lain
+                                            </div>
+                                            <div class="text-content">${data.catatan_lain}</div>
+                                        </div>
+                                        ` : ''}
 
                     <div class="detail-section">
                         <div class="detail-section-title">
