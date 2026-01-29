@@ -102,14 +102,78 @@
 
             <!-- Quick Stats -->
             <div class="col-md-6">
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-line me-2"></i>Grafik Kualitas Tidur
-                        </h5>
+                <div class="row">
+                    <!-- Grafik Sleep Tracking -->
+                    <div class="col-12 mb-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>Grafik Sleep Tracking
+                                </h5>
+                            </div>
+                            <div class="card-body" style="min-height: 300px; max-height: 350px;">
+                                @if($sleepTrackingData)
+                                    <div class="chart-container" style="position: relative; height: 250px;">
+                                        <canvas id="sleepTrackingChart"></canvas>
+                                    </div>
+                                @else
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Belum ada data sleep tracking.</p>
+                                        <a href="{{ route('pengguna.sleep-tracking.index') }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-1"></i>Tambah Data
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
 
+                    <!-- Grafik Test Kualitas Tidur -->
+                    <div class="col-12 mb-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-bar me-2"></i>Grafik Test Kualitas Tidur
+                                </h5>
+                            </div>
+                            <div class="card-body" style="min-height: 300px; max-height: 350px;">
+                                @if($qualityTestData)
+                                    <div class="chart-container" style="position: relative; height: 200px;">
+                                        <canvas id="qualityTestChart"></canvas>
+                                    </div>
+                                    <div class="mt-3">
+                                        @if($qualityTestData['has_last_test'])
+                                            <div class="text-center">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Perbandingan: {{ $qualityTestData['first_date'] }} vs {{ $qualityTestData['last_date'] }}
+                                                </small>
+                                            </div>
+                                        @else
+                                            <div class="alert alert-info mb-0 py-2" role="alert">
+                                                <small>
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <strong>Status:</strong> Test hari pertama selesai ({{ $qualityTestData['first_date'] }}). 
+                                                    Menunggu test hari terakhir.
+                                                    <a href="{{ route('pengguna.quality-test.index') }}" class="alert-link ms-1">
+                                                        <i class="fas fa-arrow-right"></i>Detail
+                                                    </a>
+                                                </small>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Belum ada test kualitas tidur yang dimulai.</p>
+                                        <a href="{{ route('pengguna.quality-test.index') }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-play me-1"></i>Mulai Test
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -254,6 +318,17 @@
             font-weight: 500;
         }
 
+        .chart-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .chart-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
         @media (max-width: 768px) {
             .navbar-brand {
                 font-size: 1.2rem;
@@ -268,12 +343,222 @@
             h1.h3 {
                 font-size: 1.5rem;
             }
+            
+            .chart-container {
+                height: 200px !important;
+            }
         }
-        
+
         /* Ensure content doesn't overlap with floating nav */
         .dashboard-container {
             max-width: 1200px;
             margin: 0 auto;
         }
     </style>
+
+    @if($sleepTrackingData || $qualityTestData)
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Grafik Sleep Tracking
+                @if($sleepTrackingData)
+                const sleepTrackingCtx = document.getElementById('sleepTrackingChart');
+                if (sleepTrackingCtx) {
+                    const sleepTrackingChart = new Chart(sleepTrackingCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: {!! json_encode($sleepTrackingData['dates']) !!},
+                            datasets: [{
+                                label: 'Durasi Tidur (Jam)',
+                                data: {!! json_encode($sleepTrackingData['durations']) !!},
+                                backgroundColor: 'rgba(8, 86, 200, 0.1)',
+                                borderColor: 'rgba(8, 86, 200, 1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgba(8, 86, 200, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(8, 86, 200, 1)',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            label += context.parsed.y.toFixed(2) + ' jam';
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Jam'
+                                    },
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + ' jam';
+                                        }
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Tanggal'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                @endif
+
+                // Grafik Test Kualitas Tidur
+                @if($qualityTestData)
+                    @php
+                        $hasLastTest = $qualityTestData['has_last_test'];
+                        $firstScore = $qualityTestData['first_score'];
+                        $lastScore = $hasLastTest ? $qualityTestData['last_score'] : null;
+                    @endphp
+                    
+                    const qualityTestCtx = document.getElementById('qualityTestChart');
+                    if (qualityTestCtx) {
+                        const qualityTestChart = new Chart(qualityTestCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Hari Pertama', 'Hari Terakhir'],
+                                datasets: [{
+                                    label: 'Skor Kualitas Tidur',
+                                    data: [
+                                        {{ $firstScore }},
+                                        @if($hasLastTest)
+                                            {{ $lastScore }}
+                                        @else
+                                            null
+                                        @endif
+                                    ],
+                                    backgroundColor: [
+                                        {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' : 'rgba(220, 53, 69, 0.7)',
+                                        @if($hasLastTest)
+                                            {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' : 'rgba(220, 53, 69, 0.7)'
+                                        @else
+                                            'rgba(108, 117, 125, 0.3)'
+                                        @endif
+                                    ],
+                                    borderColor: [
+                                        {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 1)' : 'rgba(220, 53, 69, 1)',
+                                        @if($hasLastTest)
+                                            {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 1)' : 'rgba(220, 53, 69, 1)'
+                                        @else
+                                            'rgba(108, 117, 125, 0.5)'
+                                        @endif
+                                    ],
+                                    borderWidth: 2,
+                                    borderDash: function(context) {
+                                        @if(!$hasLastTest)
+                                        if (context.dataIndex === 1) {
+                                            return [5, 5];
+                                        }
+                                        @endif
+                                        return [];
+                                    }
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.dataset.label || '';
+                                                if (label) {
+                                                    label += ': ';
+                                                }
+                                                
+                                                @if(!$hasLastTest)
+                                                if (context.dataIndex === 1) {
+                                                    return 'Menunggu test hari ke-7';
+                                                }
+                                                @endif
+                                                
+                                                if (context.parsed.y !== null) {
+                                                    label += context.parsed.y;
+                                                    label += ' (' + (context.parsed.y <= 5 ? 'Baik' : 'Buruk') + ')';
+                                                }
+                                                return label;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 21,
+                                        title: {
+                                            display: true,
+                                            text: 'Skor PSQI'
+                                        },
+                                        ticks: {
+                                            stepSize: 3
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Periode Test'
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: [{
+                                @if(!$hasLastTest)
+                                afterDraw: function(chart) {
+                                    const ctx = chart.ctx;
+                                    const xAxis = chart.scales.x;
+                                    const yAxis = chart.scales.y;
+                                    
+                                    // Posisi untuk bar kedua (Hari Terakhir)
+                                    const x = xAxis.getPixelForValue(1);
+                                    const y = yAxis.getPixelForValue(10);
+                                    
+                                    ctx.save();
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.font = 'bold 14px Arial';
+                                    ctx.fillStyle = 'rgba(108, 117, 125, 0.8)';
+                                    ctx.fillText('Menunggu', x, y);
+                                    ctx.font = '12px Arial';
+                                    ctx.fillText('Test Hari Ke-7', x, y + 20);
+                                    ctx.restore();
+                                }
+                                @endif
+                            }]
+                        });
+                    }
+                @endif
+            });
+        </script>
+    @endif
 @endsection

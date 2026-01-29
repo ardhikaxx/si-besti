@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SleepTrackingController;
 use App\Http\Controllers\QualityTestController;
 use App\Http\Controllers\MurottalController;
@@ -20,7 +21,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Protected routes
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('pengguna.dashboard');
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('pengguna.home');
 
     // Sleep Tracking Routes
     Route::prefix('sleep-tracking')->name('pengguna.sleep-tracking.')->group(function () {

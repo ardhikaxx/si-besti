@@ -14,7 +14,7 @@ class QualityTestController extends Controller
     public function index()
     {
         $pengguna = Auth::user();
-        
+
         // Cari test yang sedang berjalan
         $currentTest = SleepTest::where('pengguna_id', $pengguna->id)
             ->where('status', 'ongoing')
@@ -27,14 +27,14 @@ class QualityTestController extends Controller
 
         // Ambil informasi status saat ini
         $testInfo = $currentTest->getCurrentTestInfo();
-        
+
         // Ambil test pertama dan terakhir
         $firstTest = $currentTest->firstTest;
         $lastTest = $currentTest->lastTest;
 
         // Hitung hari-hari dalam seminggu
         $dates = $currentTest->getTestDates();
-        
+
         $weekDays = [];
         foreach ($dates as $date) {
             $test = null;
@@ -42,22 +42,22 @@ class QualityTestController extends Controller
             $isConfirmed = false;
             $canTakeTest = false;
             $lockReason = null;
-            
+
             if ($date['is_test_day']) {
                 $test = $date['day_type'] == 'first' ? $firstTest : $lastTest;
                 $hasTest = $test !== null;
                 $isConfirmed = $hasTest && $test->is_confirmed;
-                
+
                 if ($date['day_type'] == 'first') {
                     $canTakeTest = $currentTest->canTakeFirstTest();
                 } else {
                     $canTakeTest = $currentTest->canTakeLastTest();
-                    
+
                     // Jika test terakhir belum bisa diakses, beri alasan
                     if (!$canTakeTest && $date['is_test_day']) {
                         $today = now();
                         $testDate = Carbon::parse($date['date']);
-                        
+
                         if ($today->lt($testDate)) {
                             $daysLeft = $today->diffInDays($testDate);
                             $lockReason = "Test akan tersedia pada " . $testDate->format('d M Y') . " (hari ke-7)";
@@ -67,7 +67,7 @@ class QualityTestController extends Controller
                     }
                 }
             }
-            
+
             $weekDays[] = [
                 'day_number' => $date['day'],
                 'date' => $date['date']->format('Y-m-d'),
@@ -109,7 +109,7 @@ class QualityTestController extends Controller
     public function showTestPage($type)
     {
         $pengguna = Auth::user();
-        
+
         if (!in_array($type, ['first', 'last'])) {
             return redirect()->route('pengguna.quality-test.index')
                 ->with('error', 'Jenis test tidak valid.');
@@ -123,12 +123,12 @@ class QualityTestController extends Controller
             if (!$currentTest->canTakeFirstTest()) {
                 $today = now();
                 $startDate = Carbon::parse($currentTest->start_date);
-                
+
                 if ($today->lt($startDate)) {
                     return redirect()->route('pengguna.quality-test.index')
                         ->with('error', 'Test pertama akan tersedia pada ' . $startDate->format('d M Y') . '.');
                 }
-                
+
                 return redirect()->route('pengguna.quality-test.index')
                     ->with('error', 'Test pertama tidak dapat diakses saat ini.');
             }
@@ -137,18 +137,18 @@ class QualityTestController extends Controller
                 $firstTest = $currentTest->firstTest;
                 $endDate = Carbon::parse($currentTest->end_date);
                 $today = now();
-                
+
                 if (!$firstTest || !$firstTest->is_confirmed) {
                     return redirect()->route('pengguna.quality-test.index')
                         ->with('error', 'Test pertama belum selesai. Silakan selesaikan test pertama terlebih dahulu.');
                 }
-                
+
                 if ($today->lt($endDate)) {
                     $daysLeft = $today->diffInDays($endDate);
                     return redirect()->route('pengguna.quality-test.index')
                         ->with('error', 'Test terakhir akan tersedia pada ' . $endDate->format('d M Y') . ' (hari ke-7).');
                 }
-                
+
                 return redirect()->route('pengguna.quality-test.index')
                     ->with('error', 'Test terakhir tidak dapat diakses saat ini.');
             }
@@ -156,26 +156,26 @@ class QualityTestController extends Controller
 
         // Cek apakah sudah ada data test
         $existingTest = $type == 'first' ? $currentTest->firstTest : $currentTest->lastTest;
-        
+
         return view('pengguna.quality-test.test-page', compact('currentTest', 'type', 'existingTest'));
     }
 
     public function storeTest(Request $request, $type)
     {
         $pengguna = Auth::user();
-        
+
         // Validasi input
         $request->validate([
             'bedtime' => 'required|date_format:H:i',
             'time_to_sleep' => 'required|integer|min:0|max:300',
             'wakeup_time' => 'required|date_format:H:i',
             'sleep_duration' => 'required|numeric|min:0|max:24',
-            
+
             'sleep_satisfaction' => 'required|integer|between:0,3',
             'medication_use' => 'required|integer|between:0,3',
             'daytime_sleepiness' => 'required|integer|between:0,3',
             'enthusiasm' => 'required|integer|between:0,3',
-            
+
             'sleep_disturbances.a' => 'required|integer|between:0,3',
             'sleep_disturbances.b' => 'required|integer|between:0,3',
             'sleep_disturbances.c' => 'required|integer|between:0,3',
@@ -229,7 +229,7 @@ class QualityTestController extends Controller
 
         // Cek apakah sudah ada test
         $existingTest = $type == 'first' ? $currentTest->firstTest : $currentTest->lastTest;
-        
+
         if ($existingTest) {
             $existingTest->update($testData);
             $test = $existingTest;
@@ -245,8 +245,8 @@ class QualityTestController extends Controller
             $currentTest->update(['current_test' => 'first']);
         }
 
-        $message = $type == 'first' 
-            ? 'Test pertama berhasil disimpan! Silakan konfirmasi untuk melanjutkan.' 
+        $message = $type == 'first'
+            ? 'Test pertama berhasil disimpan! Silakan konfirmasi untuk melanjutkan.'
             : 'Test terakhir berhasil disimpan! Silakan konfirmasi untuk melihat hasil.';
 
         return redirect()->route('pengguna.quality-test.index')
@@ -256,7 +256,7 @@ class QualityTestController extends Controller
     public function confirmTest($type)
     {
         $pengguna = Auth::user();
-        
+
         if (!in_array($type, ['first', 'last'])) {
             return redirect()->route('pengguna.quality-test.index')
                 ->with('error', 'Jenis test tidak valid.');
@@ -268,7 +268,7 @@ class QualityTestController extends Controller
 
         // Ambil test yang akan dikonfirmasi
         $test = $type == 'first' ? $currentTest->firstTest : $currentTest->lastTest;
-        
+
         if (!$test) {
             return redirect()->route('pengguna.quality-test.index')
                 ->with('error', 'Test belum diisi.');
@@ -280,12 +280,16 @@ class QualityTestController extends Controller
             'confirmed_at' => now()
         ]);
 
-        // Update status test
+        // Update status test - HAPUS baris yang mengupdate current_test ke 'waiting'
+        // $currentTest->update(['current_test' => 'waiting']); // HAPUS BARIS INI
+
         if ($type == 'first') {
-            $currentTest->update(['current_test' => 'waiting']);
-            
-            $message = 'Test pertama berhasil dikonfirmasi! Test terakhir akan tersedia pada ' . 
-                      Carbon::parse($currentTest->end_date)->format('d M Y') . ' (hari ke-7).';
+            // Update current_test menjadi 'last' atau biarkan 'first'
+            // Tergantung kebutuhan logika Anda
+            $currentTest->update(['current_test' => 'first']); // Atau 'last' jika sesuai
+
+            $message = 'Test pertama berhasil dikonfirmasi! Test terakhir akan tersedia pada ' .
+                Carbon::parse($currentTest->end_date)->format('d M Y') . ' (hari ke-7).';
         } else {
             $currentTest->calculateFinalScores();
             $message = 'Test terakhir berhasil dikonfirmasi! Hasil test sudah tersedia.';
@@ -298,7 +302,7 @@ class QualityTestController extends Controller
     public function startNewTest()
     {
         $pengguna = Auth::user();
-        
+
         // Cek apakah ada test yang sedang berjalan
         $ongoingTest = SleepTest::where('pengguna_id', $pengguna->id)
             ->where('status', 'ongoing')
@@ -319,7 +323,7 @@ class QualityTestController extends Controller
     public function viewResult($id)
     {
         $pengguna = Auth::user();
-        
+
         $test = SleepTest::where('pengguna_id', $pengguna->id)
             ->with(['firstTest', 'lastTest'])
             ->findOrFail($id);
@@ -330,7 +334,7 @@ class QualityTestController extends Controller
     public function editTest($type)
     {
         $pengguna = Auth::user();
-        
+
         if (!in_array($type, ['first', 'last'])) {
             return redirect()->route('pengguna.quality-test.index')
                 ->with('error', 'Jenis test tidak valid.');
@@ -342,7 +346,7 @@ class QualityTestController extends Controller
 
         // Ambil test yang akan diedit
         $test = $type == 'first' ? $currentTest->firstTest : $currentTest->lastTest;
-        
+
         if (!$test) {
             return redirect()->route('pengguna.quality-test.index')
                 ->with('error', 'Test tidak ditemukan.');
@@ -365,8 +369,8 @@ class QualityTestController extends Controller
         }
 
         return view('pengguna.quality-test.test-page', [
-            'currentTest' => $currentTest, 
-            'type' => $type, 
+            'currentTest' => $currentTest,
+            'type' => $type,
             'existingTest' => $test
         ]);
     }

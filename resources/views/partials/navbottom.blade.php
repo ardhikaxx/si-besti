@@ -2,10 +2,10 @@
     $currentRoute = \Request::route()->getName();
     $menus = [
         [
-            'route' => 'pengguna.dashboard',
+            'route' => 'pengguna.home',
             'icon' => 'fas fa-home',
             'label' => 'Beranda',
-            'active' => strpos($currentRoute, 'dashboard') !== false,
+            'active' => strpos($currentRoute, 'home') !== false,
         ],
         [
             'route' => 'pengguna.sleep-tracking.index',
