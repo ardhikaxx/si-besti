@@ -141,7 +141,7 @@
                         <h5 class="card-title fw-bold">Test Kualitas Tidur</h5>
                         <p class="card-text text-muted">Segera test kualitas tidur untuk mengetahui kualitas tidur Anda.
                         </p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ route('pengguna.quality-test.index') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-comments me-2"></i>Mulai Test
                         </a>
                     </div>
