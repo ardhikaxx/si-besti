@@ -125,7 +125,7 @@
                         </div>
                         <h5 class="card-title fw-bold">Sleep Tracking</h5>
                         <p class="card-text text-muted">Input dan tracking jam tidur sampai jam bangun Anda.</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ route('pengguna.sleep-tracking.index') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-gear me-2"></i>Atur Sekarang
                         </a>
                     </div>
