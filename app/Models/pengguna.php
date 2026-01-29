@@ -50,4 +50,12 @@ class Pengguna extends Authenticatable
     {
         return Hash::check($pin, $this->pin);
     }
+
+    /**
+     * Relasi ke model SleepTracking
+     */
+    public function sleepTrackings()
+    {
+        return $this->hasMany(SleepTracking::class);
+    }
 }

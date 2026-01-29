@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SleepTrackingController;
 use App\Http\Controllers\QualityTestController;
 use App\Http\Controllers\MurottalController;
 
@@ -20,9 +21,16 @@ Route::post('/register', [AuthController::class, 'register']);
 // Protected routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('pengguna.dashboard');
-    Route::get('/sleep-tracking', function () {
-        return view('pengguna.sleep-tracking.index');
-    })->name('pengguna.sleep-tracking');
+
+    // Sleep Tracking Routes
+    Route::prefix('sleep-tracking')->name('pengguna.sleep-tracking.')->group(function () {
+        Route::get('/', [SleepTrackingController::class, 'index'])->name('index');
+        Route::post('/', [SleepTrackingController::class, 'store'])->name('store');
+        Route::get('/{id}', [SleepTrackingController::class, 'show'])->name('show');
+        Route::put('/{id}', [SleepTrackingController::class, 'update'])->name('update');
+        Route::delete('/{id}', [SleepTrackingController::class, 'destroy'])->name('destroy');
+        Route::get('/statistics', [SleepTrackingController::class, 'getStatistics'])->name('statistics');
+    });
 
     // Quality Test Routes
     Route::prefix('quality-test')->name('pengguna.quality-test.')->group(function () {

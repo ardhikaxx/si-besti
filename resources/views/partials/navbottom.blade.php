@@ -8,7 +8,7 @@
             'active' => strpos($currentRoute, 'dashboard') !== false,
         ],
         [
-            'route' => 'pengguna.sleep-tracking',
+            'route' => 'pengguna.sleep-tracking.index',
             'icon' => 'fas fa-bed',
             'label' => 'Sleep Tracking',
             'active' => strpos($currentRoute, 'sleep') !== false,
@@ -386,7 +386,7 @@
                 // Handle different actions
                 switch (action) {
                     case 'track-sleep':
-                        window.location.href = "{{ route('pengguna.sleep-tracking') }}";
+                        window.location.href = "{{ route('pengguna.sleep-tracking.index') }}";
                         break;
                     case 'quick-test':
                         window.location.href = "{{ route('pengguna.quality-test.index') }}";
