@@ -149,11 +149,6 @@
         white-space: nowrap;
     }
 
-    /* Active State */
-    .nav-item.active .nav-link {
-        transform: translateY(-5px);
-    }
-
     .nav-item.active .nav-icon i {
         color: var(--primary);
         font-size: 1.3rem;
