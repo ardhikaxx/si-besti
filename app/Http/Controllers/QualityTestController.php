@@ -25,6 +25,9 @@ class QualityTestController extends Controller
             $currentTest = $this->createNewTest($pengguna);
         }
 
+        // Ambil informasi status saat ini
+        $testInfo = $currentTest->getCurrentTestInfo();
+        
         // Ambil test pertama dan terakhir
         $firstTest = $currentTest->firstTest;
         $lastTest = $currentTest->lastTest;
@@ -38,6 +41,7 @@ class QualityTestController extends Controller
             $hasTest = false;
             $isConfirmed = false;
             $canTakeTest = false;
+            $lockReason = null;
             
             if ($date['is_test_day']) {
                 $test = $date['day_type'] == 'first' ? $firstTest : $lastTest;
@@ -48,6 +52,19 @@ class QualityTestController extends Controller
                     $canTakeTest = $currentTest->canTakeFirstTest();
                 } else {
                     $canTakeTest = $currentTest->canTakeLastTest();
+                    
+                    // Jika test terakhir belum bisa diakses, beri alasan
+                    if (!$canTakeTest && $date['is_test_day']) {
+                        $today = now();
+                        $testDate = Carbon::parse($date['date']);
+                        
+                        if ($today->lt($testDate)) {
+                            $daysLeft = $today->diffInDays($testDate);
+                            $lockReason = "Test akan tersedia pada " . $testDate->format('d M Y') . " (hari ke-7)";
+                        } elseif (!$firstTest || !$firstTest->is_confirmed) {
+                            $lockReason = "Test pertama belum selesai";
+                        }
+                    }
                 }
             }
             
@@ -55,7 +72,7 @@ class QualityTestController extends Controller
                 'day_number' => $date['day'],
                 'date' => $date['date']->format('Y-m-d'),
                 'day_name' => $date['date']->translatedFormat('l'),
-                'date_formatted' => $date['date']->format('d M'),
+                'date_formatted' => $date['date']->format('d M Y'),
                 'is_today' => $date['date']->isToday(),
                 'is_past' => $date['date']->isPast(),
                 'is_future' => $date['date']->isFuture(),
@@ -64,17 +81,19 @@ class QualityTestController extends Controller
                 'has_test' => $hasTest,
                 'test' => $test,
                 'can_take_test' => $canTakeTest,
-                'is_confirmed' => $isConfirmed
+                'is_confirmed' => $isConfirmed,
+                'lock_reason' => $lockReason,
+                'is_available' => $date['is_available']
             ];
         }
 
-        return view('pengguna.quality-test.index', compact('currentTest', 'weekDays'));
+        return view('pengguna.quality-test.index', compact('currentTest', 'weekDays', 'testInfo'));
     }
 
     private function createNewTest($pengguna)
     {
         $startDate = now();
-        $endDate = now()->addDays(6);
+        $endDate = now()->addDays(6); // Hari ke-7
 
         $test = SleepTest::create([
             'pengguna_id' => $pengguna->id,
@@ -100,14 +119,39 @@ class QualityTestController extends Controller
             ->where('status', 'ongoing')
             ->firstOrFail();
 
-        if ($type == 'first' && !$currentTest->canTakeFirstTest()) {
-            return redirect()->route('pengguna.quality-test.index')
-                ->with('error', 'Test pertama tidak dapat diakses saat ini.');
-        }
-
-        if ($type == 'last' && !$currentTest->canTakeLastTest()) {
-            return redirect()->route('pengguna.quality-test.index')
-                ->with('error', 'Test terakhir tidak dapat diakses saat ini.');
+        if ($type == 'first') {
+            if (!$currentTest->canTakeFirstTest()) {
+                $today = now();
+                $startDate = Carbon::parse($currentTest->start_date);
+                
+                if ($today->lt($startDate)) {
+                    return redirect()->route('pengguna.quality-test.index')
+                        ->with('error', 'Test pertama akan tersedia pada ' . $startDate->format('d M Y') . '.');
+                }
+                
+                return redirect()->route('pengguna.quality-test.index')
+                    ->with('error', 'Test pertama tidak dapat diakses saat ini.');
+            }
+        } else {
+            if (!$currentTest->canTakeLastTest()) {
+                $firstTest = $currentTest->firstTest;
+                $endDate = Carbon::parse($currentTest->end_date);
+                $today = now();
+                
+                if (!$firstTest || !$firstTest->is_confirmed) {
+                    return redirect()->route('pengguna.quality-test.index')
+                        ->with('error', 'Test pertama belum selesai. Silakan selesaikan test pertama terlebih dahulu.');
+                }
+                
+                if ($today->lt($endDate)) {
+                    $daysLeft = $today->diffInDays($endDate);
+                    return redirect()->route('pengguna.quality-test.index')
+                        ->with('error', 'Test terakhir akan tersedia pada ' . $endDate->format('d M Y') . ' (hari ke-7).');
+                }
+                
+                return redirect()->route('pengguna.quality-test.index')
+                    ->with('error', 'Test terakhir tidak dapat diakses saat ini.');
+            }
         }
 
         // Cek apakah sudah ada data test
@@ -148,15 +192,17 @@ class QualityTestController extends Controller
             ->where('status', 'ongoing')
             ->firstOrFail();
 
-        // Validasi jenis test
-        if ($type == 'first' && !$currentTest->canTakeFirstTest()) {
-            return redirect()->route('pengguna.quality-test.index')
-                ->with('error', 'Test pertama tidak dapat diakses saat ini.');
-        }
-
-        if ($type == 'last' && !$currentTest->canTakeLastTest()) {
-            return redirect()->route('pengguna.quality-test.index')
-                ->with('error', 'Test terakhir tidak dapat diakses saat ini.');
+        // Validasi akses berdasarkan jenis test
+        if ($type == 'first') {
+            if (!$currentTest->canTakeFirstTest()) {
+                return redirect()->route('pengguna.quality-test.index')
+                    ->with('error', 'Test pertama tidak dapat diakses saat ini.');
+            }
+        } else {
+            if (!$currentTest->canTakeLastTest()) {
+                return redirect()->route('pengguna.quality-test.index')
+                    ->with('error', 'Test terakhir tidak dapat diakses saat ini.');
+            }
         }
 
         // Siapkan data gangguan tidur
@@ -194,8 +240,17 @@ class QualityTestController extends Controller
         // Hitung skor
         $test->calculateScores()->save();
 
+        // Jika test pertama, update current_test
+        if ($type == 'first') {
+            $currentTest->update(['current_test' => 'first']);
+        }
+
+        $message = $type == 'first' 
+            ? 'Test pertama berhasil disimpan! Silakan konfirmasi untuk melanjutkan.' 
+            : 'Test terakhir berhasil disimpan! Silakan konfirmasi untuk melihat hasil.';
+
         return redirect()->route('pengguna.quality-test.index')
-            ->with('success', 'Test ' . ($type == 'first' ? 'pertama' : 'terakhir') . ' berhasil disimpan!');
+            ->with('success', $message);
     }
 
     public function confirmTest($type)
@@ -227,13 +282,17 @@ class QualityTestController extends Controller
 
         // Update status test
         if ($type == 'first') {
-            $currentTest->update(['current_test' => 'last']);
+            $currentTest->update(['current_test' => 'waiting']);
+            
+            $message = 'Test pertama berhasil dikonfirmasi! Test terakhir akan tersedia pada ' . 
+                      Carbon::parse($currentTest->end_date)->format('d M Y') . ' (hari ke-7).';
         } else {
             $currentTest->calculateFinalScores();
+            $message = 'Test terakhir berhasil dikonfirmasi! Hasil test sudah tersedia.';
         }
 
         return redirect()->route('pengguna.quality-test.index')
-            ->with('success', 'Test ' . ($type == 'first' ? 'pertama' : 'terakhir') . ' berhasil dikonfirmasi!');
+            ->with('success', $message);
     }
 
     public function startNewTest()
@@ -254,7 +313,7 @@ class QualityTestController extends Controller
         $this->createNewTest($pengguna);
 
         return redirect()->route('pengguna.quality-test.index')
-            ->with('success', 'Test baru berhasil dimulai!');
+            ->with('success', 'Test baru berhasil dimulai! Silakan isi test pertama.');
     }
 
     public function viewResult($id)
@@ -284,11 +343,31 @@ class QualityTestController extends Controller
         // Ambil test yang akan diedit
         $test = $type == 'first' ? $currentTest->firstTest : $currentTest->lastTest;
         
-        if (!$test || $test->is_confirmed) {
+        if (!$test) {
             return redirect()->route('pengguna.quality-test.index')
-                ->with('error', 'Test tidak dapat diedit.');
+                ->with('error', 'Test tidak ditemukan.');
         }
 
-        return view('pengguna.quality-test.test-page', compact('currentTest', 'type', 'existingTest'));
+        if ($test->is_confirmed) {
+            return redirect()->route('pengguna.quality-test.index')
+                ->with('error', 'Test yang sudah dikonfirmasi tidak dapat diedit.');
+        }
+
+        // Validasi akses edit
+        if ($type == 'first' && !$currentTest->canTakeFirstTest()) {
+            return redirect()->route('pengguna.quality-test.index')
+                ->with('error', 'Test pertama tidak dapat diedit saat ini.');
+        }
+
+        if ($type == 'last' && !$currentTest->canTakeLastTest()) {
+            return redirect()->route('pengguna.quality-test.index')
+                ->with('error', 'Test terakhir tidak dapat diedit saat ini.');
+        }
+
+        return view('pengguna.quality-test.test-page', [
+            'currentTest' => $currentTest, 
+            'type' => $type, 
+            'existingTest' => $test
+        ]);
     }
 }
