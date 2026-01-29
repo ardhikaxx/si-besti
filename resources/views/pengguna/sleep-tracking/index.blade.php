@@ -539,7 +539,7 @@
         <div class="page-header">
             <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between">
                 <div class="text-center text-lg-start">
-                    <h1 class="page-title">📊 Sleep Tracking</h1>
+                    <h1 class="page-title"><i class="fas fa-bed"></i> Sleep Tracking</h1>
                     <p class="page-subtitle">Pantau dan catat kualitas tidur Anda setiap hari</p>
                 </div>
                 <div class="add-button-container">
@@ -553,20 +553,22 @@
 
         <!-- Statistics -->
         <div class="stats-card">
-            <h5 style="color: var(--blue-900); margin-bottom: 20px;">📈 Statistik Tidur Anda</h5>
+            <h5 style="color: var(--blue-900); margin-bottom: 20px;">
+                <i class="fas fa-chart-line"></i> Statistik Tidur Anda
+            </h5>
             <div class="stats-grid" id="statisticsContainer">
                 <!-- Statistics will be loaded here -->
                 <div class="stat-item">
                     <div class="stat-value">0</div>
-                    <div class="stat-label">Total Pencatatan</div>
+                    <div class="stat-label"><i class="fas fa-book-open me-2"></i>Total Pencatatan</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value">0 jam</div>
-                    <div class="stat-label">Rata-rata Durasi</div>
+                    <div class="stat-label"><i class="fas fa-clock me-2"></i>Rata-rata Durasi</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value">0x</div>
-                    <div class="stat-label">Rata-rata Kebangunan</div>
+                    <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
                 </div>
             </div>
         </div>
@@ -608,7 +610,7 @@
                             </div>
 
                             <div class="sleep-duration">
-                                ⏱️ Durasi: {{ $durationText }}
+                                <i class="fas fa-clock me-2"></i> Durasi: {{ $durationText }}
                                 <span class="{{ $badgeClass }}">
                                     {{ number_format($tracking->durasi_tidur, 2) }} jam
                                 </span>
@@ -687,8 +689,8 @@
                                 <input type="time" class="form-control" id="waktu_tidur" name="waktu_tidur" required
                                     onchange="calculateDuration()">
                                 <span class="time-separator">sampai</span>
-                                <input type="time" class="form-control" id="waktu_bangun" name="waktu_bangun" required
-                                    onchange="calculateDuration()">
+                                <input type="time" class="form-control" id="waktu_bangun" name="waktu_bangun"
+                                    required onchange="calculateDuration()">
                             </div>
                             <div class="duration-info">
                                 Durasi: <span id="durationPreview">0 jam 0 menit</span>
@@ -838,15 +840,15 @@
                     statsContainer.innerHTML = `
                     <div class="stat-item">
                         <div class="stat-value">${stats.total_records}</div>
-                        <div class="stat-label">Total Pencatatan</div>
+                        <div class="stat-label"><i class="fas fa-book-open me-2"></i>Total Pencatatan</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">${stats.formatted_average_duration}</div>
-                        <div class="stat-label">Rata-rata Durasi</div>
+                        <div class="stat-label"><i class="fas fa-clock me-2"></i>Rata-rata Durasi</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">${stats.average_wakeups}x</div>
-                        <div class="stat-label">Rata-rata Kebangunan</div>
+                        <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
                     </div>
                 `;
                 }
@@ -981,24 +983,24 @@
                     </div>
 
                     ${data.alasan_kebangunan ? `
-                                        <div class="detail-section">
-                                            <div class="detail-section-title">
-                                                <i class="fas fa-comment-medical"></i>
-                                                Alasan Kebangunan
-                                            </div>
-                                            <div class="text-content">${data.alasan_kebangunan}</div>
-                                        </div>
-                                        ` : ''}
+                                                    <div class="detail-section">
+                                                        <div class="detail-section-title">
+                                                            <i class="fas fa-comment-medical"></i>
+                                                            Alasan Kebangunan
+                                                        </div>
+                                                        <div class="text-content">${data.alasan_kebangunan}</div>
+                                                    </div>
+                                                    ` : ''}
 
                     ${data.catatan_lain ? `
-                                        <div class="detail-section">
-                                            <div class="detail-section-title">
-                                                <i class="fas fa-sticky-note"></i>
-                                                Catatan Lain
-                                            </div>
-                                            <div class="text-content">${data.catatan_lain}</div>
-                                        </div>
-                                        ` : ''}
+                                                    <div class="detail-section">
+                                                        <div class="detail-section-title">
+                                                            <i class="fas fa-sticky-note"></i>
+                                                            Catatan Lain
+                                                        </div>
+                                                        <div class="text-content">${data.catatan_lain}</div>
+                                                    </div>
+                                                    ` : ''}
 
                     <div class="detail-section">
                         <div class="detail-section-title">
