@@ -18,9 +18,12 @@
                                 </p>
                             </div>
                             <div class="text-end">
-                                <div class="avatar-circle">
-                                    <i class="fas fa-user"></i>
-                                </div>
+                                <button type="button"
+                                    class="btn btn-logout btn-sm d-flex flex-row align-items-center justify-content-center"
+                                    id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt me-1"></i>
+                                    <span>Logout</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -271,6 +274,7 @@
             --primary: var(--blue-900);
             --gradient-primary: linear-gradient(135deg, #0856C8 0%, #2674E6 100%);
             --gradient-light: linear-gradient(135deg, #E8F0FE 0%, #C6DAFC 100%);
+            --gradient-danger: linear-gradient(135deg, #dc3545 0%, #e63946 100%);
         }
 
         body {
@@ -331,6 +335,33 @@
         .avatar-circle:hover {
             transform: scale(1.1);
             background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Logout Button */
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 0.4rem 1rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            min-width: 100px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-logout:active {
+            color: #ffffff;
+            transform: translateY(0);
         }
 
         /* Info Card */
@@ -572,6 +603,13 @@
                 font-size: 1.4rem;
             }
 
+            .btn-logout {
+                min-width: 80px;
+                height: 60px;
+                padding: 0.3rem 0.8rem;
+                font-size: 1rem;
+            }
+
             .chart-container {
                 height: 200px !important;
             }
@@ -650,213 +688,306 @@
             transition: all 0.3s ease !important;
         }
     </style>
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     @if ($sleepTrackingData || $qualityTestData)
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Grafik Sleep Tracking
-                @if ($sleepTrackingData)
-                    const sleepTrackingCtx = document.getElementById('sleepTrackingChart');
-                    if (sleepTrackingCtx) {
-                        const sleepTrackingChart = new Chart(sleepTrackingCtx, {
-                            type: 'bar',
-                            data: {
-                                labels: {!! json_encode($sleepTrackingData['dates']) !!},
-                                datasets: [{
-                                    label: 'Durasi Tidur (Jam)',
-                                    data: {!! json_encode($sleepTrackingData['durations']) !!},
-                                    backgroundColor: 'rgba(8, 86, 200, 0.1)',
-                                    borderColor: 'rgba(8, 86, 200, 1)',
-                                    borderWidth: 2,
-                                    fill: true,
-                                    tension: 0.4,
-                                    pointBackgroundColor: 'rgba(8, 86, 200, 1)',
-                                    pointBorderColor: '#fff',
-                                    pointHoverBackgroundColor: '#fff',
-                                    pointHoverBorderColor: 'rgba(8, 86, 200, 1)',
-                                    pointRadius: 5,
-                                    pointHoverRadius: 7
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        position: 'top',
-                                    },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function(context) {
-                                                let label = context.dataset.label || '';
-                                                if (label) {
-                                                    label += ': ';
-                                                }
-                                                label += context.parsed.y.toFixed(2) + ' jam';
-                                                return label;
+    @endif
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tombol Logout dengan SweetAlert
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Konfirmasi Logout',
+                        text: 'Apakah Anda yakin ingin logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#0856C8',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Logout',
+                        cancelButtonText: 'Batal',
+                        customClass: {
+                            popup: 'swal2-popup-custom',
+                            confirmButton: 'swal2-confirm-custom',
+                            cancelButton: 'swal2-cancel-custom'
+                        },
+                        buttonsStyling: false,
+                        reverseButtons: true,
+                        backdrop: 'rgba(0, 0, 0, 0.4)'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Create a form to submit the logout request
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = '{{ route('logout') }}';
+
+                            // Add CSRF token
+                            const csrfToken = document.createElement('input');
+                            csrfToken.type = 'hidden';
+                            csrfToken.name = '_token';
+                            csrfToken.value = '{{ csrf_token() }}';
+                            form.appendChild(csrfToken);
+
+                            // Add to document and submit
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                });
+            }
+
+            // Grafik Sleep Tracking
+            @if ($sleepTrackingData)
+                const sleepTrackingCtx = document.getElementById('sleepTrackingChart');
+                if (sleepTrackingCtx) {
+                    const sleepTrackingChart = new Chart(sleepTrackingCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: {!! json_encode($sleepTrackingData['dates']) !!},
+                            datasets: [{
+                                label: 'Durasi Tidur (Jam)',
+                                data: {!! json_encode($sleepTrackingData['durations']) !!},
+                                backgroundColor: 'rgba(8, 86, 200, 0.1)',
+                                borderColor: 'rgba(8, 86, 200, 1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgba(8, 86, 200, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(8, 86, 200, 1)',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
                                             }
+                                            label += context.parsed.y.toFixed(2) + ' jam';
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Jam'
+                                    },
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + ' jam';
                                         }
                                     }
                                 },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Jam'
-                                        },
-                                        ticks: {
-                                            callback: function(value) {
-                                                return value + ' jam';
-                                            }
-                                        }
-                                    },
-                                    x: {
-                                        title: {
-                                            display: true,
-                                            text: 'Tanggal'
-                                        }
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Tanggal'
                                     }
                                 }
                             }
-                        });
-                    }
-                @endif
-                // Grafik Test Kualitas Tidur
-                @if ($qualityTestData)
-                    @php
-                        $hasLastTest = $qualityTestData['has_last_test'];
-                        $firstScore = $qualityTestData['first_score'];
-                        $lastScore = $hasLastTest ? $qualityTestData['last_score'] : null;
-                    @endphp
+                        }
+                    });
+                }
+            @endif
+            // Grafik Test Kualitas Tidur
+            @if ($qualityTestData)
+                @php
+                    $hasLastTest = $qualityTestData['has_last_test'];
+                    $firstScore = $qualityTestData['first_score'];
+                    $lastScore = $hasLastTest ? $qualityTestData['last_score'] : null;
+                @endphp
 
-                    const qualityTestCtx = document.getElementById('qualityTestChart');
-                    if (qualityTestCtx) {
-                        const qualityTestChart = new Chart(qualityTestCtx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Hari Pertama', 'Hari Terakhir'],
-                                datasets: [{
-                                    label: 'Skor Kualitas Tidur',
-                                    data: [
-                                        {{ $firstScore }},
-                                        @if ($hasLastTest)
-                                            {{ $lastScore }}
-                                        @else
-                                            null
-                                        @endif
-                                    ],
-                                    backgroundColor: [
-                                        {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
-                                        'rgba(220, 53, 69, 0.7)',
-                                        @if ($hasLastTest)
-                                            {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
-                                                'rgba(220, 53, 69, 0.7)'
-                                        @else
-                                            'rgba(108, 117, 125, 0.3)'
-                                        @endif
-                                    ],
-                                    borderColor: [
-                                        {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
-                                        'rgba(220, 53, 69, 1)',
-                                        @if ($hasLastTest)
-                                            {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
-                                                'rgba(220, 53, 69, 1)'
-                                        @else
-                                            'rgba(108, 117, 125, 0.5)'
-                                        @endif
-                                    ],
-                                    borderWidth: 2,
-                                    borderDash: function(context) {
-                                        @if (!$hasLastTest)
-                                            if (context.dataIndex === 1) {
-                                                return [5, 5];
-                                            }
-                                        @endif
-                                        return [];
-                                    }
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        position: 'top',
-                                    },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function(context) {
-                                                let label = context.dataset.label || '';
-                                                if (label) {
-                                                    label += ': ';
-                                                }
-
-                                                @if (!$hasLastTest)
-                                                    if (context.dataIndex === 1) {
-                                                        return 'Menunggu test hari ke-7';
-                                                    }
-                                                @endif
-
-                                                if (context.parsed.y !== null) {
-                                                    label += context.parsed.y;
-                                                    label += ' (' + (context.parsed.y <= 5 ? 'Baik' :
-                                                        'Buruk') + ')';
-                                                }
-                                                return label;
-                                            }
+                const qualityTestCtx = document.getElementById('qualityTestChart');
+                if (qualityTestCtx) {
+                    const qualityTestChart = new Chart(qualityTestCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Hari Pertama', 'Hari Terakhir'],
+                            datasets: [{
+                                label: 'Skor Kualitas Tidur',
+                                data: [
+                                    {{ $firstScore }},
+                                    @if ($hasLastTest)
+                                        {{ $lastScore }}
+                                    @else
+                                        null
+                                    @endif
+                                ],
+                                backgroundColor: [
+                                    {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
+                                    'rgba(220, 53, 69, 0.7)',
+                                    @if ($hasLastTest)
+                                        {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
+                                            'rgba(220, 53, 69, 0.7)'
+                                    @else
+                                        'rgba(108, 117, 125, 0.3)'
+                                    @endif
+                                ],
+                                borderColor: [
+                                    {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
+                                    'rgba(220, 53, 69, 1)',
+                                    @if ($hasLastTest)
+                                        {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
+                                            'rgba(220, 53, 69, 1)'
+                                    @else
+                                        'rgba(108, 117, 125, 0.5)'
+                                    @endif
+                                ],
+                                borderWidth: 2,
+                                borderDash: function(context) {
+                                    @if (!$hasLastTest)
+                                        if (context.dataIndex === 1) {
+                                            return [5, 5];
                                         }
-                                    }
+                                    @endif
+                                    return [];
+                                }
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
                                 },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        max: 21,
-                                        title: {
-                                            display: true,
-                                            text: 'Skor PSQI'
-                                        },
-                                        ticks: {
-                                            stepSize: 3
-                                        }
-                                    },
-                                    x: {
-                                        title: {
-                                            display: true,
-                                            text: 'Periode Test'
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+
+                                            @if (!$hasLastTest)
+                                                if (context.dataIndex === 1) {
+                                                    return 'Menunggu test hari ke-7';
+                                                }
+                                            @endif
+
+                                            if (context.parsed.y !== null) {
+                                                label += context.parsed.y;
+                                                label += ' (' + (context.parsed.y <= 5 ? 'Baik' :
+                                                    'Buruk') + ')';
+                                            }
+                                            return label;
                                         }
                                     }
                                 }
                             },
-                            plugins: [{
-                                @if (!$hasLastTest)
-                                    afterDraw: function(chart) {
-                                        const ctx = chart.ctx;
-                                        const xAxis = chart.scales.x;
-                                        const yAxis = chart.scales.y;
-
-                                        // Posisi untuk bar kedua (Hari Terakhir)
-                                        const x = xAxis.getPixelForValue(1);
-                                        const y = yAxis.getPixelForValue(10);
-
-                                        ctx.save();
-                                        ctx.textAlign = 'center';
-                                        ctx.textBaseline = 'middle';
-                                        ctx.font = 'bold 14px Arial';
-                                        ctx.fillStyle = 'rgba(108, 117, 125, 0.8)';
-                                        ctx.fillText('Menunggu', x, y);
-                                        ctx.font = '12px Arial';
-                                        ctx.fillText('Test Hari Ke-7', x, y + 20);
-                                        ctx.restore();
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 21,
+                                    title: {
+                                        display: true,
+                                        text: 'Skor PSQI'
+                                    },
+                                    ticks: {
+                                        stepSize: 3
                                     }
-                                @endif
-                            }]
-                        });
-                    }
-                @endif
-            });
-        </script>
-    @endif
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Periode Test'
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [{
+                            @if (!$hasLastTest)
+                                afterDraw: function(chart) {
+                                    const ctx = chart.ctx;
+                                    const xAxis = chart.scales.x;
+                                    const yAxis = chart.scales.y;
+
+                                    // Posisi untuk bar kedua (Hari Terakhir)
+                                    const x = xAxis.getPixelForValue(1);
+                                    const y = yAxis.getPixelForValue(10);
+
+                                    ctx.save();
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.font = 'bold 14px Arial';
+                                    ctx.fillStyle = 'rgba(108, 117, 125, 0.8)';
+                                    ctx.fillText('Menunggu', x, y);
+                                    ctx.font = '12px Arial';
+                                    ctx.fillText('Test Hari Ke-7', x, y + 20);
+                                    ctx.restore();
+                                }
+                            @endif
+                        }]
+                    });
+                }
+            @endif
+        });
+
+        // Custom styles for SweetAlert
+        const style = document.createElement('style');
+        style.textContent = `
+            .swal2-popup-custom {
+                border-radius: 20px !important;
+                font-family: 'Poppins', sans-serif;
+            }
+            .swal2-confirm-custom {
+                background: linear-gradient(135deg, #0856C8 0%, #2674E6 100%) !important;
+                border: none !important;
+                border-radius: 25px !important;
+                padding: 0.5rem 2rem !important;
+                font-weight: 500 !important;
+                color: white;
+                transition: all 0.3s ease !important;
+                margin-left: 5px;
+            }
+            .swal2-confirm-custom:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 5px 15px rgba(8, 86, 200, 0.3) !important;
+            }
+            .swal2-cancel-custom {
+                background: transparent !important;
+                border: 2px solid #6c757d !important;
+                color: #6c757d !important;
+                border-radius: 25px !important;
+                padding: 0.5rem 2rem !important;
+                font-weight: 500 !important;
+                transition: all 0.3s ease !important;
+                margin-right: 5px;
+            }
+            .swal2-cancel-custom:hover {
+                background: #f8f9fa !important;
+                transform: translateY(-2px) !important;
+            }
+            .swal2-title {
+                color: #0856C8 !important;
+                font-weight: 600 !important;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 @endsection
