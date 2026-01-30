@@ -17,8 +17,6 @@
             --blue-950: #0645A0;
             --gradient-primary: linear-gradient(135deg, #0856C8 0%, #2674E6 100%);
             --gradient-light: linear-gradient(135deg, #E8F0FE 0%, #C6DAFC 100%);
-            --gradient-success: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
         }
 
         body {
@@ -32,6 +30,85 @@
             padding: 20px;
             padding-bottom: 80px;
         }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(8, 86, 200, 0.15);
+            margin-bottom: 30px; /* Jarak dengan surah card */
+            overflow: hidden;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .info-header {
+            background: white;
+            padding: 20px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--blue-200);
+            transition: background 0.3s;
+        }
+
+        .info-header:hover {
+            background: var(--blue-100);
+        }
+
+        .info-title {
+            color: var(--blue-900);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-icon {
+            color: var(--blue-700);
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.rotate {
+            transform: rotate(180deg);
+        }
+
+        .info-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background: #fff;
+        }
+
+        .info-body {
+            padding: 30px;
+            color: var(--blue-800);
+            line-height: 1.8;
+        }
+
+        .info-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .info-list li::before {
+            content: '\f00c'; /* FontAwesome Check */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--blue-600);
+        }
+
+        /* --- END INFO CARD STYLES --- */
 
         /* Surah Card */
         .surah-card {
@@ -251,88 +328,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* Benefits Section */
-        .benefits-card {
-            background: #ffffff;
-            border-radius: 25px;
-            box-shadow: 0 15px 40px rgba(8, 86, 200, 0.15);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .benefits-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(8, 86, 200, 0.25);
-        }
-
-        .card-header {
-            background: var(--gradient-primary);
-            border: none;
-            padding: 20px 30px;
-        }
-
-        .card-header h5 {
-            color: #ffffff;
-            font-weight: 700;
-            margin: 0;
-            font-size: 1.3rem;
-        }
-
-        /* Benefit Items */
-        .benefit-item {
-            background: var(--gradient-light);
-            border-radius: 20px;
-            padding: 30px 20px;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 3px solid transparent;
-            height: 100%;
-        }
-
-        .benefit-item:hover {
-            transform: translateY(-10px);
-            border-color: var(--blue-400);
-            box-shadow: 0 15px 35px rgba(8, 86, 200, 0.2);
-            background: #ffffff;
-        }
-
-        .benefit-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(8, 86, 200, 0.3);
-        }
-
-        .benefit-item:hover .benefit-icon {
-            transform: rotateY(360deg) scale(1.1);
-            box-shadow: 0 12px 30px rgba(8, 86, 200, 0.4);
-        }
-
-        .benefit-icon i {
-            color: #ffffff;
-            font-size: 2rem;
-        }
-
-        .benefit-item h6 {
-            color: var(--blue-900);
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-        }
-
-        .benefit-item p {
-            color: var(--blue-700);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .murottal-container {
@@ -356,27 +351,6 @@
             .btn-play {
                 padding: 15px 30px;
                 font-size: 1rem;
-            }
-
-            .btn-play i {
-                font-size: 1.1rem;
-            }
-
-            .benefit-icon {
-                width: 70px;
-                height: 70px;
-            }
-
-            .benefit-icon i {
-                font-size: 1.75rem;
-            }
-
-            .benefit-item {
-                padding: 25px 15px;
-            }
-
-            .card-header h5 {
-                font-size: 1.1rem;
             }
 
             .surah-description {
@@ -422,58 +396,67 @@
             }
         }
 
-        .surah-card {
+        .surah-card, .info-card {
             animation: fadeInUp 0.6s ease-out;
         }
-
-        .benefits-card {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .benefit-item {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .benefit-item:nth-child(1) { animation-delay: 0.1s; }
-        .benefit-item:nth-child(2) { animation-delay: 0.2s; }
-        .benefit-item:nth-child(3) { animation-delay: 0.3s; }
-        .benefit-item:nth-child(4) { animation-delay: 0.4s; }
 
         /* Utility Classes */
-        .shrink-0 {
-            flex-shrink: 0;
-        }
-
-        .grow {
-            flex-grow: 1;
-        }
-
-        .min-width-0 {
-            min-width: 0;
-        }
-
-        /* Decorative Elements */
-        .surah-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(8, 86, 200, 0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
+        .shrink-0 { flex-shrink: 0; }
+        .grow { flex-grow: 1; }
+        .min-width-0 { min-width: 0; }
     </style>
 @endpush
 
 @section('content')
     <div class="murottal-container py-3">
+        
         <div class="row">
             <div class="col-12 col-lg-10 col-xl-8 mx-auto">
-                <div class="card surah-card border-0 h-100">
+                <div class="card info-card">
+                    <div class="info-header" onclick="toggleInfo()">
+                        <h5 class="info-title">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            Informasi & Manfaat Murottal
+                        </h5>
+                        <i class="fas fa-chevron-down toggle-icon" id="toggleIcon"></i>
+                    </div>
+
+                    <div class="info-content" id="infoContent">
+                        <div class="info-body">
+                            <p class="mb-4">
+                                <strong>Murottal</strong> adalah lantunan ayat-ayat Al-Qur’an yang dibaca dengan tartil dan sesuai kaidah tajwid. Surah Ar-Rahman ini dikenal sebagai <em>“pengantin Al-Qur’an”</em> karena keindahan lafaz serta kandungan maknanya tentang berbagai nikmat Allah.
+                            </p>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold mb-3" style="color: var(--blue-900);">
+                                        <i class="fas fa-star me-2" style="color: var(--blue-400);"></i>Manfaat Mendengarkan:
+                                    </h6>
+                                    <ul class="info-list">
+                                        <li>Menenangkan hati dan meningkatkan hormon endorphin (hormon kebahagiaan)</li>
+                                        <li>Membantu refleksi dan rasa syukur atas nikmat Allah</li>
+                                        <li>Mendukung kesehatan mental dengan mengurangi stres, kecemasan, dan ketegangan</li>
+                                        <li>Membantu tubuh lebih rileks sehingga berpengaruh positif pada kualitas istirahat</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold mb-3" style="color: var(--blue-900);">
+                                        <i class="fas fa-lightbulb me-2" style="color: var(--blue-400);"></i>Tips Mendengarkan:
+                                    </h6>
+                                    <ul class="info-list">
+                                        <li>Posisikan tubuh senyaman mungkin (berbaring, duduk, atau bersandar)</li>
+                                        <li>Buka murottal dan hayati bacaan sambil memegang perut atau mengelus dada</li>
+                                        <li>Dengarkan dalam suasana tenang dan nyaman</li>
+                                        <li>Atur volume suara agar tidak terlalu keras</li>
+                                        <li>Lakukan di malam hari rutin selama 7 hari berturut-turut untuk relaksasi maksimal</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card surah-card border-0">
                     <div class="card-body p-4 p-md-5">
-                        <!-- Surah Header -->
                         <div class="d-flex align-items-start mb-4">
                             <div class="surah-number me-4 shrink-0">
                                 <div class="number-circle">
@@ -506,7 +489,6 @@
                             </div>
                         </div>
 
-                        <!-- Description -->
                         <div class="description-wrapper mb-4">
                             <h5 class="h6 mb-3">
                                 <i class="fas fa-info-circle me-2"></i>Deskripsi Surah
@@ -516,7 +498,6 @@
                             </div>
                         </div>
 
-                        <!-- Audio Preview -->
                         <div class="audio-preview mb-4">
                             <h5 class="h6 mb-3">
                                 <i class="fas fa-headphones me-2"></i>Pratinjau Audio
@@ -529,7 +510,6 @@
                             </div>
                         </div>
 
-                        <!-- Play Button -->
                         <div class="d-flex justify-content-center">
                             <a href="{{ route('pengguna.murottal.show') }}" class="btn btn-play">
                                 <i class="fas fa-play-circle"></i>
@@ -541,58 +521,22 @@
                 </div>
             </div>
         </div>
-
-        <!-- Benefits Section -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="card border-0 benefits-card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-star me-2"></i>Keutamaan Surah Ar-Rahman
-                        </h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-4">
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="benefit-item">
-                                    <div class="benefit-icon">
-                                        <i class="fas fa-heart"></i>
-                                    </div>
-                                    <h6>Menenteramkan Hati</h6>
-                                    <p>Membaca Ar-Rahman dapat menenangkan hati dan pikiran dari kegelisahan</p>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="benefit-item">
-                                    <div class="benefit-icon">
-                                        <i class="fas fa-bed"></i>
-                                    </div>
-                                    <h6>Membantu Tidur</h6>
-                                    <p>Mendengarkannya sebelum tidur dapat meningkatkan kualitas tidur Anda</p>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="benefit-item">
-                                    <div class="benefit-icon">
-                                        <i class="fas fa-brain"></i>
-                                    </div>
-                                    <h6>Relaksasi Pikiran</h6>
-                                    <p>Melodi ayat-ayatnya membantu relaksasi mental dan menenangkan pikiran</p>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="benefit-item">
-                                    <div class="benefit-icon">
-                                        <i class="fas fa-hands-praying"></i>
-                                    </div>
-                                    <h6>Pahala Berlipat</h6>
-                                    <p>Mendapat pahala dari membaca dan mendengarkan firman Allah SWT</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+
+    <script>
+        function toggleInfo() {
+            var content = document.getElementById("infoContent");
+            var icon = document.getElementById("toggleIcon");
+            
+            if (content.style.maxHeight) {
+                // Jika sedang terbuka, tutup (set height ke null)
+                content.style.maxHeight = null;
+                icon.classList.remove("rotate");
+            } else {
+                // Jika tertutup, buka (set height sesuai scrollHeight)
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.classList.add("rotate");
+            }
+        }
+    </script>
 @endsection
