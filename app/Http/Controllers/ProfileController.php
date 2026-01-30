@@ -87,13 +87,16 @@ class ProfileController extends Controller
                 $updateData['pin'] = Hash::make($request->pin);
             }
 
-            // Update the user
-            $pengguna->update($updateData);
+            // Update the user using Eloquent update method
+            Pengguna::where('id', $pengguna->id)->update($updateData);
+
+            // Get the updated user data from database
+            $updatedPengguna = Pengguna::find($pengguna->id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Profil berhasil diperbarui!',
-                'data' => $pengguna->refresh()
+                'data' => $updatedPengguna
             ]);
 
         } catch (\Exception $e) {
