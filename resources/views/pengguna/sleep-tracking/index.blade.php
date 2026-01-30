@@ -445,6 +445,10 @@
             animation: float 3s ease-in-out infinite;
         }
 
+        .no-data-icon i {
+            font-size: 50px;
+        }
+
         @keyframes float {
 
             0%,
@@ -916,7 +920,7 @@
                     {{ $sleepTrackings->links() }}
                 </div>
             @else
-                <div class="empty-state">
+                <div class="empty-state text-center">
                     <div class="no-data-icon">
                         <i class="fas fa-bed"></i>
                     </div>
