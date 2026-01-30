@@ -52,6 +52,13 @@ class Pengguna extends Authenticatable
     }
 
     /**
+     * Relasi ke model SleepTest
+     */
+    public function sleepTest() {
+        return $this->hasMany(SleepTest::class);
+    }
+
+    /**
      * Relasi ke model SleepTracking
      */
     public function sleepTrackings()

@@ -26,7 +26,7 @@
             'active' => strpos($currentRoute, 'murottal') !== false,
         ],
         [
-            'route' => 'pengguna.profile',
+            'route' => 'pengguna.profile.index',
             'icon' => 'fas fa-user',
             'label' => 'Profil',
             'active' => strpos($currentRoute, 'profile') !== false,

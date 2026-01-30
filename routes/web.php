@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SleepTrackingController;
 use App\Http\Controllers\QualityTestController;
 use App\Http\Controllers\MurottalController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -52,8 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/murottal', [MurottalController::class, 'index'])->name('pengguna.murottal');
     Route::get('/murottal/show', [MurottalController::class, 'show'])->name('pengguna.murottal.show');
 
-    Route::get('/profile', function () {
-        return view('pengguna.profile.index');
-    })->name('pengguna.profile');
+    // Profile Routes
+    Route::prefix('profile')->name('pengguna.profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('index');
+        Route::put('/update', [ProfileController::class, 'update'])->name('update');
+    });
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
