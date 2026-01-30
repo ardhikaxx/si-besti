@@ -69,18 +69,31 @@
             font-size: 1rem;
         }
 
-        .profile-avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
+        /* Logout Button - Menggantikan Avatar */
+        .btn-logout {
             background: rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            backdrop-filter: blur(10px);
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 0.4rem 1rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            min-width: 100px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-logout:active {
+            color: #ffffff;
+            transform: translateY(0);
         }
 
         /* Form Card */
@@ -195,18 +208,6 @@
             position: relative;
             overflow: hidden;
         }
-/* 
-        .gender-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--gradient-primary);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        } */
 
         .gender-card:hover {
             transform: translateY(-5px);
@@ -375,10 +376,10 @@
                 font-size: 1.5rem;
             }
 
-            .profile-avatar {
-                width: 70px;
-                height: 70px;
-                font-size: 2rem;
+            .btn-logout {
+                min-width: 80px;
+                padding: 0.3rem 0.8rem;
+                font-size: 1rem;
             }
 
             .card-header-custom h5 {
@@ -480,6 +481,49 @@
             color: var(--blue-600);
             margin-top: 5px;
         }
+
+        /* SweetAlert Custom Styles */
+        .swal2-popup-custom {
+            border-radius: 20px !important;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .swal2-confirm-custom {
+            background: linear-gradient(135deg, #0856C8 0%, #2674E6 100%) !important;
+            border: none !important;
+            border-radius: 25px !important;
+            padding: 0.5rem 2rem !important;
+            font-weight: 500 !important;
+            color: white;
+            transition: all 0.3s ease !important;
+            margin-left: 5px;
+        }
+
+        .swal2-confirm-custom:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 5px 15px rgba(8, 86, 200, 0.3) !important;
+        }
+
+        .swal2-cancel-custom {
+            background: transparent !important;
+            border: 2px solid #6c757d !important;
+            color: #6c757d !important;
+            border-radius: 25px !important;
+            padding: 0.5rem 2rem !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            margin-right: 5px;
+        }
+
+        .swal2-cancel-custom:hover {
+            background: #f8f9fa !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .swal2-title {
+            color: #0856C8 !important;
+            font-weight: 600 !important;
+        }
     </style>
 @endpush
 
@@ -500,9 +544,12 @@
                                 </p>
                             </div>
                             <div class="text-end">
-                                <div class="profile-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
+                                <button type="button"
+                                    class="btn btn-logout btn-sm d-flex flex-row align-items-center justify-content-center"
+                                    id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt me-1"></i>
+                                    <span>Logout</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -630,8 +677,7 @@
                                                 <i class="fas fa-home"></i>
                                             </span>
                                             <textarea class="form-control form-control-lg" id="alamat" name="alamat" rows="4"
-                                                style="border-radius: 0 15px 15px 0 !important;"
-                                                placeholder="Masukkan alamat lengkap">{{ old('alamat', $pengguna->alamat) }}</textarea>
+                                                style="border-radius: 0 15px 15px 0 !important;" placeholder="Masukkan alamat lengkap">{{ old('alamat', $pengguna->alamat) }}</textarea>
                                         </div>
                                         <div class="invalid-feedback" id="alamat_error"></div>
                                     </div>
@@ -691,7 +737,8 @@
                                                     id="usia_kehamilan" name="usia_kehamilan"
                                                     value="{{ old('usia_kehamilan', $pengguna->usia_kehamilan) }}"
                                                     placeholder="Masukkan usia kehamilan" min="1" max="45">
-                                                <span class="input-group-text" style="border-radius: 0 15px 15px 0;">minggu</span>
+                                                <span class="input-group-text"
+                                                    style="border-radius: 0 15px 15px 0;">minggu</span>
                                             </div>
                                             <div class="invalid-feedback" id="usia_kehamilan_error"></div>
                                         </div>
@@ -761,11 +808,54 @@
             const profileForm = document.getElementById('profileForm');
             const cancelBtn = document.getElementById('cancelBtn');
             const saveBtn = document.getElementById('saveBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
             const pinInput = document.getElementById('pin');
             const confirmPinInput = document.getElementById('confirm_pin');
             const togglePinButtons = document.querySelectorAll('.toggle-pin');
             const additionalInfo = document.getElementById('additionalInfo');
             const jenisKelaminInputs = document.querySelectorAll('input[name="jenis_kelamin"]');
+
+            // Logout Button Handler
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Konfirmasi Logout',
+                        text: 'Apakah Anda yakin ingin logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#0856C8',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Logout',
+                        cancelButtonText: 'Batal',
+                        customClass: {
+                            popup: 'swal2-popup-custom',
+                            confirmButton: 'swal2-confirm-custom',
+                            cancelButton: 'swal2-cancel-custom'
+                        },
+                        buttonsStyling: false,
+                        reverseButtons: true,
+                        backdrop: 'rgba(0, 0, 0, 0.4)'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Create a form to submit the logout request
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = '{{ route('logout') }}';
+
+                            // Add CSRF token
+                            const csrfToken = document.createElement('input');
+                            csrfToken.type = 'hidden';
+                            csrfToken.name = '_token';
+                            csrfToken.value = '{{ csrf_token() }}';
+                            form.appendChild(csrfToken);
+
+                            // Add to document and submit
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                });
+            }
 
             // Toggle visibility of additional info based on gender
             jenisKelaminInputs.forEach(input => {
@@ -810,7 +900,14 @@
                     confirmButtonColor: '#0856C8',
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Ya, batalkan',
-                    cancelButtonText: 'Tidak, tetap edit'
+                    cancelButtonText: 'Tidak, tetap edit',
+                    customClass: {
+                        popup: 'swal2-popup-custom',
+                        confirmButton: 'swal2-confirm-custom',
+                        cancelButton: 'swal2-cancel-custom'
+                    },
+                    buttonsStyling: false,
+                    reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.reload();
@@ -854,7 +951,12 @@
                             confirmButtonColor: '#0856C8',
                             confirmButtonText: 'OK',
                             timer: 2000,
-                            timerProgressBar: true
+                            timerProgressBar: true,
+                            customClass: {
+                                popup: 'swal2-popup-custom',
+                                confirmButton: 'swal2-confirm-custom'
+                            },
+                            buttonsStyling: false
                         });
 
                         // Update form fields with new data
@@ -886,7 +988,12 @@
                                 text: 'Terdapat kesalahan dalam pengisian form',
                                 icon: 'error',
                                 confirmButtonColor: '#dc3545',
-                                confirmButtonText: 'OK'
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    popup: 'swal2-popup-custom',
+                                    confirmButton: 'swal2-confirm-custom'
+                                },
+                                buttonsStyling: false
                             });
                         } else {
                             Swal.fire({
@@ -894,7 +1001,12 @@
                                 text: data.message || 'Terjadi kesalahan saat menyimpan data',
                                 icon: 'error',
                                 confirmButtonColor: '#dc3545',
-                                confirmButtonText: 'OK'
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    popup: 'swal2-popup-custom',
+                                    confirmButton: 'swal2-confirm-custom'
+                                },
+                                buttonsStyling: false
                             });
                         }
                     }
@@ -905,7 +1017,12 @@
                         text: 'Terjadi kesalahan jaringan. Silakan coba lagi.',
                         icon: 'error',
                         confirmButtonColor: '#dc3545',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'swal2-popup-custom',
+                            confirmButton: 'swal2-confirm-custom'
+                        },
+                        buttonsStyling: false
                     });
                 } finally {
                     // Reset button state

@@ -605,7 +605,6 @@
 
             .btn-logout {
                 min-width: 80px;
-                height: 60px;
                 padding: 0.3rem 0.8rem;
                 font-size: 1rem;
             }
