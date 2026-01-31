@@ -916,9 +916,37 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="pagination-container">
-                    {{ $sleepTrackings->links() }}
-                </div>
+                @if ($sleepTrackings->hasPages())
+                    <div class="pagination-container">
+                        <ul class="pagination">
+
+                            {{-- Previous --}}
+                            <li class="page-item {{ $sleepTrackings->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $sleepTrackings->previousPageUrl() ?? '#' }}"
+                                    aria-label="Previous">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+
+                            {{-- Page Numbers --}}
+                            @foreach ($sleepTrackings->getUrlRange(max(1, $sleepTrackings->currentPage() - 2), min($sleepTrackings->lastPage(), $sleepTrackings->currentPage() + 2)) as $page => $url)
+                                <li class="page-item {{ $page == $sleepTrackings->currentPage() ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $url }}">
+                                        {{ $page }}
+                                    </a>
+                                </li>
+                            @endforeach
+
+                            {{-- Next --}}
+                            <li class="page-item {{ $sleepTrackings->hasMorePages() ? '' : 'disabled' }}">
+                                <a class="page-link" href="{{ $sleepTrackings->nextPageUrl() ?? '#' }}" aria-label="Next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                @endif
             @else
                 <div class="empty-state text-center">
                     <div class="no-data-icon">
@@ -1266,24 +1294,24 @@
                     </div>
 
                     ${data.alasan_kebangunan ? `
-                                                            <div class="detail-section">
-                                                                <div class="detail-section-title">
-                                                                    <i class="fas fa-comment-medical"></i>
-                                                                    Alasan Kebangunan
+                                                                <div class="detail-section">
+                                                                    <div class="detail-section-title">
+                                                                        <i class="fas fa-comment-medical"></i>
+                                                                        Alasan Kebangunan
+                                                                    </div>
+                                                                    <div class="text-content">${data.alasan_kebangunan}</div>
                                                                 </div>
-                                                                <div class="text-content">${data.alasan_kebangunan}</div>
-                                                            </div>
-                                                            ` : ''}
+                                                                ` : ''}
 
                     ${data.catatan_lain ? `
-                                                            <div class="detail-section">
-                                                                <div class="detail-section-title">
-                                                                    <i class="fas fa-sticky-note"></i>
-                                                                    Catatan Lain
+                                                                <div class="detail-section">
+                                                                    <div class="detail-section-title">
+                                                                        <i class="fas fa-sticky-note"></i>
+                                                                        Catatan Lain
+                                                                    </div>
+                                                                    <div class="text-content">${data.catatan_lain}</div>
                                                                 </div>
-                                                                <div class="text-content">${data.catatan_lain}</div>
-                                                            </div>
-                                                            ` : ''}
+                                                                ` : ''}
 
                     <div class="detail-section">
                         <div class="detail-section-title">
