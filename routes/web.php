@@ -35,14 +35,16 @@ Route::middleware('auth')->group(function () {
     });
 
     // Quality Test Routes
+    // routes/web.php
     Route::prefix('quality-test')->name('pengguna.quality-test.')->group(function () {
         Route::get('/', [QualityTestController::class, 'index'])->name('index');
-        Route::get('/{type}', [QualityTestController::class, 'showTestPage'])->name('show'); // type: first atau last
-        Route::post('/{type}', [QualityTestController::class, 'storeTest'])->name('store');
-        Route::get('/{type}/edit', [QualityTestController::class, 'editTest'])->name('edit');
+        Route::get('/result', [QualityTestController::class, 'allResults'])->name('result');
+        Route::get('/result/{test}', [QualityTestController::class, 'viewResult'])->name('result-detail');
+        Route::get('/test/{type}', [QualityTestController::class, 'showTestPage'])->name('show'); // Ubah route ini
+        Route::post('/test/{type}', [QualityTestController::class, 'storeTest'])->name('store');
+        Route::get('/test/{type}/edit', [QualityTestController::class, 'editTest'])->name('edit');
         Route::post('/confirm/{type}', [QualityTestController::class, 'confirmTest'])->name('confirm');
         Route::post('/start-new', [QualityTestController::class, 'startNewTest'])->name('start-new');
-        Route::get('/result/{test}', [QualityTestController::class, 'viewResult'])->name('result');
     });
 
     // Murottal routes using controller

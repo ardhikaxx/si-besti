@@ -504,12 +504,11 @@
                         </h2>
                         <p class="header-subtitle mb-0">Pittsburgh Sleep Quality Index (PSQI) - 2 Hari Test dalam 7 Hari</p>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2">
+                        <a href="{{ route('pengguna.quality-test.result') }}" class="btn btn-success me-2">
+                            <i class="fas fa-chart-bar me-1"></i>Semua Hasil
+                        </a>
                         @if ($currentTest->status == 'completed')
-                            <a href="{{ route('pengguna.quality-test.result', $currentTest->id) }}"
-                                class="btn btn-success me-2">
-                                <i class="fas fa-chart-bar me-1"></i>Lihat Hasil
-                            </a>
                             <button class="btn btn-primary" onclick="startNewTest()">
                                 <i class="fas fa-plus me-1"></i>Test Baru
                             </button>
@@ -520,9 +519,6 @@
                             <div class="d-flex flex-column flex-lg-row gap-2">
                                 <span class="badge bg-secondary px-3 py-2 w-auto">
                                     <i class="fas fa-clock me-1"></i>{{ $testInfo['message'] }}
-                                </span>
-                                <span class="badge bg-primary px-3 py-2 w-auto">
-                                    <i class="fas fa-chart-line me-1"></i>{{ $progress }}% Selesai
                                 </span>
                             </div>
                         @endif

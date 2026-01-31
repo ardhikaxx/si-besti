@@ -257,7 +257,6 @@
         /* Table Styling */
         .table-responsive {
             border-radius: 15px;
-            overflow: hidden;
             box-shadow: 0 5px 15px rgba(8, 86, 200, 0.1);
         }
 
