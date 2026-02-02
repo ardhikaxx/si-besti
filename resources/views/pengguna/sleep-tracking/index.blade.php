@@ -423,19 +423,6 @@
             box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
         }
 
-        /* Wake Back Time Badge */
-        .wake-back-badge {
-            background: linear-gradient(135deg, #9c27b0, #673ab7);
-            color: white;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 8px;
-            box-shadow: 0 2px 6px rgba(156, 39, 176, 0.3);
-        }
-
         /* Empty State */
         .empty-state {
             display: flex;
@@ -986,9 +973,6 @@
                                             Kembali:</span>
                                         <span class="detail-value">
                                             {{ $tracking->waktu_tidur_kembali }} menit
-                                            <span class="wake-back-badge">
-                                                <i class="fas fa-history me-1"></i>Waktu Tambahan
-                                            </span>
                                         </span>
                                     </div>
                                 @endif
@@ -1416,9 +1400,6 @@
                                 <div class="detail-label-large">Waktu untuk Tidur Kembali</div>
                                 <div class="detail-value-large">
                                     ${data.waktu_tidur_kembali} menit
-                                    <span class="wake-back-badge" style="margin-left: 10px;">
-                                        <i class="fas fa-history me-1"></i>Waktu Tambahan
-                                    </span>
                                 </div>
                             </div>
                         </div>
