@@ -39,6 +39,7 @@ class SleepTrackingController extends Controller
                 'waktu_tidur' => 'required|date_format:H:i',
                 'waktu_bangun' => 'required|date_format:H:i',
                 'jumlah_kebangunan' => 'required|integer|min:0',
+                'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120', // Validasi baru
                 'alasan_kebangunan' => 'nullable|string|max:500',
                 'catatan_lain' => 'nullable|string|max:1000',
             ]);
@@ -63,6 +64,14 @@ class SleepTrackingController extends Controller
             $sleepTracking->waktu_tidur = $request->waktu_tidur;
             $sleepTracking->waktu_bangun = $request->waktu_bangun;
             $sleepTracking->jumlah_kebangunan = $request->jumlah_kebangunan;
+            
+            // Set waktu tidur kembali hanya jika jumlah kebangunan > 0
+            if ($request->jumlah_kebangunan > 0 && $request->filled('waktu_tidur_kembali')) {
+                $sleepTracking->waktu_tidur_kembali = $request->waktu_tidur_kembali;
+            } else {
+                $sleepTracking->waktu_tidur_kembali = null;
+            }
+            
             $sleepTracking->alasan_kebangunan = $request->alasan_kebangunan;
             $sleepTracking->catatan_lain = $request->catatan_lain;
             
@@ -131,6 +140,7 @@ class SleepTrackingController extends Controller
                 'waktu_tidur' => 'required|date_format:H:i',
                 'waktu_bangun' => 'required|date_format:H:i',
                 'jumlah_kebangunan' => 'required|integer|min:0',
+                'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120', // Validasi baru
                 'alasan_kebangunan' => 'nullable|string|max:500',
                 'catatan_lain' => 'nullable|string|max:1000',
             ]);
@@ -158,6 +168,14 @@ class SleepTrackingController extends Controller
             $sleepTracking->waktu_tidur = $request->waktu_tidur;
             $sleepTracking->waktu_bangun = $request->waktu_bangun;
             $sleepTracking->jumlah_kebangunan = $request->jumlah_kebangunan;
+            
+            // Set waktu tidur kembali hanya jika jumlah kebangunan > 0
+            if ($request->jumlah_kebangunan > 0 && $request->filled('waktu_tidur_kembali')) {
+                $sleepTracking->waktu_tidur_kembali = $request->waktu_tidur_kembali;
+            } else {
+                $sleepTracking->waktu_tidur_kembali = null;
+            }
+            
             $sleepTracking->alasan_kebangunan = $request->alasan_kebangunan;
             $sleepTracking->catatan_lain = $request->catatan_lain;
             
@@ -241,6 +259,13 @@ class SleepTrackingController extends Controller
             $totalRecords = SleepTracking::where('pengguna_id', $pengguna->id)->count();
             $averageDuration = SleepTracking::where('pengguna_id', $pengguna->id)->avg('durasi_tidur');
             $averageWakeups = SleepTracking::where('pengguna_id', $pengguna->id)->avg('jumlah_kebangunan');
+            
+            // Rata-rata waktu tidur kembali (hitung dari data yang memiliki nilai)
+            $averageWakeBackTime = SleepTracking::where('pengguna_id', $pengguna->id)
+                ->whereNotNull('waktu_tidur_kembali')
+                ->where('waktu_tidur_kembali', '>', 0)
+                ->avg('waktu_tidur_kembali');
+            
             $latestRecord = SleepTracking::where('pengguna_id', $pengguna->id)
                 ->orderBy('tanggal_tidur', 'desc')
                 ->first();
@@ -263,6 +288,7 @@ class SleepTrackingController extends Controller
                     'average_duration' => $averageDuration ? round($averageDuration, 2) : 0,
                     'formatted_average_duration' => $formattedAvgDuration,
                     'average_wakeups' => $averageWakeups ? round($averageWakeups, 1) : 0,
+                    'average_wake_back_time' => $averageWakeBackTime ? round($averageWakeBackTime, 1) : 0,
                     'latest_record' => $latestRecord
                 ]
             ]);

@@ -22,19 +22,19 @@
                     @csrf
 
                     <!-- Error Messages -->
-                    @if($errors->has('login_error'))
+                    @if ($errors->has('login_error'))
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-circle me-2"></i>{{ $errors->first('login_error') }}
                         </div>
                     @endif
 
-                    @if(session('error'))
+                    @if (session('error'))
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
                         </div>
                     @endif
 
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                         </div>
@@ -46,11 +46,9 @@
                             <i class="fas fa-user"></i> Nama Lengkap
                         </label>
                         <div class="auth-input-group">
-                            <input type="text" class="auth-input @error('fullname') is-invalid @enderror" 
-                                   id="fullname" name="fullname"
-                                   placeholder="Masukkan nama lengkap Anda" 
-                                   required autofocus
-                                   value="{{ old('fullname') }}">
+                            <input type="text" class="auth-input @error('fullname') is-invalid @enderror" id="fullname"
+                                name="fullname" placeholder="Masukkan nama lengkap Anda" required autofocus
+                                value="{{ old('fullname') }}">
                         </div>
                         @error('fullname')
                             <span class="auth-error">{{ $message }}</span>
@@ -65,14 +63,14 @@
                         </label>
 
                         <div class="pin-container">
-                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror" 
-                                   maxlength="1" data-index="1" autocomplete="off" inputmode="numeric">
-                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror" 
-                                   maxlength="1" data-index="2" autocomplete="off" inputmode="numeric">
-                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror" 
-                                   maxlength="1" data-index="3" autocomplete="off" inputmode="numeric">
-                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror" 
-                                   maxlength="1" data-index="4" autocomplete="off" inputmode="numeric">
+                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror"
+                                maxlength="1" data-index="1" autocomplete="off" inputmode="numeric">
+                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror"
+                                maxlength="1" data-index="2" autocomplete="off" inputmode="numeric">
+                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror"
+                                maxlength="1" data-index="3" autocomplete="off" inputmode="numeric">
+                            <input type="text" class="pin-input login-pin @error('pin') is-invalid @enderror"
+                                maxlength="1" data-index="4" autocomplete="off" inputmode="numeric">
                         </div>
 
                         <input type="hidden" id="pin" name="pin" value="{{ old('pin') }}">
@@ -113,6 +111,15 @@
                         </p>
                     </div>
                 </form>
+
+                <div class="auth-divider">
+                    <span class="auth-divider-text">AKSES ADMIN</span>
+                </div>
+
+                <a href="{{ route('admin.login') }}" class="admin-login-btn">
+                    <i class="fas fa-user-shield me-2"></i>
+                    Login Akses Admin
+                </a>
 
                 <!-- Footer -->
                 <div class="auth-footer">
@@ -160,13 +167,141 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-8px);
+            }
+
+            75% {
+                transform: translateX(8px);
+            }
         }
 
         .auth-btn:hover {
             box-shadow: 0 10px 25px rgba(8, 86, 200, 0.35) !important;
+        }
+
+        /* ADMIN LOGIN STYLES */
+        .admin-toggle-container {
+            background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--blue-200);
+            box-shadow: 0 4px 12px rgba(8, 86, 200, 0.1);
+        }
+
+        .admin-toggle-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--blue-300);
+        }
+
+        .admin-toggle-header {
+            background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-700) 100%);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .admin-toggle-body {
+            padding: 1.5rem;
+        }
+
+        .admin-toggle-description {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .admin-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue-800) 100%);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(8, 86, 200, 0.2);
+        }
+
+        .admin-login-btn:hover {
+            background: linear-gradient(135deg, var(--blue-800) 0%, var(--blue-900) 100%);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(8, 86, 200, 0.3);
+            text-decoration: none;
+        }
+
+        .admin-login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Divider Styles */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .auth-divider-text {
+            padding: 0 1rem;
+            color: var(--secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Alternative Admin Link Style */
+        .admin-link-container {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .admin-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--blue-700);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            background: var(--blue-50);
+        }
+
+        .admin-link:hover {
+            color: var(--blue-900);
+            background: var(--blue-100);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .admin-link i {
+            margin-right: 0.5rem;
         }
 
         @media (max-width: 576px) {
@@ -174,6 +309,24 @@
                 width: 60px;
                 height: 60px;
                 font-size: 1.5rem;
+            }
+
+            .admin-toggle-container {
+                padding: 1rem;
+            }
+
+            .admin-toggle-header {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .admin-toggle-body {
+                padding: 1rem;
+            }
+
+            .admin-login-btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -370,7 +523,7 @@
 
                 if (!isFullnameValid || !isPinValid) {
                     e.preventDefault();
-                    
+
                     if (!isFullnameValid) {
                         fullnameInput.classList.add('shake');
                         setTimeout(() => fullnameInput.classList.remove('shake'), 500);

@@ -20,6 +20,7 @@
             --gradient-success: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             --gradient-warning: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
             --gradient-danger: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            --gradient-info: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
         }
 
         body {
@@ -417,6 +418,24 @@
             box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
         }
 
+        .duration-info {
+            background: var(--gradient-info);
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+        }
+
+        /* Wake Back Time Badge */
+        .wake-back-badge {
+            background: linear-gradient(135deg, #9c27b0, #673ab7);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 8px;
+            box-shadow: 0 2px 6px rgba(156, 39, 176, 0.3);
+        }
+
         /* Empty State */
         .empty-state {
             display: flex;
@@ -561,6 +580,53 @@
             background: var(--blue-100);
             border-radius: 8px;
             border-left: 4px solid var(--blue-500);
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--blue-600);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Conditional Field Container */
+        .conditional-field {
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid var(--blue-200);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .conditional-field.active {
+            border-color: var(--blue-500);
+            background: var(--blue-100);
+        }
+
+        .wake-back-input-container {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-with-unit {
+            position: relative;
+        }
+
+        .input-with-unit .form-control {
+            padding-right: 80px;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--blue-700);
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .btn-primary {
@@ -764,6 +830,10 @@
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
+
+            .wake-back-input-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Animations */
@@ -776,6 +846,16 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
             }
         }
 
@@ -797,6 +877,10 @@
 
         .sleep-card:nth-child(4) {
             animation-delay: 0.4s;
+        }
+
+        .conditional-field {
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
 @endpush
@@ -837,6 +921,10 @@
                 <div class="stat-item">
                     <div class="stat-value">0x</div>
                     <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">0 mnt</div>
+                    <div class="stat-label"><i class="fas fa-redo me-2"></i>Rata-rata Waktu Tidur Kembali</div>
                 </div>
             </div>
         </div>
@@ -892,6 +980,18 @@
                                     <span class="detail-label"><i class="fas fa-wind me-2"></i>Kebangunan:</span>
                                     <span class="detail-value">{{ $tracking->jumlah_kebangunan }} kali</span>
                                 </div>
+                                @if ($tracking->waktu_tidur_kembali)
+                                    <div class="detail-item">
+                                        <span class="detail-label"><i class="fas fa-redo me-2"></i>Waktu Tidur
+                                            Kembali:</span>
+                                        <span class="detail-value">
+                                            {{ $tracking->waktu_tidur_kembali }} menit
+                                            <span class="wake-back-badge">
+                                                <i class="fas fa-history me-1"></i>Waktu Tambahan
+                                            </span>
+                                        </span>
+                                    </div>
+                                @endif
                                 @if ($tracking->alasan_kebangunan)
                                     <div class="detail-item">
                                         <span class="detail-label"><i class="fas fa-comment-medical me-2"></i>Alasan:</span>
@@ -1004,14 +1104,40 @@
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-wind me-2"></i>Berapa kali kebangun? *</label>
                             <input type="number" class="form-control" id="jumlah_kebangunan" name="jumlah_kebangunan"
-                                min="0" max="20" value="0" required>
+                                min="0" max="20" value="0" required
+                                onchange="toggleWakeBackTimeField(this.value)">
+                            <div class="form-help">Isi 0 jika tidak terbangun sama sekali</div>
+                        </div>
+
+                        <!-- Conditional Field for Wake Back Time -->
+                        <div class="conditional-field" id="wakeBackTimeContainer" style="display: none;">
+                            <div class="form-group mb-2">
+                                <label class="form-label">
+                                    <i class="fas fa-redo me-2"></i>Rata-rata waktu untuk tidur kembali (dalam menit)
+                                </label>
+                                <div class="wake-back-input-container">
+                                    <div class="input-with-unit">
+                                        <input type="number" class="form-control" id="waktu_tidur_kembali"
+                                            name="waktu_tidur_kembali" min="1" max="120"
+                                            placeholder="Misal: 15">
+                                        <span class="input-unit">menit</span>
+                                    </div>
+                                </div>
+                                <div class="form-help mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Perkiraan waktu yang dibutuhkan untuk kembali tidur setelah terbangun.
+                                    Contoh: 15 menit, 30 menit, dll.
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label"><i class="fas fa-comment-medical me-2"></i>Alasan kebangunan (jika
-                                ada)</label>
+                            <label class="form-label">
+                                <i class="fas fa-comment-medical me-2"></i>
+                                Alasan kebangunan (jika ada)
+                            </label>
                             <textarea class="form-control" id="alasan_kebangunan" name="alasan_kebangunan" rows="3"
-                                placeholder="Misal: Ke kamar mandi, mimpi buruk, dll"></textarea>
+                                placeholder="Contoh: ke kamar mandi, mimpi buruk, merasa tidak nyaman, terbangun karena batuk atau rasa nyeri, dll."></textarea>
                         </div>
 
                         <div class="form-group">
@@ -1071,6 +1197,7 @@
             loadStatistics();
             setDefaultTimes();
             calculateDuration(); // Calculate initial duration
+            toggleWakeBackTimeField(0); // Initialize wake back time field
         });
 
         // Set default times for new entries
@@ -1083,6 +1210,22 @@
 
             document.getElementById('waktu_tidur').value = sleepTime.toTimeString().slice(0, 5);
             document.getElementById('waktu_bangun').value = wakeTime.toTimeString().slice(0, 5);
+        }
+
+        // Toggle wake back time field based on number of wakeups
+        function toggleWakeBackTimeField(wakeups) {
+            const container = document.getElementById('wakeBackTimeContainer');
+            const input = document.getElementById('waktu_tidur_kembali');
+
+            if (parseInt(wakeups) > 0) {
+                container.style.display = 'block';
+                container.classList.add('active');
+                input.required = false; // Optional field
+            } else {
+                container.style.display = 'none';
+                container.classList.remove('active');
+                input.value = ''; // Clear the input
+            }
         }
 
         // Calculate duration in real-time
@@ -1160,6 +1303,10 @@
                         <div class="stat-value">${stats.average_wakeups}x</div>
                         <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
                     </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${stats.average_wake_back_time || 0}mnt</div>
+                        <div class="stat-label"><i class="fas fa-redo me-2"></i>Rata-rata Waktu Tidur Kembali</div>
+                    </div>
                 `;
                 }
             } catch (error) {
@@ -1181,6 +1328,7 @@
             document.getElementById('tanggal_tidur').value = new Date().toISOString().split('T')[0];
             setDefaultTimes();
             calculateDuration();
+            toggleWakeBackTimeField(0);
             modal.show();
         }
 
@@ -1199,8 +1347,12 @@
                     document.getElementById('waktu_tidur').value = data.waktu_tidur.substring(0, 5);
                     document.getElementById('waktu_bangun').value = data.waktu_bangun.substring(0, 5);
                     document.getElementById('jumlah_kebangunan').value = data.jumlah_kebangunan;
+                    document.getElementById('waktu_tidur_kembali').value = data.waktu_tidur_kembali || '';
                     document.getElementById('alasan_kebangunan').value = data.alasan_kebangunan || '';
                     document.getElementById('catatan_lain').value = data.catatan_lain || '';
+
+                    // Toggle wake back time field based on existing data
+                    toggleWakeBackTimeField(data.jumlah_kebangunan);
 
                     // Calculate and display duration
                     setTimeout(calculateDuration, 100);
@@ -1247,6 +1399,31 @@
                     const durationText = hours > 0 ? hours + ' jam' : '';
                     const finalDurationText = durationText + (minutes > 0 ? ' ' + minutes + ' menit' : '');
 
+                    // Determine duration badge color
+                    let durationBadgeClass = 'duration-badge';
+                    if (data.durasi_tidur >= 7) {
+                        durationBadgeClass += '';
+                    } else if (data.durasi_tidur >= 5) {
+                        durationBadgeClass += ' duration-warning';
+                    } else {
+                        durationBadgeClass += ' duration-danger';
+                    }
+
+                    // Prepare wake back time section
+                    const wakeBackTimeSection = data.waktu_tidur_kembali ? `
+                        <div class="detail-grid">
+                            <div class="detail-item-large">
+                                <div class="detail-label-large">Waktu untuk Tidur Kembali</div>
+                                <div class="detail-value-large">
+                                    ${data.waktu_tidur_kembali} menit
+                                    <span class="wake-back-badge" style="margin-left: 10px;">
+                                        <i class="fas fa-history me-1"></i>Waktu Tambahan
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ` : '';
+
                     document.getElementById('detailContent').innerHTML = `
                     <div class="detail-section">
                         <div class="detail-section-title">
@@ -1275,7 +1452,12 @@
                             </div>
                             <div class="detail-item-large">
                                 <div class="detail-label-large">Durasi Tidur</div>
-                                <div class="detail-value-large">${finalDurationText} (${parseFloat(data.durasi_tidur).toFixed(2)} jam)</div>
+                                <div class="detail-value-large">
+                                    ${finalDurationText}
+                                    <span class="${durationBadgeClass}" style="margin-left: 10px;">
+                                        ${parseFloat(data.durasi_tidur).toFixed(2)} jam
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1291,27 +1473,28 @@
                                 <div class="detail-value-large">${data.jumlah_kebangunan} kali</div>
                             </div>
                         </div>
+                        ${wakeBackTimeSection}
                     </div>
 
                     ${data.alasan_kebangunan ? `
-                                                                <div class="detail-section">
-                                                                    <div class="detail-section-title">
-                                                                        <i class="fas fa-comment-medical"></i>
-                                                                        Alasan Kebangunan
-                                                                    </div>
-                                                                    <div class="text-content">${data.alasan_kebangunan}</div>
-                                                                </div>
-                                                                ` : ''}
+                            <div class="detail-section">
+                                <div class="detail-section-title">
+                                    <i class="fas fa-comment-medical"></i>
+                                    Alasan Kebangunan
+                                </div>
+                                <div class="text-content">${data.alasan_kebangunan}</div>
+                            </div>
+                        ` : ''}
 
                     ${data.catatan_lain ? `
-                                                                <div class="detail-section">
-                                                                    <div class="detail-section-title">
-                                                                        <i class="fas fa-sticky-note"></i>
-                                                                        Catatan Lain
-                                                                    </div>
-                                                                    <div class="text-content">${data.catatan_lain}</div>
-                                                                </div>
-                                                                ` : ''}
+                            <div class="detail-section">
+                                <div class="detail-section-title">
+                                    <i class="fas fa-sticky-note"></i>
+                                    Catatan Lain
+                                </div>
+                                <div class="text-content">${data.catatan_lain}</div>
+                            </div>
+                        ` : ''}
 
                     <div class="detail-section">
                         <div class="detail-section-title">
@@ -1481,12 +1664,27 @@
                         location.reload();
                     });
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal Menyimpan',
-                        text: result.message,
-                        confirmButtonColor: '#3a7de4'
-                    });
+                    // Show validation errors if any
+                    if (result.errors) {
+                        let errorMessages = '';
+                        for (const field in result.errors) {
+                            errorMessages += `<p>• ${result.errors[field][0]}</p>`;
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validasi Gagal',
+                            html: errorMessages,
+                            confirmButtonColor: '#3a7de4'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Menyimpan',
+                            text: result.message,
+                            confirmButtonColor: '#3a7de4'
+                        });
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);

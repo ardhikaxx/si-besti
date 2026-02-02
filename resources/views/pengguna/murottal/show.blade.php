@@ -40,7 +40,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-3 p-md-4">
                         <h5 class="card-title mb-3 text-primary">
-                            <i class="fas fa-play-circle me-2"></i>Murottal Surah Ar-Rahman
+                            <i class="fas fa-play-circle me-2"></i>Murottal {{ $surah['nama_latin'] }}
                         </h5>
                         <div class="audio-player-wrapper">
                             <div class="audio-container">
@@ -153,7 +153,7 @@
                                             </div>
                                             <div class="transliteration mb-2 text-muted small">
                                                 <i class="fas fa-language me-2"></i>
-                                                <span class="text-break">{{ $ayat['tr'] }}</span>
+                                                <span class="text-break">{{ strip_tags($ayat['tr']) }}</span>
                                             </div>
                                             <div class="translation text-primary">
                                                 <i class="fas fa-book me-2"></i>
@@ -367,6 +367,11 @@
             font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade', serif;
         }
 
+        .transliteration {
+            font-style: italic;
+            color: #6c757d;
+        }
+
         .min-width-0 {
             min-width: 0;
         }
@@ -466,11 +471,11 @@
 
             // Store playback position
             audio.addEventListener('pause', function() {
-                localStorage.setItem('arRahmanAudioPosition', audio.currentTime);
+                localStorage.setItem('surahAudioPosition_{{ $surah['nomor'] }}', audio.currentTime);
             });
 
             // Restore playback position
-            const savedPosition = localStorage.getItem('arRahmanAudioPosition');
+            const savedPosition = localStorage.getItem('surahAudioPosition_{{ $surah['nomor'] }}');
             if (savedPosition) {
                 audio.currentTime = savedPosition;
             }

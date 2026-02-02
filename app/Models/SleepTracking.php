@@ -17,6 +17,7 @@ class SleepTracking extends Model
         'waktu_tidur',
         'waktu_bangun',
         'jumlah_kebangunan',
+        'waktu_tidur_kembali', // Ditambahkan
         'alasan_kebangunan',
         'catatan_lain',
         'durasi_tidur'
@@ -26,7 +27,8 @@ class SleepTracking extends Model
         'tanggal_tidur' => 'date',
         'waktu_tidur' => 'datetime:H:i',
         'waktu_bangun' => 'datetime:H:i',
-        'durasi_tidur' => 'decimal:2'
+        'durasi_tidur' => 'decimal:2',
+        'waktu_tidur_kembali' => 'integer'
     ];
 
     /**
@@ -79,6 +81,18 @@ class SleepTracking extends Model
     }
 
     /**
+     * Format waktu tidur kembali dalam menit
+     */
+    public function getFormattedWakeBackTimeAttribute()
+    {
+        if (!$this->waktu_tidur_kembali) {
+            return '-';
+        }
+        
+        return "{$this->waktu_tidur_kembali} menit";
+    }
+
+    /**
      * Format durasi tidur dalam jam desimal
      */
     public function getDurationDecimalAttribute()
@@ -127,5 +141,13 @@ class SleepTracking extends Model
         $minutes = round(((float)$this->durasi_tidur - $hours) * 60);
         
         return "{$hours} jam {$minutes} menit";
+    }
+
+    /**
+     * Cek apakah memiliki waktu tidur kembali
+     */
+    public function hasWakeBackTime()
+    {
+        return $this->waktu_tidur_kembali !== null && $this->waktu_tidur_kembali > 0;
     }
 }

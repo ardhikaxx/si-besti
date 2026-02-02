@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             PenggunaSeeder::class,
             SleepTestSeeder::class,
             SleepTrackingSeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }

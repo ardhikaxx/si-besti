@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -28,10 +29,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // Debug: log request
-        Log::info('Login attempt', $request->all());
-
-        // Validate input
+        // Validasi
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string',
             'pin' => 'required|digits:4'
@@ -45,39 +43,30 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // Find user by nama_lengkap
+        // Cari pengguna
         $pengguna = Pengguna::where('nama_lengkap', $request->fullname)->first();
 
-        Log::info('User found:', $pengguna ? ['id' => $pengguna->id, 'name' => $pengguna->nama_lengkap] : ['message' => 'User not found']);
-
-        // Check if user exists
         if (!$pengguna) {
             return back()->withErrors([
                 'login_error' => 'Nama lengkap tidak ditemukan.'
             ])->withInput();
         }
 
-        // Check PIN
-        $pinMatch = Hash::check($request->pin, $pengguna->pin);
-        Log::info('PIN match:', ['input' => $request->pin, 'stored' => $pengguna->pin, 'match' => $pinMatch]);
-
-        if (!$pinMatch) {
+        // Cek PIN
+        if (!Hash::check($request->pin, $pengguna->pin)) {
             return back()->withErrors([
                 'login_error' => 'PIN salah.'
             ])->withInput();
         }
 
-        // Log in the user
-        Auth::login($pengguna);
+        Auth::login($pengguna, true);
 
-        // Store user data in session
+        // Simpan ke session (opsional)
         Session::put('pengguna', $pengguna);
         Session::put('user_id', $pengguna->id);
 
-        Log::info('Login successful:', ['user_id' => $pengguna->id]);
-
-        // Redirect to dashboard
-        return redirect()->route('pengguna.home')->with('success', 'Login berhasil! Selamat datang ' . $pengguna->nama_lengkap);
+        return redirect()->route('pengguna.home')
+            ->with('success', 'Login berhasil! Selamat datang ' . $pengguna->nama_lengkap);
     }
 
     /**
@@ -174,13 +163,20 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $userId = Auth::id();
-        Auth::logout();
-        $request->session()->invalidate();
+        $userId = Auth::guard('web')->id();
+
+        Auth::guard('web')->logout();
+
+        if ($userId) {
+            DB::table('penggunas')
+                ->where('id', $userId)
+                ->update(['remember_token' => null]);
+        }
+
         $request->session()->regenerateToken();
+        $request->session()->forget(['pengguna', 'user_id']);
 
-        Log::info('Logout successful:', ['user_id' => $userId]);
-
-        return redirect()->route('login')->with('success', 'Anda telah berhasil logout.');
+        return redirect()->route('login')
+            ->with('success', 'Logout berhasil.');
     }
 }

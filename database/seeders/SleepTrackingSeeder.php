@@ -68,6 +68,11 @@ class SleepTrackingSeeder extends Seeder
             'Tidur lebih awal dari biasanya',
         ];
 
+        // Data waktu tidur kembali yang umum (dalam menit)
+        $waktuTidurKembaliOptions = [
+            5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60
+        ];
+
         $sleepTrackingData = [];
 
         // Buat data untuk 20 hari terakhir
@@ -92,11 +97,39 @@ class SleepTrackingSeeder extends Seeder
             $waktuBangun = sprintf('%02d:%02d', $waktuBangunHour, $waktuBangunMinute);
 
             // Generate jumlah kebangunan (ibu hamil cenderung lebih sering terbangun)
-            $jumlahKebangunan = rand(0, 5);
+            // Distribusi: 30% tidak terbangun, 40% 1-2x, 20% 3-4x, 10% 5x
+            $random = rand(1, 100);
+            if ($random <= 30) {
+                $jumlahKebangunan = 0;
+            } elseif ($random <= 70) {
+                $jumlahKebangunan = rand(1, 2);
+            } elseif ($random <= 90) {
+                $jumlahKebangunan = rand(3, 4);
+            } else {
+                $jumlahKebangunan = 5;
+            }
             
             // Alasan kebangunan
             $alasanIndex = $jumlahKebangunan > 0 ? rand(1, count($alasanKebangunanOptions) - 1) : 0;
             $alasanKebangunan = $alasanKebangunanOptions[$alasanIndex] ?? null;
+            
+            // Waktu tidur kembali - hanya diisi jika jumlah kebangunan > 0
+            $waktuTidurKembali = null;
+            if ($jumlahKebangunan > 0) {
+                // 70% kemungkinan memiliki waktu tidur kembali
+                if (rand(1, 100) <= 70) {
+                    $waktuTidurKembali = $waktuTidurKembaliOptions[array_rand($waktuTidurKembaliOptions)];
+                    
+                    // Jika jumlah kebangunan banyak, waktu tidur kembali cenderung lebih lama
+                    if ($jumlahKebangunan >= 4) {
+                        // Tambah 10-30 menit untuk kebangunan yang lebih sering
+                        $waktuTidurKembali += rand(10, 30);
+                    }
+                    
+                    // Batasi maksimal 90 menit
+                    $waktuTidurKembali = min($waktuTidurKembali, 90);
+                }
+            }
             
             // Catatan lain
             $catatanIndex = rand(0, count($catatanLainOptions) - 1);
@@ -117,6 +150,17 @@ class SleepTrackingSeeder extends Seeder
             $baseDuration = rand(7, 8); // Durasi dasar 7-8 jam
             $variation = (rand(-20, 20) / 60); // Variasi ±20 menit
             $durationInHours = max(4.5, min(9.5, $baseDuration + $variation)); // Batasi 4.5-9.5 jam
+            
+            // Kurangi durasi berdasarkan waktu tidur kembali (jika ada)
+            // Asumsi: setiap kebangunan mengurangi waktu tidur efektif
+            if ($waktuTidurKembali && $jumlahKebangunan > 0) {
+                // Total waktu yang hilang = waktu tidur kembali * jumlah kebangunan
+                $totalWakeBackTime = $waktuTidurKembali * $jumlahKebangunan;
+                $durationInHours -= ($totalWakeBackTime / 60);
+                
+                // Pastikan durasi tidak negatif
+                $durationInHours = max(4.0, $durationInHours);
+            }
 
             // Buat sleep tracking data
             $sleepTrackingData[] = [
@@ -125,6 +169,7 @@ class SleepTrackingSeeder extends Seeder
                 'waktu_tidur' => $waktuTidur,
                 'waktu_bangun' => $waktuBangun,
                 'jumlah_kebangunan' => $jumlahKebangunan,
+                'waktu_tidur_kembali' => $waktuTidurKembali, // Ditambahkan
                 'alasan_kebangunan' => $alasanKebangunan,
                 'catatan_lain' => $catatanLain,
                 'durasi_tidur' => round($durationInHours, 2),
@@ -132,7 +177,8 @@ class SleepTrackingSeeder extends Seeder
                 'updated_at' => $sleepDate->copy()->addHours(rand(6, 9)),
             ];
 
-            $this->command->info(sprintf(
+            // Tampilkan informasi dengan waktu tidur kembali
+            $infoLine = sprintf(
                 'Hari ke-%2d: %s | Tidur: %s | Bangun: %s | Durasi: %.2f jam | Kebangunan: %dx',
                 $i + 1,
                 $sleepDate->format('d M Y'),
@@ -140,7 +186,13 @@ class SleepTrackingSeeder extends Seeder
                 $waktuBangun,
                 $durationInHours,
                 $jumlahKebangunan
-            ));
+            );
+            
+            if ($waktuTidurKembali) {
+                $infoLine .= sprintf(' | Waktu tidur kembali: %d menit', $waktuTidurKembali);
+            }
+            
+            $this->command->info($infoLine);
         }
 
         // Urutkan berdasarkan tanggal tidur (terbaru ke terlama)
@@ -174,6 +226,14 @@ class SleepTrackingSeeder extends Seeder
         $minDuration = $sleepTrackings->min('durasi_tidur');
         $maxDuration = $sleepTrackings->max('durasi_tidur');
         
+        // Statistik waktu tidur kembali
+        $recordsWithWakeBack = $sleepTrackings->filter(function($tracking) {
+            return $tracking->waktu_tidur_kembali !== null && $tracking->waktu_tidur_kembali > 0;
+        });
+        
+        $averageWakeBackTime = $recordsWithWakeBack->avg('waktu_tidur_kembali');
+        $totalWithWakeBack = $recordsWithWakeBack->count();
+        
         // Format durasi untuk display
         $formatDuration = function($hours) {
             $h = floor($hours);
@@ -186,11 +246,18 @@ class SleepTrackingSeeder extends Seeder
         $this->command->info('===========================================');
         $this->command->info('STATISTIK TIDUR SELAMA 20 HARI TERAKHIR');
         $this->command->info('===========================================');
-        $this->command->info('Total Pencatatan   : ' . $totalRecords . ' hari');
-        $this->command->info('Rata-rata Durasi   : ' . $formatDuration($averageDuration) . ' (' . number_format($averageDuration, 2) . ' jam)');
-        $this->command->info('Rata-rata Kebangunan: ' . number_format($averageWakeups, 1) . 'x per malam');
-        $this->command->info('Durasi Terpendek   : ' . $formatDuration($minDuration));
-        $this->command->info('Durasi Terpanjang  : ' . $formatDuration($maxDuration));
+        $this->command->info('Total Pencatatan          : ' . $totalRecords . ' hari');
+        $this->command->info('Rata-rata Durasi          : ' . $formatDuration($averageDuration) . ' (' . number_format($averageDuration, 2) . ' jam)');
+        $this->command->info('Rata-rata Kebangunan      : ' . number_format($averageWakeups, 1) . 'x per malam');
+        $this->command->info('Durasi Terpendek          : ' . $formatDuration($minDuration));
+        $this->command->info('Durasi Terpanjang         : ' . $formatDuration($maxDuration));
+        
+        if ($totalWithWakeBack > 0) {
+            $this->command->info('Data dengan tidur kembali : ' . $totalWithWakeBack . ' hari (' . round(($totalWithWakeBack/$totalRecords)*100) . '%)');
+            $this->command->info('Rata-rata waktu kembali   : ' . number_format($averageWakeBackTime, 1) . ' menit');
+        } else {
+            $this->command->info('Data dengan tidur kembali : 0 hari (0%)');
+        }
         
         // Analisis kualitas tidur
         $goodSleep = $sleepTrackings->filter(function($tracking) {
@@ -207,9 +274,31 @@ class SleepTrackingSeeder extends Seeder
         
         $this->command->info('');
         $this->command->info('ANALISIS KUALITAS TIDUR:');
-        $this->command->info('Tidur Baik (≥7 jam)   : ' . $goodSleep . ' hari (' . round(($goodSleep/$totalRecords)*100) . '%)');
-        $this->command->info('Tidur Cukup (5-7 jam) : ' . $fairSleep . ' hari (' . round(($fairSleep/$totalRecords)*100) . '%)');
-        $this->command->info('Tidur Kurang (<5 jam) : ' . $poorSleep . ' hari (' . round(($poorSleep/$totalRecords)*100) . '%)');
+        $this->command->info('Tidur Baik (≥7 jam)      : ' . $goodSleep . ' hari (' . round(($goodSleep/$totalRecords)*100) . '%)');
+        $this->command->info('Tidur Cukup (5-7 jam)    : ' . $fairSleep . ' hari (' . round(($fairSleep/$totalRecords)*100) . '%)');
+        $this->command->info('Tidur Kurang (<5 jam)    : ' . $poorSleep . ' hari (' . round(($poorSleep/$totalRecords)*100) . '%)');
+        
+        // Analisis berdasarkan waktu tidur kembali
+        if ($totalWithWakeBack > 0) {
+            $this->command->info('');
+            $this->command->info('ANALISIS WAKTU TIDUR KEMBALI:');
+            
+            $quickReturn = $recordsWithWakeBack->filter(function($tracking) {
+                return $tracking->waktu_tidur_kembali <= 15;
+            })->count();
+            
+            $moderateReturn = $recordsWithWakeBack->filter(function($tracking) {
+                return $tracking->waktu_tidur_kembali > 15 && $tracking->waktu_tidur_kembali <= 30;
+            })->count();
+            
+            $longReturn = $recordsWithWakeBack->filter(function($tracking) {
+                return $tracking->waktu_tidur_kembali > 30;
+            })->count();
+            
+            $this->command->info('Kembali cepat (≤15 menit) : ' . $quickReturn . ' hari (' . round(($quickReturn/$totalWithWakeBack)*100) . '%)');
+            $this->command->info('Kembali sedang (16-30 mnt): ' . $moderateReturn . ' hari (' . round(($moderateReturn/$totalWithWakeBack)*100) . '%)');
+            $this->command->info('Kembali lama (>30 menit)  : ' . $longReturn . ' hari (' . round(($longReturn/$totalWithWakeBack)*100) . '%)');
+        }
         
         // Rekomendasi berdasarkan data
         $this->command->info('');
@@ -229,8 +318,21 @@ class SleepTrackingSeeder extends Seeder
         } else {
             $this->command->info('✗ Kebangunan terlalu sering, pertimbangkan posisi tidur yang lebih nyaman');
         }
+        
+        if ($totalWithWakeBack > 0 && $averageWakeBackTime > 0) {
+            if ($averageWakeBackTime <= 15) {
+                $this->command->info('✓ Waktu untuk kembali tidur cukup cepat, menunjukkan kualitas tidur baik');
+            } elseif ($averageWakeBackTime <= 30) {
+                $this->command->info('✓ Waktu kembali tidur normal, cobalah teknik relaksasi jika perlu');
+            } else {
+                $this->command->info('✗ Waktu kembali tidur cenderung lama, coba teknik pernapasan atau meditasi sebelum tidur');
+            }
+        }
 
         $this->command->info('');
         $this->command->info('Seeder berhasil membuat ' . $totalRecords . ' data sleep tracking!');
+        if ($totalWithWakeBack > 0) {
+            $this->command->info('Dengan ' . $totalWithWakeBack . ' data memiliki informasi waktu tidur kembali.');
+        }
     }
 }

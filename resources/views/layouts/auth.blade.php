@@ -347,6 +347,7 @@
             color: var(--secondary);
             font-size: 0.9rem;
             opacity: 0.8;
+            margin-bottom: -35px;
         }
 
         .auth-link {
