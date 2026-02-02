@@ -68,11 +68,11 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-2 me-3">
-                                <i class="fas fa-calendar-day fs-5"></i>
+                                <i class="fas fa-redo fs-5"></i>
                             </div>
                             <div>
-                                <h6 class="mb-0 text-muted">Hari Ini</h6>
-                                <h3 class="mb-0 fw-bold" id="todayRecords">0</h3>
+                                <h6 class="mb-0 text-muted">Rata-rata Waktu Kembali</h6>
+                                <h3 class="mb-0 fw-bold" id="avgWakeBackTime">0 mnt</h3>
                             </div>
                         </div>
                     </div>
@@ -138,6 +138,12 @@
                                                         <i class="fas fa-clock me-1"></i>
                                                         {{ $user['latest_sleep']['durasi'] }}
                                                     </div>
+                                                    @if ($user['latest_sleep']['waktu_tidur_kembali'])
+                                                        <div class="text-success small">
+                                                            <i class="fas fa-redo me-1"></i>
+                                                            Kembali tidur: {{ $user['latest_sleep']['waktu_tidur_kembali'] }} menit
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             @else
                                                 <span class="text-muted">-</span>
@@ -323,6 +329,73 @@
                             </div>
                         </div>
 
+                        <!-- Wake Back Time Statistics -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card card-custom">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-redo me-2"></i> Statistik Waktu Tidur Kembali</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-4 mb-3">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-2">Data dengan Waktu Kembali</h6>
+                                                    <h3 class="fw-bold text-info mb-1" id="statWakeBackCount">0</h3>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div id="statWakeBackPercentageBar" class="progress-bar bg-info" 
+                                                             role="progressbar" style="width: 0%"></div>
+                                                    </div>
+                                                    <p class="small text-muted mb-0 mt-1" id="statWakeBackPercentage">0%</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 mb-3">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-2">Rata-rata Waktu Kembali</h6>
+                                                    <h3 class="fw-bold text-primary mb-0" id="statAvgWakeBackTime">0 mnt</h3>
+                                                    <p class="small text-muted mb-0">per kebangunan</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 mb-3">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-2">Waktu Tercepat</h6>
+                                                    <h3 class="fw-bold text-success mb-0" id="statMinWakeBackTime">0 mnt</h3>
+                                                    <p class="small text-muted mb-0">kembali paling cepat</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 mb-3">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-2">Waktu Terlama</h6>
+                                                    <h3 class="fw-bold text-warning mb-0" id="statMaxWakeBackTime">0 mnt</h3>
+                                                    <p class="small text-muted mb-0">kembali paling lama</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-8 mb-3">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-2">Distribusi Waktu Kembali</h6>
+                                                    <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+                                                        <div class="text-center">
+                                                            <span class="badge bg-success d-block mb-1">Cepat</span>
+                                                            <small class="text-muted" id="statQuickReturn">0 (0%)</small>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <span class="badge bg-warning d-block mb-1">Sedang</span>
+                                                            <small class="text-muted" id="statModerateReturn">0 (0%)</small>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <span class="badge bg-danger d-block mb-1">Lama</span>
+                                                            <small class="text-muted" id="statLongReturn">0 (0%)</small>
+                                                        </div>
+                                                    </div>
+                                                    <p class="small text-muted mb-0 mt-2">Cepat: ≤15 mnt | Sedang: 16-30 mnt | Lama: >30 mnt</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Sleep Chart -->
                         <div class="row mb-4">
                             <div class="col-12">
@@ -359,6 +432,7 @@
                                                         <th>Waktu Bangun</th>
                                                         <th>Durasi</th>
                                                         <th>Kebangunan</th>
+                                                        <th>Waktu Tidur Kembali</th>
                                                         <th>Alasan</th>
                                                         <th>Catatan</th>
                                                     </tr>
@@ -456,6 +530,52 @@
             border-color: var(--primary);
         }
 
+        /* Custom styles for wake back time badges */
+        .badge-wake-back {
+            background: linear-gradient(135deg, #9c27b0, #673ab7);
+            color: white;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .badge-wake-back-quick {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .badge-wake-back-moderate {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+        }
+
+        .badge-wake-back-long {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        /* Progress bar styles */
+        .progress {
+            border-radius: 10px;
+            height: 10px;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+        }
+
+        /* Statistics cards */
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         @media (max-width: 768px) {
             .btn-group {
                 flex-direction: column;
@@ -464,6 +584,10 @@
             .btn-group .btn {
                 margin: 2px 0;
                 width: 100%;
+            }
+
+            .stat-card {
+                padding: 15px;
             }
         }
     </style>
@@ -488,6 +612,7 @@
                         document.getElementById('totalUsers').textContent = data.data.total_users;
                         document.getElementById('totalRecords').textContent = data.data.total_records;
                         document.getElementById('avgDuration').textContent = data.data.avg_duration + ' jam';
+                        document.getElementById('avgWakeBackTime').textContent = data.data.avg_wake_back_time + ' mnt';
                         document.getElementById('todayRecords').textContent = data.data.today_records;
                     }
                 })
@@ -611,13 +736,31 @@
             document.getElementById('detailAlamat').textContent = data.user.alamat;
             document.getElementById('detailTotalData').textContent = data.statistics.total_records;
 
-            // Statistics
+            // Sleep statistics
             document.getElementById('statAvgDuration').textContent = data.statistics.avg_duration_formatted;
             document.getElementById('statMinDuration').textContent = data.statistics.min_duration_formatted;
             document.getElementById('statMaxDuration').textContent = data.statistics.max_duration_formatted;
             document.getElementById('statEarlySleep').textContent = data.statistics.sleep_by_time.early;
             document.getElementById('statNormalSleep').textContent = data.statistics.sleep_by_time.normal;
             document.getElementById('statLateSleep').textContent = data.statistics.sleep_by_time.late;
+
+            // Wake back time statistics
+            const wakeBackStats = data.statistics.wake_back_stats;
+            document.getElementById('statWakeBackCount').textContent = wakeBackStats.total_with_wake_back;
+            document.getElementById('statWakeBackPercentage').textContent = wakeBackStats.percentage + '%';
+            document.getElementById('statAvgWakeBackTime').textContent = wakeBackStats.avg_wake_back_time + ' mnt';
+            document.getElementById('statMinWakeBackTime').textContent = wakeBackStats.min_wake_back_time || '0 mnt';
+            document.getElementById('statMaxWakeBackTime').textContent = wakeBackStats.max_wake_back_time || '0 mnt';
+            document.getElementById('statQuickReturn').textContent = 
+                wakeBackStats.quick_return + ' (' + wakeBackStats.quick_return_percentage + '%)';
+            document.getElementById('statModerateReturn').textContent = 
+                wakeBackStats.moderate_return + ' (' + wakeBackStats.moderate_return_percentage + '%)';
+            document.getElementById('statLongReturn').textContent = 
+                wakeBackStats.long_return + ' (' + wakeBackStats.long_return_percentage + '%)';
+            
+            // Update progress bar
+            const progressBar = document.getElementById('statWakeBackPercentageBar');
+            progressBar.style.width = wakeBackStats.percentage + '%';
 
             // Avatar
             const avatar = document.getElementById('detailAvatar');
@@ -724,6 +867,33 @@
             
             sleepData.forEach((item, index) => {
                 const row = document.createElement('tr');
+                
+                // Determine wake back time badge class
+                let wakeBackBadgeClass = 'badge-wake-back';
+                let wakeBackTimeText = '-';
+                
+                if (item.waktu_tidur_kembali) {
+                    wakeBackTimeText = `${item.waktu_tidur_kembali} menit`;
+                    
+                    if (item.waktu_tidur_kembali <= 15) {
+                        wakeBackBadgeClass += ' badge-wake-back-quick';
+                    } else if (item.waktu_tidur_kembali <= 30) {
+                        wakeBackBadgeClass += ' badge-wake-back-moderate';
+                    } else {
+                        wakeBackBadgeClass += ' badge-wake-back-long';
+                    }
+                }
+                
+                // Determine wake up badge
+                const wakeUpBadge = item.jumlah_kebangunan > 0 ? 
+                    `<span class="badge bg-warning">${item.jumlah_kebangunan}x</span>` : 
+                    `<span class="badge bg-success">Tidak Ada</span>`;
+                
+                // Create wake back time cell
+                const wakeBackCell = item.waktu_tidur_kembali ? 
+                    `<td><span class="${wakeBackBadgeClass}">${wakeBackTimeText}</span></td>` : 
+                    `<td><span class="text-muted">-</span></td>`;
+                
                 row.innerHTML = `
                     <td class="ps-4">${index + 1}</td>
                     <td>${item.tanggal_full}</td>
@@ -732,11 +902,8 @@
                     <td>
                         <span class="badge bg-primary">${item.durasi_formatted}</span>
                     </td>
-                    <td>
-                        ${item.jumlah_kebangunan > 0 ? 
-                            `<span class="badge bg-warning">${item.jumlah_kebangunan}x</span>` : 
-                            `<span class="badge bg-success">Tidak Ada</span>`}
-                    </td>
+                    <td>${wakeUpBadge}</td>
+                    ${wakeBackCell}
                     <td>
                         ${item.alasan_kebangunan ? 
                             `<span class="text-muted small">${item.alasan_kebangunan}</span>` : 
@@ -750,6 +917,12 @@
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        // Function to format wake back time
+        function formatWakeBackTime(minutes) {
+            if (!minutes) return '-';
+            return `${minutes} menit`;
         }
     </script>
 @endsection

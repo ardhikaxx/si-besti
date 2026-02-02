@@ -40,7 +40,8 @@ class SleepTrackingAdminController extends Controller
                     'tanggal' => $user->sleepTrackings->first()->tanggal_tidur,
                     'durasi' => $user->sleepTrackings->first()->formatted_duration,
                     'waktu_tidur' => $user->sleepTrackings->first()->formatted_sleep_time,
-                    'waktu_bangun' => $user->sleepTrackings->first()->formatted_wake_time
+                    'waktu_bangun' => $user->sleepTrackings->first()->formatted_wake_time,
+                    'waktu_tidur_kembali' => $user->sleepTrackings->first()->waktu_tidur_kembali
                 ] : null
             ];
         }
@@ -59,6 +60,11 @@ class SleepTrackingAdminController extends Controller
         // Calculate average sleep duration
         $avgDuration = SleepTracking::avg('durasi_tidur');
         
+        // Calculate average wake back time
+        $avgWakeBackTime = SleepTracking::whereNotNull('waktu_tidur_kembali')
+            ->where('waktu_tidur_kembali', '>', 0)
+            ->avg('waktu_tidur_kembali');
+        
         // Get today's records
         $todayRecords = SleepTracking::whereDate('tanggal_tidur', Carbon::today())->count();
         
@@ -68,6 +74,7 @@ class SleepTrackingAdminController extends Controller
                 'total_users' => $totalUsers,
                 'total_records' => $totalRecords,
                 'avg_duration' => $avgDuration ? round($avgDuration, 2) : 0,
+                'avg_wake_back_time' => $avgWakeBackTime ? round($avgWakeBackTime, 1) : 0,
                 'today_records' => $todayRecords
             ]
         ]);
@@ -96,8 +103,12 @@ class SleepTrackingAdminController extends Controller
                         'durasi' => (float) $record->durasi_tidur,
                         'durasi_formatted' => $record->formatted_duration,
                         'jumlah_kebangunan' => $record->jumlah_kebangunan,
+                        'waktu_tidur_kembali' => $record->waktu_tidur_kembali,
+                        'waktu_tidur_kembali_formatted' => $record->waktu_tidur_kembali ? 
+                            $record->waktu_tidur_kembali . ' menit' : '-',
                         'alasan_kebangunan' => $record->alasan_kebangunan,
-                        'catatan_lain' => $record->catatan_lain
+                        'catatan_lain' => $record->catatan_lain,
+                        'has_wake_back_time' => $record->hasWakeBackTime()
                     ];
                 })
                 ->reverse()
@@ -108,6 +119,9 @@ class SleepTrackingAdminController extends Controller
             $avgDuration = $user->sleepTrackings()->avg('durasi_tidur');
             $minDuration = $user->sleepTrackings()->min('durasi_tidur');
             $maxDuration = $user->sleepTrackings()->max('durasi_tidur');
+            
+            // Calculate wake back time statistics
+            $wakeBackStats = $this->calculateWakeBackStatistics($user->id);
             
             // Get sleep distribution by time of day
             $sleepByTime = [
@@ -147,7 +161,8 @@ class SleepTrackingAdminController extends Controller
                         'min_duration_formatted' => $this->formatDuration($minDuration),
                         'max_duration' => $maxDuration ? round($maxDuration, 2) : 0,
                         'max_duration_formatted' => $this->formatDuration($maxDuration),
-                        'sleep_by_time' => $sleepByTime
+                        'sleep_by_time' => $sleepByTime,
+                        'wake_back_stats' => $wakeBackStats
                     ]
                 ]
             ]);
@@ -157,6 +172,54 @@ class SleepTrackingAdminController extends Controller
                 'message' => 'Data tidak ditemukan'
             ], 404);
         }
+    }
+
+    /**
+     * Calculate wake back time statistics
+     */
+    private function calculateWakeBackStatistics($userId)
+    {
+        $sleepTrackings = SleepTracking::where('pengguna_id', $userId)->get();
+        
+        $recordsWithWakeBack = $sleepTrackings->filter(function($tracking) {
+            return $tracking->waktu_tidur_kembali !== null && $tracking->waktu_tidur_kembali > 0;
+        });
+        
+        $totalWithWakeBack = $recordsWithWakeBack->count();
+        $avgWakeBackTime = $recordsWithWakeBack->avg('waktu_tidur_kembali');
+        $maxWakeBackTime = $recordsWithWakeBack->max('waktu_tidur_kembali');
+        $minWakeBackTime = $recordsWithWakeBack->min('waktu_tidur_kembali');
+        
+        // Categorize wake back times
+        $quickReturn = $recordsWithWakeBack->filter(function($tracking) {
+            return $tracking->waktu_tidur_kembali <= 15;
+        })->count();
+        
+        $moderateReturn = $recordsWithWakeBack->filter(function($tracking) {
+            return $tracking->waktu_tidur_kembali > 15 && $tracking->waktu_tidur_kembali <= 30;
+        })->count();
+        
+        $longReturn = $recordsWithWakeBack->filter(function($tracking) {
+            return $tracking->waktu_tidur_kembali > 30;
+        })->count();
+        
+        return [
+            'total_with_wake_back' => $totalWithWakeBack,
+            'percentage' => $sleepTrackings->count() > 0 ? 
+                round(($totalWithWakeBack / $sleepTrackings->count()) * 100, 1) : 0,
+            'avg_wake_back_time' => $avgWakeBackTime ? round($avgWakeBackTime, 1) : 0,
+            'max_wake_back_time' => $maxWakeBackTime,
+            'min_wake_back_time' => $minWakeBackTime,
+            'quick_return' => $quickReturn,
+            'moderate_return' => $moderateReturn,
+            'long_return' => $longReturn,
+            'quick_return_percentage' => $totalWithWakeBack > 0 ? 
+                round(($quickReturn / $totalWithWakeBack) * 100, 1) : 0,
+            'moderate_return_percentage' => $totalWithWakeBack > 0 ? 
+                round(($moderateReturn / $totalWithWakeBack) * 100, 1) : 0,
+            'long_return_percentage' => $totalWithWakeBack > 0 ? 
+                round(($longReturn / $totalWithWakeBack) * 100, 1) : 0
+        ];
     }
 
     /**
