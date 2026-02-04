@@ -28,9 +28,12 @@
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center py-3 px-3 rounded-3" href="#">
-                        <i class="fas fa-chart-bar me-3" style="color: var(--primary);"></i>
-                        <span>Hasil Test</span>
+                    <a class="nav-link d-flex align-items-center py-3 px-3 rounded-3 {{ request()->routeIs('admin.test-quality*') ? 'active' : '' }}"
+                        href="{{ route('admin.test-quality.index') }}"
+                        @if (request()->routeIs('admin.test-quality*')) style="background: var(--gradient-primary); color: white;" @endif>
+                        <i class="fas fa-file-medical-alt me-3"
+                            style="color: {{ request()->routeIs('admin.test-quality*') ? 'white' : 'var(--primary)' }} !important;"></i>
+                        <span>Test Kualitas Tidur</span>
                     </a>
                 </li>
                 <li class="nav-item mb-2">

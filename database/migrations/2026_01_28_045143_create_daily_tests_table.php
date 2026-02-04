@@ -1,6 +1,4 @@
 <?php
-// database/migrations/2026_01_28_xxxxxx_create_daily_tests_table.php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -50,6 +48,7 @@ return new class extends Migration
             
             // Status
             $table->boolean('is_confirmed')->default(false);
+            $table->boolean('filled_by_admin')->default(false);
             $table->timestamp('confirmed_at')->nullable();
             
             $table->timestamps();

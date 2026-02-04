@@ -4,76 +4,85 @@
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->
-        <div class="d-flex flex-column flex-lg-row justify-content-start justify-content-lg-between align-items-start align-items-lg-center mb-4 gap-2 gap-lg-0">
-            <div>
-                <h1 class="h3 mb-0 fw-bold" style="color: var(--primary);">Sleep Tracking</h1>
-                <p class="text-muted mb-0">Data monitoring tidur ibu hamil</p>
-            </div>
-            <div>
-                <button class="btn btn-primary-custom" onclick="refreshData()">
-                    <i class="fas fa-sync-alt me-2"></i> Refresh Data
-                </button>
+        <div class="page-header-section mb-4">
+            <div class="row align-items-center g-3">
+                <div class="col-12 col-lg-8">
+                    <div class="page-title-wrapper">
+                        <h1 class="page-title mb-2 fw-bold" style="color: var(--primary);">
+                            <i class="fas fa-bed me-2"></i>Sleep Tracking
+                        </h1>
+                        <p class="page-subtitle text-muted mb-0">Data monitoring tidur ibu hamil</p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="d-flex justify-content-lg-end">
+                        <button class="btn btn-primary-custom btn-refresh" onclick="refreshData()">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            <span>Refresh Data</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="row mb-4">
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card card-custom">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-3 p-2 me-3">
-                                <i class="fas fa-users fs-5"></i>
+        <div class="row g-3 g-lg-4 mb-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="stats-card stats-card-primary">
+                    <div class="stats-card-body">
+                        <div class="stats-icon-wrapper">
+                            <div class="stats-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="fas fa-users"></i>
                             </div>
-                            <div>
-                                <h6 class="mb-0 text-muted">Total Pengguna</h6>
-                                <h3 class="mb-0 fw-bold" id="totalUsers">0</h3>
-                            </div>
+                        </div>
+                        <div class="stats-content">
+                            <h6 class="stats-label">Total Pengguna</h6>
+                            <h2 class="stats-value" id="totalUsers">0</h2>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card card-custom">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-success bg-opacity-10 text-success rounded-3 p-2 me-3">
-                                <i class="fas fa-bed fs-5"></i>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="stats-card stats-card-success">
+                    <div class="stats-card-body">
+                        <div class="stats-icon-wrapper">
+                            <div class="stats-icon bg-success bg-opacity-10 text-success">
+                                <i class="fas fa-bed"></i>
                             </div>
-                            <div>
-                                <h6 class="mb-0 text-muted">Total Data</h6>
-                                <h3 class="mb-0 fw-bold" id="totalRecords">0</h3>
-                            </div>
+                        </div>
+                        <div class="stats-content">
+                            <h6 class="stats-label">Total Data</h6>
+                            <h2 class="stats-value" id="totalRecords">0</h2>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card card-custom">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-info bg-opacity-10 text-info rounded-3 p-2 me-3">
-                                <i class="fas fa-clock fs-5"></i>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="stats-card stats-card-info">
+                    <div class="stats-card-body">
+                        <div class="stats-icon-wrapper">
+                            <div class="stats-icon bg-info bg-opacity-10 text-info">
+                                <i class="fas fa-clock"></i>
                             </div>
-                            <div>
-                                <h6 class="mb-0 text-muted">Rata-rata Durasi</h6>
-                                <h3 class="mb-0 fw-bold" id="avgDuration">0 jam</h3>
-                            </div>
+                        </div>
+                        <div class="stats-content">
+                            <h6 class="stats-label">Rata-rata Durasi</h6>
+                            <h2 class="stats-value stats-value-small" id="avgDuration">0 jam</h2>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card card-custom">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-2 me-3">
-                                <i class="fas fa-redo fs-5"></i>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="stats-card stats-card-warning">
+                    <div class="stats-card-body">
+                        <div class="stats-icon-wrapper">
+                            <div class="stats-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="fas fa-redo"></i>
                             </div>
-                            <div>
-                                <h6 class="mb-0 text-muted">Rata-rata Waktu Kembali</h6>
-                                <h3 class="mb-0 fw-bold" id="avgWakeBackTime">0 mnt</h3>
-                            </div>
+                        </div>
+                        <div class="stats-content">
+                            <h6 class="stats-label">Rata-rata Waktu Kembali</h6>
+                            <h2 class="stats-value stats-value-small" id="avgWakeBackTime">0 mnt</h2>
                         </div>
                     </div>
                 </div>
@@ -81,67 +90,90 @@
         </div>
 
         <!-- Data Table -->
-        <div class="card card-custom">
-            <div class="card-header-custom">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0 text-white"><i class="fas fa-table me-2"></i> Daftar Pengguna Sleep Tracking</h5>
+        <div class="data-table-card">
+            <div class="data-table-header">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-6">
+                        <h5 class="table-title mb-0">
+                            <i class="fas fa-table me-2"></i> Daftar Pengguna Sleep Tracking
+                        </h5>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <div class="input-group input-group-sm me-2" style="width: 250px;">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Cari nama...">
-                            <button class="btn btn-outline-light" type="button" id="searchBtn">
-                                <i class="fas fa-search"></i>
-                            </button>
+                    <div class="col-12 col-md-6">
+                        <div class="search-wrapper">
+                            <div class="search-input-group">
+                                <span class="search-icon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="search-input" id="searchInput"
+                                    placeholder="Cari nama pengguna...">
+                                <button class="search-button" type="button" id="searchBtn">
+                                    Cari
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="sleepTable">
+            <div class="data-table-body">
+                <div class="table-container">
+                    <table class="modern-table" id="sleepTable">
                         <thead>
                             <tr>
-                                <th class="ps-4">#</th>
-                                <th>Nama Lengkap</th>
-                                <th>Umur</th>
-                                <th>Usia Kehamilan</th>
-                                <th>Hamil Anak Ke</th>
-                                <th>Total Data</th>
-                                <th>Data Terakhir</th>
-                                <th class="text-center">Aksi</th>
+                                <th class="th-number">#</th>
+                                <th class="th-name">Nama Lengkap</th>
+                                <th class="th-age">Umur</th>
+                                <th class="th-pregnancy">Usia Kehamilan</th>
+                                <th class="th-child">Hamil Anak Ke</th>
+                                <th class="th-data">Total Data</th>
+                                <th class="th-latest">Data Terakhir</th>
+                                <th class="th-action">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if (count($dataUsers) > 0)
                                 @foreach ($dataUsers as $index => $user)
-                                    <tr data-id="{{ $user['id'] }}">
-                                        <td class="ps-4">{{ $index + 1 }}</td>
-                                        <td class="fw-semibold">{{ $user['nama_lengkap'] }}</td>
-                                        <td>{{ $user['umur'] }} tahun</td>
-                                        <td>{{ $user['usia_kehamilan'] }}</td>
-                                        <td>{{ $user['hamil_anak_ke'] }}</td>
-                                        <td>
-                                            <span class="badge-custom bg-primary text-white">
+                                    <tr data-id="{{ $user['id'] }}" class="table-row">
+                                        <td class="td-number">
+                                            <span class="row-number">{{ $index + 1 }}</span>
+                                        </td>
+                                        <td class="td-name">
+                                            <div class="user-info">
+                                                <div class="user-avatar-small">
+                                                    {{ substr($user['nama_lengkap'], 0, 1) }}
+                                                </div>
+                                                <span class="user-name">{{ $user['nama_lengkap'] }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="td-age">
+                                            <span class="age-text">{{ $user['umur'] }} tahun</span>
+                                        </td>
+                                        <td class="td-pregnancy">
+                                            <span class="pregnancy-text">{{ $user['usia_kehamilan'] }}</span>
+                                        </td>
+                                        <td class="td-child">
+                                            <span class="child-badge">{{ $user['hamil_anak_ke'] }}</span>
+                                        </td>
+                                        <td class="td-data">
+                                            <span class="data-badge d-flex flex-column flex-lg-row justify-content-center justify-content-lg-start align-items-center align-items-lg-start">
                                                 <i class="fas fa-bed me-1"></i>
                                                 {{ $user['total_sleep_records'] }} data
                                             </span>
                                         </td>
-                                        <td>
+                                        <td class="td-latest">
                                             @if ($user['latest_sleep'])
-                                                <div class="small">
-                                                    <div><strong>{{ $user['latest_sleep']['tanggal'] }}</strong></div>
-                                                    <div class="text-muted">
+                                                <div class="latest-sleep-info">
+                                                    <div class="sleep-date">{{ $user['latest_sleep']['tanggal'] }}</div>
+                                                    <div class="sleep-time">
                                                         {{ $user['latest_sleep']['waktu_tidur'] }} - {{ $user['latest_sleep']['waktu_bangun'] }}
                                                     </div>
-                                                    <div class="text-primary">
+                                                    <div class="sleep-duration">
                                                         <i class="fas fa-clock me-1"></i>
                                                         {{ $user['latest_sleep']['durasi'] }}
                                                     </div>
                                                     @if ($user['latest_sleep']['waktu_tidur_kembali'])
-                                                        <div class="text-success small">
+                                                        <div class="sleep-return">
                                                             <i class="fas fa-redo me-1"></i>
-                                                            Kembali tidur: {{ $user['latest_sleep']['waktu_tidur_kembali'] }} menit
+                                                            Kembali: {{ $user['latest_sleep']['waktu_tidur_kembali'] }} mnt
                                                         </div>
                                                     @endif
                                                 </div>
@@ -149,23 +181,21 @@
                                                 <span class="text-muted">-</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                        onclick="showDetail({{ $user['id'] }})" 
-                                                        title="Lihat Detail">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                            </div>
+                                        <td class="td-action">
+                                            <button type="button" class="action-btn action-btn-view"
+                                                onclick="showDetail({{ $user['id'] }})" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                                <span class="action-text">Detail</span>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
-                                        <div class="text-muted">
-                                            <i class="fas fa-bed fa-2x mb-3"></i>
-                                            <p class="mb-0">Belum ada data sleep tracking</p>
+                                    <td colspan="8" class="empty-state">
+                                        <div class="empty-state-content">
+                                            <i class="fas fa-bed empty-icon"></i>
+                                            <p class="empty-text">Belum ada data sleep tracking</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -175,23 +205,35 @@
                 </div>
             </div>
             @if (count($dataUsers) > 0)
-                <div class="card-footer bg-white border-top py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-muted">
-                            Menampilkan <strong>{{ count($dataUsers) }}</strong> pengguna dengan data sleep tracking
+                <div class="data-table-footer">
+                    <div class="row align-items-center g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="footer-info">
+                                <span class="text-muted">
+                                    Menampilkan <strong class="text-dark">{{ count($dataUsers) }}</strong> pengguna dengan data sleep tracking
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                        <div class="col-12 col-md-6">
+                            <div class="pagination-wrapper">
+                                <nav aria-label="Page navigation">
+                                    <ul class="modern-pagination">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item active">
+                                            <a class="page-link" href="#">1</a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -199,7 +241,7 @@
         </div>
     </div>
 
-    <!-- Modal Detail -->
+    <!-- Modal Detail (Tetap sama dengan yang sebelumnya) -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -461,6 +503,600 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* ===== Page Header ===== */
+        .page-header-section {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 0.925rem;
+        }
+
+        .btn-refresh {
+            padding: 0.625rem 1.5rem;
+            font-weight: 600;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(8, 86, 200, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 86, 200, 0.25);
+        }
+
+        /* ===== Statistics Cards ===== */
+        .stats-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .stats-card-body {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stats-icon-wrapper {
+            flex-shrink: 0;
+        }
+
+        .stats-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stats-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stats-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: #212529;
+            line-height: 1;
+        }
+
+        .stats-value-small {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .stats-card-warning .stats-icon {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        /* ===== Data Table Card ===== */
+        .data-table-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f0f0f0;
+        }
+
+        .data-table-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #064a9e 100%);
+            padding: 1.5rem;
+        }
+
+        .table-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        /* ===== Search ===== */
+        .search-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 0.25rem;
+            width: 100%;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-icon {
+            padding: 0 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #fff;
+            padding: 0.5rem 0.25rem;
+            outline: none;
+            font-size: 0.925rem;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-button {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ===== Modern Table ===== */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .modern-table thead tr {
+            background: #f8f9fa;
+        }
+
+        .modern-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            white-space: nowrap;
+        }
+
+        .modern-table td {
+            padding: 1.25rem 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9375rem;
+        }
+
+        .modern-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .modern-table tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Table Cells */
+        .th-action,
+        .td-action {
+            text-align: center;
+        }
+
+        .row-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #495057;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, #064a9e 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .age-text {
+            color: #495057;
+        }
+
+        .pregnancy-text {
+            color: #495057;
+        }
+
+        .child-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 0.75rem;
+            background: #e7f3ff;
+            color: var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .data-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: #e7f3ff;
+            color: var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .latest-sleep-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sleep-date {
+            font-weight: 600;
+            color: #212529;
+            font-size: 0.875rem;
+        }
+
+        .sleep-time {
+            color: #6c757d;
+            font-size: 0.8125rem;
+        }
+
+        .sleep-duration {
+            color: var(--primary);
+            font-size: 0.8125rem;
+        }
+
+        .sleep-return {
+            color: #28a745;
+            font-size: 0.75rem;
+            background: #d4edda;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.25rem;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn-view {
+            background: #e7f3ff;
+            color: var(--primary);
+        }
+
+        .action-btn-view:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 86, 200, 0.25);
+        }
+
+        .action-text {
+            display: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 4rem 1rem !important;
+            text-align: center;
+        }
+
+        .empty-state-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #dee2e6;
+        }
+
+        .empty-text {
+            margin: 0;
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        /* ===== Table Footer ===== */
+        .data-table-footer {
+            padding: 1.25rem 1.5rem;
+            background: #fafbfc;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-info {
+            font-size: 0.9375rem;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modern-pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 0.5rem;
+        }
+
+        .modern-pagination .page-item {
+            list-style: none;
+        }
+
+        .modern-pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .modern-pagination .page-link:hover {
+            background: #e7f3ff;
+            border-color: var(--primary);
+        }
+
+        .modern-pagination .page-item.active .page-link {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .modern-pagination .page-item.disabled .page-link {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 1199.98px) {
+            .stats-card-body {
+                padding: 1.25rem;
+            }
+
+            .stats-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .stats-value {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .search-wrapper {
+                justify-content: flex-start;
+            }
+
+            .search-input-group {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .page-header-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .stats-card-body {
+                padding: 1rem;
+            }
+
+            .stats-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.125rem;
+            }
+
+            .stats-value {
+                font-size: 1.5rem;
+            }
+
+            .stats-label {
+                font-size: 0.8125rem;
+            }
+
+            .data-table-header {
+                padding: 1.25rem;
+            }
+
+            .modern-table th,
+            .modern-table td {
+                padding: 1rem;
+            }
+
+            .user-avatar-small {
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
+            }
+
+            .action-btn {
+                padding: 0.5rem;
+            }
+
+            .action-text {
+                display: none;
+            }
+
+            .modal-body-modern {
+                padding: 1.5rem;
+            }
+
+            .profile-card {
+                padding: 1.5rem;
+            }
+
+            .detail-name {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .page-title {
+                font-size: 1.25rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.875rem;
+            }
+
+            .stats-value-small {
+                font-size: 0.75rem;
+            }
+
+            .table-title {
+                font-size: 1rem;
+            }
+
+            .modern-table {
+                font-size: 0.875rem;
+            }
+
+            .modern-table th,
+            .modern-table td {
+                padding: 0.75rem;
+            }
+
+            .user-info {
+                gap: 0.5rem;
+            }
+
+            .user-name {
+                font-size: 0.875rem;
+            }
+
+            .pagination-wrapper {
+                justify-content: center;
+            }
+
+            .footer-info {
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .print-content,
+            .print-content * {
+                visibility: visible;
+            }
+
+            .print-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            .data-table-header,
+            .data-table-footer,
+            .action-btn, {
+                display: none !important;
+            }
+        }
+
+        /* Custom styles for modal (dari sebelumnya) */
         .badge-custom {
             padding: 6px 12px;
             border-radius: 20px;
@@ -499,17 +1135,6 @@
             object-fit: cover;
             border: 4px solid var(--white);
             box-shadow: var(--shadow-sm);
-        }
-
-        #searchInput {
-            border-radius: 10px 0 0 10px;
-            border: 2px solid var(--border-color);
-        }
-
-        #searchBtn {
-            border-radius: 0 10px 10px 0;
-            border: 2px solid var(--border-color);
-            border-left: none;
         }
 
         .page-item.active .page-link {
@@ -613,7 +1238,6 @@
                         document.getElementById('totalRecords').textContent = data.data.total_records;
                         document.getElementById('avgDuration').textContent = data.data.avg_duration + ' jam';
                         document.getElementById('avgWakeBackTime').textContent = data.data.avg_wake_back_time + ' mnt';
-                        document.getElementById('todayRecords').textContent = data.data.today_records;
                     }
                 })
                 .catch(error => {
@@ -630,6 +1254,8 @@
             searchInput.addEventListener('keyup', function(event) {
                 if (event.key === 'Enter') {
                     performSearch();
+                } else {
+                    performSearch(); // Live search
                 }
             });
         }
@@ -637,16 +1263,46 @@
         // Perform search
         function performSearch() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#sleepTable tbody tr');
+            const rows = document.querySelectorAll('#sleepTable tbody tr:not(.empty-state)');
 
+            let visibleCount = 0;
             rows.forEach(row => {
-                const nama = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                if (nama.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+                const nama = row.querySelector('.user-name');
+                if (nama) {
+                    const namaText = nama.textContent.toLowerCase();
+                    if (namaText.includes(searchTerm)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
                 }
             });
+
+            // Show empty state if no results
+            const tbody = document.querySelector('#sleepTable tbody');
+            const existingEmpty = tbody.querySelector('.empty-state');
+
+            if (visibleCount === 0 && searchTerm !== '') {
+                if (!existingEmpty) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.className = 'empty-state search-empty';
+                    emptyRow.innerHTML = `
+                        <td colspan="8" class="empty-state">
+                            <div class="empty-state-content">
+                                <i class="fas fa-search empty-icon"></i>
+                                <p class="empty-text">Tidak ada hasil untuk "${searchTerm}"</p>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(emptyRow);
+                }
+            } else {
+                const searchEmpty = tbody.querySelector('.search-empty');
+                if (searchEmpty) {
+                    searchEmpty.remove();
+                }
+            }
         }
 
         // Refresh data

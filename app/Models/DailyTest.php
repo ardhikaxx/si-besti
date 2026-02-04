@@ -1,6 +1,4 @@
 <?php
-// app/Models/DailyTest.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,6 +31,7 @@ class DailyTest extends Model
         'component_7',
         'total_score',
         'is_confirmed',
+        'filled_by_admin',
         'confirmed_at'
     ];
 
@@ -40,6 +39,7 @@ class DailyTest extends Model
         'test_date' => 'date',
         'sleep_disturbances' => 'array',
         'is_confirmed' => 'boolean',
+        'filled_by_admin' => 'boolean',
         'confirmed_at' => 'datetime'
     ];
 
@@ -72,13 +72,13 @@ class DailyTest extends Model
         $this->calculateDaytimeDysfunctionScore();
 
         // Total Score
-        $this->total_score = 
-            $this->component_1 + 
-            $this->component_2 + 
-            $this->component_3 + 
-            $this->component_4 + 
-            $this->component_5 + 
-            $this->component_6 + 
+        $this->total_score =
+            $this->component_1 +
+            $this->component_2 +
+            $this->component_3 +
+            $this->component_4 +
+            $this->component_5 +
+            $this->component_6 +
             $this->component_7;
 
         return $this;
@@ -141,20 +141,20 @@ class DailyTest extends Model
         // Hitung waktu di tempat tidur
         $bedtime = Carbon::parse($this->bedtime);
         $wakeup = Carbon::parse($this->wakeup_time);
-        
+
         if ($wakeup->lessThan($bedtime)) {
             $wakeup->addDay();
         }
-        
+
         $time_in_bed_hours = $wakeup->diffInMinutes($bedtime) / 60;
-        
+
         // Durasi tidur dalam jam
         $actual_sleep_hours = $this->sleep_duration;
-        
+
         // Hitung efisiensi
         if ($time_in_bed_hours > 0) {
             $efficiency = ($actual_sleep_hours / $time_in_bed_hours) * 100;
-            
+
             if ($efficiency > 85) {
                 $this->component_4 = 0;
             } elseif ($efficiency >= 75) {
@@ -172,16 +172,16 @@ class DailyTest extends Model
     private function calculateDisturbanceScore()
     {
         $disturbances = $this->sleep_disturbances ?? [];
-        
+
         // Item Q5b sampai Q5j
         $items = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
         $disturbance_score = 0;
-        
+
         foreach ($items as $item) {
             $frequency = $disturbances[$item] ?? 0;
             $disturbance_score += $frequency; // Nilai 0-3
         }
-        
+
         if ($disturbance_score == 0) {
             $this->component_5 = 0;
         } elseif ($disturbance_score <= 9) {
@@ -202,13 +202,13 @@ class DailyTest extends Model
     {
         // Q7: Kantuk siang hari (0-3)
         $q7_score = $this->daytime_sleepiness;
-        
+
         // Q8: Antusiasme (0-3)
         $q8_score = $this->enthusiasm;
-        
+
         // Total skor disfungsi siang hari
         $daytime_total = $q7_score + $q8_score;
-        
+
         if ($daytime_total == 0) {
             $this->component_7 = 0;
         } elseif ($daytime_total <= 2) {
@@ -225,7 +225,7 @@ class DailyTest extends Model
         if ($this->total_score === null) {
             return 'Belum dihitung';
         }
-        
+
         return $this->total_score <= 5 ? 'Baik' : 'Buruk';
     }
 
@@ -234,7 +234,14 @@ class DailyTest extends Model
         if ($this->total_score === null) {
             return 'secondary';
         }
-        
+
         return $this->total_score <= 5 ? 'success' : 'danger';
+    }
+
+    public function isAdminFilled()
+    {
+        // Cek apakah bagian admin (Q1-Q5) sudah diisi
+        return $this->bedtime && $this->time_to_sleep && $this->wakeup_time &&
+            $this->sleep_duration && $this->sleep_disturbances;
     }
 }

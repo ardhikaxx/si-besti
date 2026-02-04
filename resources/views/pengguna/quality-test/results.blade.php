@@ -421,14 +421,14 @@
         <div class="row mb-4">
             <div class="col-md-3 col-6">
                 <div class="stats-card text-center">
-                    <div class="stats-value">{{ $tests->count() }}</div>
+                    <div class="stats-value">{{ $completedTests->count() }}</div>
                     <div class="stats-label">Total Test</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stats-card text-center">
                     <div class="stats-value">
-                        {{ $tests->where('total_score_before', '<=', 5)->count() }}
+                        {{ $completedTests->where('total_score_before', '<=', 5)->count() }}
                     </div>
                     <div class="stats-label">Kualitas Awal Baik</div>
                 </div>
@@ -436,7 +436,7 @@
             <div class="col-md-3 col-6">
                 <div class="stats-card text-center">
                     <div class="stats-value">
-                        {{ $tests->where('total_score_after', '<=', 5)->count() }}
+                        {{ $completedTests->where('total_score_after', '<=', 5)->count() }}
                     </div>
                     <div class="stats-label">Kualitas Akhir Baik</div>
                 </div>
@@ -444,7 +444,7 @@
             <div class="col-md-3 col-6">
                 <div class="stats-card text-center">
                     @php
-                        $improved = $tests
+                        $improved = $completedTests
                             ->filter(function ($test) {
                                 return $test->total_score_after < $test->total_score_before;
                             })
@@ -456,9 +456,9 @@
             </div>
         </div>
 
-        @if ($tests->count() > 0)
+        @if ($completedTests->count() > 0)
             <!-- Results List -->
-            @foreach ($tests as $test)
+            @foreach ($completedTests as $test)
                 <div class="result-card">
                     <!-- Test Period Header -->
                     <div class="test-period-header">

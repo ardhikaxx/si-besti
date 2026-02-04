@@ -1,6 +1,4 @@
 <?php
-// app/Models/SleepTest.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +22,6 @@ class SleepTest extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
-        'is_confirmed' => 'boolean'
     ];
 
     public function pengguna()
@@ -47,153 +44,109 @@ class SleepTest extends Model
         return $this->hasOne(DailyTest::class)->where('day_type', 'last');
     }
 
-    public function canTakeFirstTest()
+    public function canUserTakeTest($type)
     {
         if ($this->status !== 'ongoing') {
             return false;
         }
 
-        // Hanya bisa di hari pertama atau hari setelahnya jika belum diisi
         $today = now();
-        $testStartDate = Carbon::parse($this->start_date);
         
-        if ($today->lt($testStartDate)) {
-            return false; // Belum waktunya
-        }
-
-        $firstTest = $this->firstTest;
-        
-        // Jika belum ada test pertama, bisa diisi
-        if (!$firstTest) {
-            return true;
-        }
-
-        // Jika sudah ada tapi belum dikonfirmasi, bisa diedit
-        return !$firstTest->is_confirmed;
-    }
-
-    public function canTakeLastTest()
-    {
-        if ($this->status !== 'ongoing') {
-            return false;
-        }
-
-        // Pastikan test pertama sudah selesai
-        $firstTest = $this->firstTest;
-        if (!$firstTest || !$firstTest->is_confirmed) {
-            return false;
-        }
-
-        // Cek apakah sudah hari ke-7 atau setelahnya
-        $today = now();
-        $lastTestDate = Carbon::parse($this->end_date); // Hari ke-7
-        
-        // Bisa mengambil test terakhir jika:
-        // 1. Sudah mencapai hari ke-7 atau setelahnya
-        // 2. Belum ada test terakhir atau belum dikonfirmasi
-        if ($today->gte($lastTestDate)) {
-            $lastTest = $this->lastTest;
-            if (!$lastTest) {
-                return true;
+        if ($type == 'first') {
+            $startDate = Carbon::parse($this->start_date);
+            if ($today->lt($startDate)) {
+                return false;
             }
-            return !$lastTest->is_confirmed;
-        }
-
-        return false;
-    }
-
-    public function getTestDates()
-    {
-        $dates = [];
-        $startDate = Carbon::parse($this->start_date);
-        
-        for ($i = 1; $i <= 7; $i++) {
-            $date = $startDate->copy()->addDays($i - 1);
-            $dates[] = [
-                'day' => $i,
-                'date' => $date,
-                'is_test_day' => $i == 1 || $i == 7,
-                'day_type' => $i == 1 ? 'first' : ($i == 7 ? 'last' : null),
-                'is_available' => $this->isTestDateAvailable($i, $date)
-            ];
-        }
-        
-        return $dates;
-    }
-
-    private function isTestDateAvailable($dayNumber, $date)
-    {
-        $today = now();
-        
-        if ($dayNumber == 1) {
-            // Test pertama: tersedia mulai hari pertama
-            return $today->gte($date);
-        } elseif ($dayNumber == 7) {
-            // Test terakhir: tersedia mulai hari ke-7
-            // dan test pertama harus sudah selesai
-            $firstTest = $this->firstTest;
-            $firstTestCompleted = $firstTest && $firstTest->is_confirmed;
             
-            return $today->gte($date) && $firstTestCompleted;
+            $firstTest = $this->firstTest;
+            return !$firstTest || ($firstTest && !$firstTest->is_confirmed);
+        } else {
+            // Untuk test terakhir, cek apakah test pertama sudah dikonfirmasi admin
+            $firstTest = $this->firstTest;
+            if (!$firstTest || !$firstTest->is_confirmed) {
+                return false;
+            }
+            
+            $endDate = Carbon::parse($this->end_date);
+            if ($today->lt($endDate)) {
+                return false;
+            }
+            
+            $lastTest = $this->lastTest;
+            return !$lastTest || ($lastTest && !$lastTest->is_confirmed);
+        }
+    }
+
+    public function canAdminFillTest($type)
+    {
+        $test = $type == 'first' ? $this->firstTest : $this->lastTest;
+        
+        // Admin bisa mengisi jika test ada tapi belum diisi bagian admin
+        if ($test) {
+            // Cek apakah bagian admin (Q1-Q5) sudah diisi
+            return !$test->filled_by_admin && $test->is_confirmed;
         }
         
         return false;
     }
 
-    public function getCurrentTestInfo()
+    public function getTestStatus()
     {
         $firstTest = $this->firstTest;
         $lastTest = $this->lastTest;
         
         if (!$firstTest) {
             return [
-                'status' => 'first_pending',
-                'message' => 'Test pertama belum diisi',
-                'next_test_date' => $this->start_date
+                'status' => 'waiting_user',
+                'message' => 'Menunggu pengisian oleh pengguna',
+                'color' => 'warning'
             ];
         }
         
         if ($firstTest && !$firstTest->is_confirmed) {
             return [
-                'status' => 'first_unconfirmed',
-                'message' => 'Test pertama belum dikonfirmasi',
-                'next_test_date' => $this->start_date
+                'status' => 'waiting_user',
+                'message' => 'Menunggu pengisian oleh pengguna',
+                'color' => 'warning'
             ];
         }
         
-        if ($firstTest && $firstTest->is_confirmed && (!$lastTest || !$lastTest->is_confirmed)) {
-            $today = now();
-            $lastTestDate = Carbon::parse($this->end_date);
-            
-            if ($today->lt($lastTestDate)) {
-                $daysLeft = $today->diffInDays($lastTestDate);
-                return [
-                    'status' => 'waiting_for_last',
-                    'message' => 'Menunggu test terakhir (hari ke-7)',
-                    'next_test_date' => $this->end_date,
-                    'days_left' => $daysLeft
-                ];
-            } else {
-                return [
-                    'status' => 'last_available',
-                    'message' => 'Test terakhir tersedia',
-                    'next_test_date' => $this->end_date
-                ];
-            }
+        if ($firstTest && $firstTest->is_confirmed && !$firstTest->filled_by_admin) {
+            return [
+                'status' => 'waiting_admin',
+                'message' => 'Sedang diproses admin',
+                'color' => 'info'
+            ];
         }
         
-        if ($lastTest && $lastTest->is_confirmed) {
+        if ($firstTest && $firstTest->filled_by_admin && (!$lastTest || !$lastTest->is_confirmed)) {
+            return [
+                'status' => 'waiting_user_last',
+                'message' => 'Menunggu test terakhir oleh pengguna',
+                'color' => 'warning'
+            ];
+        }
+        
+        if ($lastTest && $lastTest->is_confirmed && !$lastTest->filled_by_admin) {
+            return [
+                'status' => 'waiting_admin_last',
+                'message' => 'Sedang diproses admin (test terakhir)',
+                'color' => 'info'
+            ];
+        }
+        
+        if ($lastTest && $lastTest->filled_by_admin && $lastTest->is_confirmed) {
             return [
                 'status' => 'completed',
                 'message' => 'Test selesai',
-                'next_test_date' => null
+                'color' => 'success'
             ];
         }
         
         return [
             'status' => 'unknown',
             'message' => 'Status tidak diketahui',
-            'next_test_date' => null
+            'color' => 'secondary'
         ];
     }
 
@@ -223,20 +176,54 @@ class SleepTest extends Model
             return 25;
         }
         
-        if ($firstTest && $firstTest->is_confirmed) {
-            if (!$lastTest) {
-                return 50;
-            }
-            
-            if ($lastTest && !$lastTest->is_confirmed) {
-                return 75;
-            }
-            
-            if ($lastTest && $lastTest->is_confirmed) {
-                return 100;
-            }
+        if ($firstTest && $firstTest->is_confirmed && !$firstTest->filled_by_admin) {
+            return 50;
+        }
+        
+        if ($firstTest && $firstTest->filled_by_admin && (!$lastTest || !$lastTest->is_confirmed)) {
+            return 75;
+        }
+        
+        if ($lastTest && $lastTest->is_confirmed && !$lastTest->filled_by_admin) {
+            return 90;
+        }
+        
+        if ($lastTest && $lastTest->filled_by_admin && $lastTest->is_confirmed) {
+            return 100;
         }
         
         return 0;
+    }
+
+    public function isTestAvailableForUser()
+    {
+        $firstTest = $this->firstTest;
+        
+        // Jika belum ada test pertama, user bisa mengisi
+        if (!$firstTest) {
+            return true;
+        }
+        
+        // Jika test pertama sudah dikonfirmasi tapi belum diisi admin, user belum bisa mengisi test terakhir
+        if ($firstTest->is_confirmed && !$firstTest->filled_by_admin) {
+            return false;
+        }
+        
+        // Jika test pertama sudah selesai (dikonfirmasi dan diisi admin), cek untuk test terakhir
+        if ($firstTest->filled_by_admin) {
+            $lastTest = $this->lastTest;
+            
+            // Jika belum ada test terakhir, user bisa mengisi
+            if (!$lastTest) {
+                return true;
+            }
+            
+            // Jika test terakhir sudah dikonfirmasi, user tidak bisa mengisi lagi
+            if ($lastTest->is_confirmed) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

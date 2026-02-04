@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthAdminController;
 use App\Http\Controllers\DataIbuController;
 use App\Http\Controllers\SleepTrackingAdminController;
+use App\Http\Controllers\HasilTestAdminController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -85,6 +86,15 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/status', [DataIbuController::class, 'updateStatus'])->name('admin.data-ibu.status');
             Route::delete('/{id}', [DataIbuController::class, 'destroy'])->name('admin.data-ibu.destroy');
             Route::get('/statistics', [DataIbuController::class, 'getStatistics'])->name('admin.data-ibu.statistics');
+        });
+ 
+        Route::prefix('test-quality')->name('admin.test-quality.')->group(function () {
+            Route::get('/', [HasilTestAdminController::class, 'index'])->name('index');
+            Route::get('/{id}/detail', [HasilTestAdminController::class, 'show'])->name('detail');
+            Route::get('/{test}/create', [HasilTestAdminController::class, 'create'])->name('create');
+            Route::post('/{test}/{type}', [HasilTestAdminController::class, 'store'])->name('store');
+            Route::get('/test/{test}', [HasilTestAdminController::class, 'showTest'])->name('show-test');
+            Route::post('/confirm/{test}/{type}', [HasilTestAdminController::class, 'confirmTest'])->name('confirm');
         });
 
         Route::prefix('sleep-tracking')->group(function () {

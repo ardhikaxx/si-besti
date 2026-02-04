@@ -508,20 +508,11 @@
                         <a href="{{ route('pengguna.quality-test.result') }}" class="btn btn-success me-2">
                             <i class="fas fa-chart-bar me-1"></i>Semua Hasil
                         </a>
-                        @if ($currentTest->status == 'completed')
-                            <button class="btn btn-primary" onclick="startNewTest()">
-                                <i class="fas fa-plus me-1"></i>Test Baru
-                            </button>
-                        @else
-                            @php
-                                $progress = $currentTest->getProgressPercentage();
-                            @endphp
-                            <div class="d-flex flex-column flex-lg-row gap-2">
-                                <span class="badge bg-secondary px-3 py-2 w-auto">
-                                    <i class="fas fa-clock me-1"></i>{{ $testInfo['message'] }}
-                                </span>
-                            </div>
-                        @endif
+                        <span class="status-badge text-white">
+                            <i
+                                class="fas fa-{{ $testStatus['color'] == 'info' ? 'cog' : ($testStatus['color'] == 'success' ? 'check' : 'clock') }} me-1"></i>
+                            {{ $testStatus['message'] }}
+                        </span>
                     </div>
                 </div>
 
@@ -530,18 +521,7 @@
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted"><i class="fas fa-tasks me-2"></i>Progress Test</span>
                         <span class="text-primary fw-bold">
-                            @php
-                                $firstTest = $currentTest->firstTest;
-                                $lastTest = $currentTest->lastTest;
-                                $completed = 0;
-                                if ($firstTest && $firstTest->is_confirmed) {
-                                    $completed++;
-                                }
-                                if ($lastTest && $lastTest->is_confirmed) {
-                                    $completed++;
-                                }
-                            @endphp
-                            <i class="fas fa-check-circle me-1"></i>{{ $completed }}/2 test selesai
+                            <i class="fas fa-check-circle me-1"></i>{{ $progress }}% selesai
                         </span>
                     </div>
                     <div class="progress">
@@ -560,214 +540,288 @@
         </div>
 
         <!-- Status Info -->
-        @if ($currentTest->status == 'ongoing')
-            @if ($testInfo['status'] == 'first_pending')
-                <div class="alert alert-primary mb-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-info-circle me-3"></i>
-                        <div>
-                            <h6 class="mb-1">Test Pertama Tersedia!</h6>
-                            <p class="mb-0">Silakan isi test pertama hari ini. Test terakhir akan terkunci sampai hari
-                                ke-7.</p>
-                        </div>
+        @if ($testStatus['status'] == 'waiting_admin' || $testStatus['status'] == 'waiting_admin_last')
+            <div class="alert alert-info mb-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-cog me-3 fa-2x"></i>
+                    <div>
+                        <h6 class="mb-1">Sedang Diproses Admin</h6>
+                        <p class="mb-0">Test Anda telah disimpan dan sedang diproses oleh admin.
+                            Admin akan mengisi bagian informasi waktu tidur dan gangguan tidur.</p>
                     </div>
                 </div>
-            @elseif($testInfo['status'] == 'first_unconfirmed')
-                <div class="alert alert-primary mb-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-exclamation-triangle me-3"></i>
-                        <div>
-                            <h6 class="mb-1">Test Pertama Belum Dikonfirmasi!</h6>
-                            <p class="mb-0">Anda sudah mengisi test pertama. Silakan konfirmasi sebelum menunggu test
-                                terakhir.</p>
-                        </div>
-                    </div>
-                </div>
-            @elseif($testInfo['status'] == 'waiting_for_last')
-                <div class="alert alert-info mb-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-calendar-check me-3"></i>
-                        <div>
-                            <h6 class="mb-1">Menunggu Test Terakhir</h6>
-                            <p class="mb-0">Test pertama sudah selesai. Test terakhir akan tersedia pada
-                                <strong>{{ \Carbon\Carbon::parse($currentTest->end_date)->format('d M Y') }}</strong>
-                                ({{ $testInfo['days_left'] ?? 0 }} hari lagi).
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            @elseif($testInfo['status'] == 'last_available')
-                <div class="alert alert-success mb-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle me-3"></i>
-                        <div>
-                            <h6 class="mb-1">Test Terakhir Tersedia!</h6>
-                            <p class="mb-0">Silakan isi test terakhir hari ini untuk melihat hasil perbandingan.</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
+            </div>
         @endif
 
         <!-- Test Cards -->
         <div class="row g-4 mb-4">
-            @foreach ($weekDays as $day)
-                @if ($day['is_test_day'])
-                    <div class="col-12 col-md-6">
-                        <div class="card test-card @if ($day['can_take_test']) available @endif">
-                            <div class="card-body p-4">
-                                <!-- Day Header -->
-                                <div class="test-card-header">
-                                    <div class="d-flex align-items-start justify-content-between">
-                                        <div>
-                                            <h5 class="test-card-title mb-1">
-                                                <i
-                                                    class="fas fa-{{ $day['day_type'] == 'first' ? 'play-circle' : 'flag-checkered' }} me-2"></i>
-                                                {{ $day['day_type'] == 'first' ? 'Test Pertama' : 'Test Terakhir' }}
-                                            </h5>
-                                            <p class="text-muted small mb-1">
-                                                <i class="fas fa-calendar-day me-1"></i>{{ $day['day_name'] }},
-                                                {{ $day['date_formatted'] }}
-                                            </p>
-                                            <p class="text-muted small mb-0">
-                                                <i class="fas fa-chart-line me-1"></i>Hari ke-{{ $day['day_number'] }} dari
-                                                7
-                                            </p>
-                                        </div>
-                                        <div>
-                                            @if ($day['is_confirmed'])
-                                                <span class="status-badge completed">
-                                                    <i class="fas fa-check-circle"></i>Selesai
-                                                </span>
-                                            @elseif($day['can_take_test'])
-                                                <span class="status-badge available">
-                                                    <i class="fas fa-star"></i>Tersedia
-                                                </span>
-                                            @elseif($day['is_future'] || !$day['is_available'])
-                                                <span class="status-badge locked">
-                                                    <i class="fas fa-lock"></i>Terkunci
-                                                </span>
-                                            @else
-                                                <span class="status-badge waiting">
-                                                    <i class="fas fa-clock"></i>Menunggu
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
+            <!-- Test Pertama -->
+            <div class="col-12 col-md-6">
+                <div class="card test-card @if ($currentTest->canUserTakeTest('first')) available @endif">
+                    <div class="card-body p-4">
+                        <!-- Day Header -->
+                        <div class="test-card-header">
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div>
+                                    <h5 class="test-card-title mb-1">
+                                        <i class="fas fa-play-circle me-2"></i>
+                                        Test Pertama
+                                    </h5>
+                                    <p class="text-muted small mb-1">
+                                        <i class="fas fa-calendar-day me-1"></i>
+                                        {{ \Carbon\Carbon::parse($currentTest->start_date)->format('l, d M Y') }}
+                                    </p>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-chart-line me-1"></i>Hari ke-1 dari 7
+                                    </p>
                                 </div>
-
-                                <!-- Description -->
-                                <div class="description-box">
-                                    @if ($day['day_type'] == 'first')
-                                        <p class="mb-2"><i class="fas fa-info-circle me-2"
-                                                style="color: var(--blue-600);"></i>
-                                            Test awal untuk menilai kualitas tidur Anda sebelum intervensi.
-                                        </p>
-                                        <p class="mb-0 small text-muted"><i class="fas fa-clock me-2"></i><strong>Batas
-                                                waktu:</strong> Dapat diisi mulai hari ini</p>
-                                    @else
-                                        <p class="mb-2"><i class="fas fa-info-circle me-2"
-                                                style="color: var(--blue-600);"></i>
-                                            Test akhir untuk menilai perubahan kualitas tidur setelah 7 hari.
-                                        </p>
-                                        <p class="mb-0 small text-muted"><i class="fas fa-clock me-2"></i><strong>Batas
-                                                waktu:</strong> Hanya dapat diisi pada hari ke-7</p>
-                                    @endif
-                                </div>
-
-                                <!-- Status & Actions -->
-                                <div class="text-center">
-                                    @if ($day['has_test'])
-                                        @if ($day['is_confirmed'])
-                                            <div class="status-icon-container">
-                                                <div class="status-icon success">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </div>
-                                                <div class="mt-3">
-                                                    <span class="fw-bold" style="color: var(--blue-900);">Test Sudah
-                                                        Terkonfirmasi</span>
-                                                </div>
-                                            </div>
-                                            @if ($day['test']->total_score !== null)
-                                                <div class="score-display">
-                                                    <div class="mb-2">
-                                                        <span class="badge bg-{{ $day['test']->getQualityColor() }}">
-                                                            <i class="fas fa-star me-2"></i>Skor:
-                                                            {{ $day['test']->total_score }}
-                                                        </span>
-                                                    </div>
-                                                    <div class="small" style="color: var(--blue-700);">
-                                                        Kualitas Tidur Anda: <strong
-                                                            class="text-{{ $day['test']->getQualityColor() }}">
-                                                            {{ $day['test']->getQualityLevel() }}
-                                                        </strong>
-                                                    </div>
-                                                </div>
-                                            @endif
+                                <div>
+                                    @if ($firstTest)
+                                        @if ($firstTest->filled_by_admin)
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Selesai
+                                            </span>
+                                        @elseif($firstTest->is_confirmed)
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-cog"></i> Diproses Admin
+                                            </span>
                                         @else
-                                            <div class="status-icon-container">
-                                                <div class="status-icon warning">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                </div>
-                                                <div class="mt-3 mb-3">
-                                                    <span class="fw-bold" style="color: var(--blue-900);">Belum
-                                                        Dikonfirmasi</span>
-                                                </div>
-                                            </div>
-                                            <div class="d-grid gap-2">
-                                                <a href="{{ route('pengguna.quality-test.edit', $day['day_type']) }}"
-                                                    class="btn btn-edit-test action-btn">
-                                                    <i class="fas fa-edit"></i>Edit Test
-                                                </a>
-                                                <form
-                                                    action="{{ route('pengguna.quality-test.confirm', $day['day_type']) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-confirm-test action-btn w-100">
-                                                        <i class="fas fa-check"></i>Konfirmasi Test
-                                                    </button>
-                                                </form>
-                                            </div>
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock"></i> Menunggu
+                                            </span>
                                         @endif
                                     @else
-                                        @if ($day['can_take_test'])
-                                            <a href="{{ route('pengguna.quality-test.show', $day['day_type']) }}"
-                                                class="btn btn-fill-test action-btn w-100">
-                                                <i class="fas fa-file-signature"></i>
-                                                Isi Test {{ $day['day_type'] == 'first' ? 'Pertama' : 'Terakhir' }}
-                                            </a>
-                                        @elseif($day['is_future'] || !$day['is_available'])
-                                            <div class="status-icon-container">
-                                                <div class="status-icon locked">
-                                                    <i class="fas fa-lock"></i>
-                                                </div>
-                                                <div class="mt-3">
-                                                    <p class="text-muted mb-0">
-                                                        @if ($day['day_type'] == 'last')
-                                                            @if ($day['lock_reason'])
-                                                                {{ $day['lock_reason'] }}
-                                                            @else
-                                                                Test akan tersedia pada hari ke-7<br>
-                                                                ({{ $day['date_formatted'] }})
-                                                            @endif
-                                                        @else
-                                                            Test telah lewat batas waktu
-                                                        @endif
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <button class="btn btn-outline-secondary action-btn w-100" disabled>
-                                                <i class="fas fa-ban"></i>Tidak Tersedia
-                                            </button>
-                                        @endif
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-clock"></i> Belum Dimulai
+                                        </span>
                                     @endif
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Description -->
+                        <div class="description-box">
+                            <p class="mb-2"><i class="fas fa-info-circle me-2" style="color: var(--blue-600);"></i>
+                                Test awal untuk menilai kualitas tidur Anda sebelum intervensi.
+                            </p>
+                            <p class="mb-0 small text-muted"><i class="fas fa-user me-2"></i>
+                                <strong>Anda mengisi:</strong> Bagian 3-6 (Penggunaan Obat hingga Kepuasan Tidur)
+                            </p>
+                            <p class="mb-0 small text-muted"><i class="fas fa-user-cog me-2"></i>
+                                <strong>Admin mengisi:</strong> Bagian 1-2 (Informasi Waktu Tidur dan Gangguan)
+                            </p>
+                        </div>
+
+                        <!-- Status & Actions -->
+                        <div class="text-center mt-4">
+                            @if ($firstTest)
+                                @if ($firstTest->filled_by_admin)
+                                    <div class="status-icon-container">
+                                        <div class="status-icon success">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="fw-bold" style="color: var(--blue-900);">Test Selesai</span>
+                                        </div>
+                                    </div>
+                                    @if ($firstTest->total_score !== null)
+                                        <div class="score-display">
+                                            <div class="mb-2">
+                                                <span class="badge bg-{{ $firstTest->getQualityColor() }}">
+                                                    <i class="fas fa-star me-2"></i>Skor: {{ $firstTest->total_score }}
+                                                </span>
+                                            </div>
+                                            <div class="small" style="color: var(--blue-700);">
+                                                Kualitas Tidur Anda: <strong
+                                                    class="text-{{ $firstTest->getQualityColor() }}">
+                                                    {{ $firstTest->getQualityLevel() }}
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @elseif($firstTest->is_confirmed)
+                                    <div class="status-icon-container">
+                                        <div class="status-icon info">
+                                            <i class="fas fa-cog fa-spin"></i>
+                                        </div>
+                                        <div class="mt-3 mb-3">
+                                            <span class="fw-bold" style="color: var(--blue-900);">Sedang Diproses
+                                                Admin</span>
+                                            <p class="text-muted small mb-0">
+                                                Admin akan mengisi bagian informasi waktu tidur
+                                            </p>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a href="{{ route('pengguna.quality-test.show', 'first') }}"
+                                        class="btn btn-fill-test action-btn w-100">
+                                        <i class="fas fa-file-signature"></i>
+                                        Isi Test Pertama
+                                    </a>
+                                @endif
+                            @else
+                                @if ($currentTest->canUserTakeTest('first'))
+                                    <a href="{{ route('pengguna.quality-test.show', 'first') }}"
+                                        class="btn btn-fill-test action-btn w-100">
+                                        <i class="fas fa-file-signature"></i>
+                                        Isi Test Pertama
+                                    </a>
+                                @else
+                                    <div class="status-icon-container">
+                                        <div class="status-icon locked">
+                                            <i class="fas fa-lock"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <p class="text-muted mb-0">
+                                                Test akan tersedia sesuai jadwal
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
                     </div>
-                @endif
-            @endforeach
+                </div>
+            </div>
+
+            <!-- Test Terakhir -->
+            <div class="col-12 col-md-6">
+                <div class="card test-card @if ($currentTest->canUserTakeTest('last')) available @endif">
+                    <div class="card-body p-4">
+                        <!-- Day Header -->
+                        <div class="test-card-header">
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div>
+                                    <h5 class="test-card-title mb-1">
+                                        <i class="fas fa-flag-checkered me-2"></i>
+                                        Test Terakhir
+                                    </h5>
+                                    <p class="text-muted small mb-1">
+                                        <i class="fas fa-calendar-day me-1"></i>
+                                        {{ \Carbon\Carbon::parse($currentTest->end_date)->format('l, d M Y') }}
+                                    </p>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-chart-line me-1"></i>Hari ke-7 dari 7
+                                    </p>
+                                </div>
+                                <div>
+                                    @if ($lastTest)
+                                        @if ($lastTest->filled_by_admin)
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Selesai
+                                            </span>
+                                        @elseif($lastTest->is_confirmed)
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-cog"></i> Diproses Admin
+                                            </span>
+                                        @else
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock"></i> Menunggu
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-lock"></i> Terkunci
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="description-box">
+                            <p class="mb-2"><i class="fas fa-info-circle me-2" style="color: var(--blue-600);"></i>
+                                Test akhir untuk menilai perubahan kualitas tidur setelah 7 hari.
+                            </p>
+                            <p class="mb-0 small text-muted"><i class="fas fa-user me-2"></i>
+                                <strong>Anda mengisi:</strong> Bagian 3-6 (Penggunaan Obat hingga Kepuasan Tidur)
+                            </p>
+                            <p class="mb-0 small text-muted"><i class="fas fa-user-cog me-2"></i>
+                                <strong>Admin mengisi:</strong> Bagian 1-2 (Informasi Waktu Tidur dan Gangguan)
+                            </p>
+                            @if (!$firstTest || !$firstTest->filled_by_admin)
+                                <p class="mb-0 small text-danger mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    Test pertama harus selesai dulu
+                                </p>
+                            @endif
+                        </div>
+
+                        <!-- Status & Actions -->
+                        <div class="text-center mt-4">
+                            @if ($lastTest)
+                                @if ($lastTest->filled_by_admin)
+                                    <div class="status-icon-container">
+                                        <div class="status-icon success">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="fw-bold" style="color: var(--blue-900);">Test Selesai</span>
+                                        </div>
+                                    </div>
+                                    @if ($lastTest->total_score !== null)
+                                        <div class="score-display">
+                                            <div class="mb-2">
+                                                <span class="badge bg-{{ $lastTest->getQualityColor() }}">
+                                                    <i class="fas fa-star me-2"></i>Skor: {{ $lastTest->total_score }}
+                                                </span>
+                                            </div>
+                                            <div class="small" style="color: var(--blue-700);">
+                                                Kualitas Tidur Anda: <strong
+                                                    class="text-{{ $lastTest->getQualityColor() }}">
+                                                    {{ $lastTest->getQualityLevel() }}
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @elseif($lastTest->is_confirmed)
+                                    <div class="status-icon-container">
+                                        <div class="status-icon info">
+                                            <i class="fas fa-cog fa-spin"></i>
+                                        </div>
+                                        <div class="mt-3 mb-3">
+                                            <span class="fw-bold" style="color: var(--blue-900);">Sedang Diproses
+                                                Admin</span>
+                                            <p class="text-muted small mb-0">
+                                                Admin akan mengisi bagian informasi waktu tidur
+                                            </p>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a href="{{ route('pengguna.quality-test.show', 'last') }}"
+                                        class="btn btn-fill-test action-btn w-100">
+                                        <i class="fas fa-file-signature"></i>
+                                        Isi Test Terakhir
+                                    </a>
+                                @endif
+                            @else
+                                @if ($currentTest->canUserTakeTest('last'))
+                                    <a href="{{ route('pengguna.quality-test.show', 'last') }}"
+                                        class="btn btn-fill-test action-btn w-100">
+                                        <i class="fas fa-file-signature"></i>
+                                        Isi Test Terakhir
+                                    </a>
+                                @else
+                                    <div class="status-icon-container">
+                                        <div class="status-icon locked">
+                                            <i class="fas fa-lock"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <p class="text-muted mb-0">
+                                                @if (!$firstTest || !$firstTest->filled_by_admin)
+                                                    Test pertama harus selesai dulu
+                                                @else
+                                                    Test akan tersedia pada hari ke-7
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Info Card -->
@@ -777,25 +831,33 @@
                     <i class="fas fa-info-circle me-2"></i>Informasi Test PSQI
                 </h6>
                 <p class="mb-3" style="color: var(--blue-800);">
-                    Test Pittsburgh Sleep Quality Index (PSQI) mengukur kualitas tidur Anda selama sebulan terakhir melalui
-                    7 komponen:
+                    Test Pittsburgh Sleep Quality Index (PSQI) mengukur kualitas tidur Anda melalui 7 komponen:
                 </p>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <ul class="mb-0">
-                            <li>Kualitas tidur subyektif</li>
-                            <li>Latensi tidur</li>
-                            <li>Durasi tidur</li>
-                            <li>Efisiensi tidur</li>
-                        </ul>
+                        <div class="mb-3">
+                            <h6 class="fw-bold" style="color: var(--blue-700);">
+                                <i class="fas fa-user me-2"></i>Bagian yang Anda Isi:
+                            </h6>
+                            <ul class="mb-0">
+                                <li><strong>Bagian 3:</strong> Penggunaan Obat Tidur</li>
+                                <li><strong>Bagian 4:</strong> Kantuk Siang Hari</li>
+                                <li><strong>Bagian 5:</strong> Antusiasme Menyelesaikan Masalah</li>
+                                <li><strong>Bagian 6:</strong> Kepuasan Tidur</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <ul class="mb-0">
-                            <li>Gangguan tidur</li>
-                            <li>Penggunaan obat tidur</li>
-                            <li>Disfungsi siang hari</li>
-                        </ul>
+                        <div class="mb-3">
+                            <h6 class="fw-bold" style="color: var(--blue-700);">
+                                <i class="fas fa-user-cog me-2"></i>Bagian yang Diisi Admin:
+                            </h6>
+                            <ul class="mb-0">
+                                <li><strong>Bagian 1:</strong> Informasi Waktu Tidur</li>
+                                <li><strong>Bagian 2:</strong> Gangguan Tidur</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -803,10 +865,12 @@
                     <div class="d-flex align-items-start">
                         <i class="fas fa-lightbulb me-3" style="color: var(--blue-600); font-size: 1.5rem;"></i>
                         <div>
-                            <strong style="color: var(--blue-900);">Interpretasi Skor:</strong>
+                            <strong style="color: var(--blue-900);">Proses Test:</strong>
                             <ul class="mb-0 mt-2">
-                                <li><strong>Skor ≤ 5:</strong> Kualitas tidur Baik</li>
-                                <li><strong>Skor > 5:</strong> Kualitas tidur Buruk</li>
+                                <li>1. Anda mengisi bagian 3-6 dan submit</li>
+                                <li>2. Status berubah menjadi "Sedang diproses admin"</li>
+                                <li>3. Admin mengisi bagian 1-2</li>
+                                <li>4. Hasil lengkap akan tersedia</li>
                             </ul>
                         </div>
                     </div>
@@ -815,71 +879,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        function startNewTest() {
-            Swal.fire({
-                title: 'Mulai Test Baru?',
-                text: 'Test yang sedang berjalan akan dihentikan. Apakah Anda yakin?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#0856C8',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Mulai Baru!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Memproses...',
-                        text: 'Mohon tunggu sebentar',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-
-                    fetch('{{ route('pengguna.quality-test.start-new') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: 'Test baru berhasil dimulai',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: data.message || 'Terjadi kesalahan.',
-                                    confirmButtonColor: '#0856C8'
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: 'Gagal memulai test baru',
-                                confirmButtonColor: '#0856C8'
-                            });
-                        });
-                }
-            });
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@endpush
