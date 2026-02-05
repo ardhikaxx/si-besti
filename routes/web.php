@@ -77,6 +77,11 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthAdminController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AuthAdminController::class, 'login'])->name('admin.login.post');
 
+    // Forgot password routes (PUBLIC)
+    Route::post('/forgot-password', [AuthAdminController::class, 'forgotPassword'])->name('admin.forgot.password');
+    Route::get('/reset-password/{email}', [AuthAdminController::class, 'showResetPasswordForm'])->name('admin.reset.password.form');
+    Route::post('/reset-password', [AuthAdminController::class, 'resetPassword'])->name('admin.reset.password');
+
     // Protected admin
     Route::middleware(['admin'])->group(function () {
 
@@ -87,7 +92,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{id}', [DataIbuController::class, 'destroy'])->name('admin.data-ibu.destroy');
             Route::get('/statistics', [DataIbuController::class, 'getStatistics'])->name('admin.data-ibu.statistics');
         });
- 
+
         Route::prefix('test-quality')->name('admin.test-quality.')->group(function () {
             Route::get('/', [HasilTestAdminController::class, 'index'])->name('index');
             Route::get('/{id}/detail', [HasilTestAdminController::class, 'show'])->name('detail');
