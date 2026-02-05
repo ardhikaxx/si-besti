@@ -47,7 +47,7 @@ class AuthAdminController extends Controller
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('admin.profile'))
+            return redirect()->intended(route('admin.data-ibu'))
                 ->with('success', 'Login berhasil! Selamat datang di dashboard admin.')
                 ->with('swal', [
                     'icon' => 'success',

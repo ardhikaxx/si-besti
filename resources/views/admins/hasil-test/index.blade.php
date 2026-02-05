@@ -3,24 +3,24 @@
 @section('title', 'Hasil Test Kualitas Tidur')
 
 @push('styles')
-<style>
-    /* Override any conflicting layout styles */
-    .page-content {
-        padding: 30px 25px !important;
-    }
-
-    @media (max-width: 992px) {
+    <style>
+        /* Override any conflicting layout styles */
         .page-content {
-            padding: 25px 20px !important;
+            padding: 30px 25px !important;
         }
-    }
 
-    @media (max-width: 576px) {
-        .page-content {
-            padding: 20px 15px !important;
+        @media (max-width: 992px) {
+            .page-content {
+                padding: 25px 20px !important;
+            }
         }
-    }
-</style>
+
+        @media (max-width: 576px) {
+            .page-content {
+                padding: 20px 15px !important;
+            }
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -33,13 +33,14 @@
                         <h1 class="page-title mb-2 fw-bold" style="color: var(--primary);">
                             <i class="fas fa-file-medical-alt me-2"></i>Hasil Test Kualitas Tidur
                         </h1>
-                        <p class="page-subtitle text-muted mb-0">Kelola dan pantau hasil test kualitas tidur semua pengguna</p>
+                        <p class="page-subtitle text-muted mb-0">Kelola dan pantau hasil test kualitas tidur semua pengguna
+                        </p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-4">
                     <div class="d-flex justify-content-lg-end">
                         <button class="btn btn-primary-custom btn-refresh" onclick="refreshData()">
-                            <i class="fas fa-sync-alt me-2"></i> 
+                            <i class="fas fa-sync-alt me-2"></i>
                             <span>Refresh Data</span>
                         </button>
                     </div>
@@ -126,7 +127,8 @@
                                 <span class="search-icon">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" class="search-input" id="searchInput" placeholder="Cari nama pengguna...">
+                                <input type="text" class="search-input" id="searchInput"
+                                    placeholder="Cari nama pengguna...">
                                 <button class="search-button" type="button" id="searchBtn">
                                     Cari
                                 </button>
@@ -156,23 +158,27 @@
                                         <span class="row-number">{{ $index + 1 }}</span>
                                     </td>
                                     <td class="td-name">
-                                            <div class="user-info">
-                                                <div class="user-avatar-small">
-                                                    {{ substr($pengguna['nama_lengkap'], 0, 1) }}
-                                                </div>
-                                                <span class="user-name">{{ $pengguna['nama_lengkap'] }}</span>
+                                        <div class="user-info">
+                                            <div class="user-avatar-small text-capitalize">
+                                                {{ substr($pengguna['nama_lengkap'], 0, 1) }}
                                             </div>
-                                        </td>
+                                            <span class="user-name text-capitalize">{{ $pengguna['nama_lengkap'] }}</span>
+                                        </div>
+                                    </td>
                                     <td class="td-total">
                                         <div class="test-progress">
                                             <span class="test-count">{{ $pengguna->total_tests }}</span>
                                             <div class="progress-bar-wrapper">
                                                 @php
-                                                    $completion = $pengguna->total_tests > 0 ? 
-                                                        ($pengguna->completed_tests / $pengguna->total_tests) * 100 : 0;
+                                                    $completion =
+                                                        $pengguna->total_tests > 0
+                                                            ? ($pengguna->completed_tests / $pengguna->total_tests) *
+                                                                100
+                                                            : 0;
                                                 @endphp
                                                 <div class="progress-bar-container">
-                                                    <div class="progress-bar-fill" style="width: {{ $completion }}%"></div>
+                                                    <div class="progress-bar-fill" style="width: {{ $completion }}%">
+                                                    </div>
                                                 </div>
                                                 <span class="progress-text">{{ number_format($completion, 0) }}%</span>
                                             </div>
@@ -182,8 +188,8 @@
                                         @php
                                             $latestTest = $pengguna->sleepTests->first();
                                         @endphp
-                                        @if($latestTest)
-                                            @if($latestTest->status == 'completed')
+                                        @if ($latestTest)
+                                            @if ($latestTest->status == 'completed')
                                                 <span class="status-badge status-completed">
                                                     <i class="fas fa-check-circle me-1"></i>Selesai
                                                 </span>
@@ -203,24 +209,27 @@
                                         @endif
                                     </td>
                                     <td class="td-date">
-                                        @if($latestTest)
-                                            <span class="date-text">{{ \Carbon\Carbon::parse($latestTest->created_at)->format('d M Y') }}</span>
+                                        @if ($latestTest)
+                                            <span
+                                                class="date-text">{{ \Carbon\Carbon::parse($latestTest->created_at)->format('d M Y') }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                     <td class="td-score">
                                         @php
-                                            $avgScore = $pengguna->sleepTests->filter(function($test) {
-                                                return $test->total_score_before && $test->total_score_after;
-                                            })->avg(function($test) {
-                                                return ($test->total_score_before + $test->total_score_after) / 2;
-                                            });
+                                            $avgScore = $pengguna->sleepTests
+                                                ->filter(function ($test) {
+                                                    return $test->total_score_before && $test->total_score_after;
+                                                })
+                                                ->avg(function ($test) {
+                                                    return ($test->total_score_before + $test->total_score_after) / 2;
+                                                });
                                         @endphp
-                                        @if($avgScore)
+                                        @if ($avgScore)
                                             <div class="score-wrapper">
                                                 <span class="score-value">{{ number_format($avgScore, 1) }}</span>
-                                                @if($avgScore <= 5)
+                                                @if ($avgScore <= 5)
                                                     <span class="quality-badge quality-good">
                                                         Baik
                                                     </span>
@@ -236,16 +245,14 @@
                                     </td>
                                     <td class="td-action">
                                         <div class="action-buttons">
-                                            <a href="{{ route('admin.test-quality.detail', $pengguna->id) }}" 
-                                               class="action-btn action-btn-view" 
-                                               title="Lihat Detail">
+                                            <a href="{{ route('admin.test-quality.detail', $pengguna->id) }}"
+                                                class="action-btn action-btn-view" title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                                 <span class="action-text">Detail</span>
                                             </a>
-                                            @if($latestTest)
-                                                <a href="{{ route('admin.test-quality.create', ['test' => $latestTest->id]) }}" 
-                                                   class="action-btn action-btn-add" 
-                                                   title="Tambah Test">
+                                            @if ($latestTest)
+                                                <a href="{{ route('admin.test-quality.create', ['test' => $latestTest->id]) }}"
+                                                    class="action-btn action-btn-add" title="Tambah Test">
                                                     <i class="fas fa-plus"></i>
                                                     <span class="action-text d-none d-xl-inline">Test</span>
                                                 </a>
@@ -267,7 +274,7 @@
                     </table>
                 </div>
             </div>
-            @if($penggunas->count() > 0)
+            @if ($penggunas->count() > 0)
                 <div class="data-table-footer">
                     <div class="row align-items-center g-3">
                         <div class="col-12 col-md-6">
@@ -958,16 +965,18 @@
 
         /* Print Styles */
         @media print {
+
             .data-table-header,
             .data-table-footer,
-            .action-buttons, {
-                display: none !important;
-            }
+            .action-buttons,
+            {
+            display: none !important;
+        }
 
-            .modern-table th,
-            .modern-table td {
-                padding: 0.5rem !important;
-            }
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem !important;
+        }
         }
     </style>
 
@@ -985,7 +994,7 @@
             if (searchBtn) {
                 searchBtn.addEventListener('click', performSearch);
             }
-            
+
             if (searchInput) {
                 searchInput.addEventListener('keyup', function(event) {
                     if (event.key === 'Enter') {
@@ -1009,11 +1018,11 @@
             rows.forEach(row => {
                 const userName = row.querySelector('.user-name');
                 const userEmail = row.querySelector('.user-email');
-                
+
                 if (userName && userEmail) {
                     const nameText = userName.textContent.toLowerCase();
                     const emailText = userEmail.textContent.toLowerCase();
-                    
+
                     if (nameText.includes(searchTerm) || emailText.includes(searchTerm)) {
                         row.style.display = '';
                         visibleCount++;
@@ -1026,7 +1035,7 @@
             // Show empty state if no results
             const tbody = document.querySelector('#penggunaTable tbody');
             const existingEmpty = tbody.querySelector('.search-empty');
-            
+
             if (visibleCount === 0 && searchTerm !== '') {
                 if (!existingEmpty) {
                     const emptyRow = document.createElement('tr');
@@ -1068,17 +1077,17 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add active class to sidebar menu
-        const currentUrl = window.location.pathname;
-        const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
-        
-        menuItems.forEach(item => {
-            if (item.getAttribute('href') && currentUrl.includes(item.getAttribute('href'))) {
-                item.classList.add('active');
-            }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add active class to sidebar menu
+            const currentUrl = window.location.pathname;
+            const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
+
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') && currentUrl.includes(item.getAttribute('href'))) {
+                    item.classList.add('active');
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

@@ -138,10 +138,10 @@
                                         </td>
                                         <td class="td-name">
                                             <div class="user-info">
-                                                <div class="user-avatar-small">
+                                                <div class="user-avatar-small text-capitalize">
                                                     {{ substr($user['nama_lengkap'], 0, 1) }}
                                                 </div>
-                                                <span class="user-name">{{ $user['nama_lengkap'] }}</span>
+                                                <span class="user-name text-capitalize">{{ $user['nama_lengkap'] }}</span>
                                             </div>
                                         </td>
                                         <td class="td-age">
@@ -154,8 +154,8 @@
                                             <span class="child-badge">{{ $user['hamil_anak_ke'] }}</span>
                                         </td>
                                         <td class="td-data">
-                                            <span class="data-badge d-flex flex-column flex-lg-row justify-content-center justify-content-lg-start align-items-center align-items-lg-start">
-                                                <i class="fas fa-bed me-1"></i>
+                                            <span class="data-badge d-flex flex-column flex-lg-row justify-content-center justify-content-lg-start align-items-center">
+                                                <i class="fas fa-bed me-0 me-lg-2"></i>
                                                 {{ $user['total_sleep_records'] }} data
                                             </span>
                                         </td>
@@ -170,12 +170,6 @@
                                                         <i class="fas fa-clock me-1"></i>
                                                         {{ $user['latest_sleep']['durasi'] }}
                                                     </div>
-                                                    @if ($user['latest_sleep']['waktu_tidur_kembali'])
-                                                        <div class="sleep-return">
-                                                            <i class="fas fa-redo me-1"></i>
-                                                            Kembali: {{ $user['latest_sleep']['waktu_tidur_kembali'] }} mnt
-                                                        </div>
-                                                    @endif
                                                 </div>
                                             @else
                                                 <span class="text-muted">-</span>
@@ -261,9 +255,9 @@
                     <div id="modalContent" class="d-none">
                         <!-- User Info -->
                         <div class="row mb-4">
-                            <div class="col-md-8">
+                            <div class="col-md-8 mb-3 mb-lg-0">
                                 <div class="mb-3">
-                                    <h4 id="detailNama" class="fw-bold mb-1"></h4>
+                                    <h4 id="detailNama" class="fw-bold mb-1 text-capitalize"></h4>
                                     <p class="text-muted mb-0">
                                         <i class="fas fa-user me-1"></i> ID: <span id="detailId"></span> | 
                                         <i class="fas fa-phone me-1 ms-2"></i> <span id="detailTelepon"></span>
@@ -474,7 +468,7 @@
                                                         <th>Waktu Bangun</th>
                                                         <th>Durasi</th>
                                                         <th>Kebangunan</th>
-                                                        <th>Waktu Tidur Kembali</th>
+                                                        <th class="px-4">Waktu Tidur Kembali</th>
                                                         <th>Alasan</th>
                                                         <th>Catatan</th>
                                                     </tr>
@@ -1547,7 +1541,7 @@
                 
                 // Create wake back time cell
                 const wakeBackCell = item.waktu_tidur_kembali ? 
-                    `<td><span class="${wakeBackBadgeClass}">${wakeBackTimeText}</span></td>` : 
+                    `<td style="width: 100%;"><span class="${wakeBackBadgeClass}">${wakeBackTimeText}</span></td>` : 
                     `<td><span class="text-muted">-</span></td>`;
                 
                 row.innerHTML = `

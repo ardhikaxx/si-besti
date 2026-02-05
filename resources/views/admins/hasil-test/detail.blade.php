@@ -36,12 +36,12 @@
         <div class="profile-header-card">
             <div class="row align-items-center g-4">
                 <div class="col-md-8">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="profile-avatar">
+                    <div class="d-flex align-items-start align-items-lg-center flex-column flex-lg-row justify-content-start justify-content-lg-center gap-3">
+                        <div class="profile-avatar mx-auto text-capitalize">
                             {{ substr($pengguna->nama_lengkap, 0, 1) }}
                         </div>
                         <div class="profile-info">
-                            <h2 class="profile-name">{{ $pengguna->nama_lengkap }}</h2>
+                            <h2 class="profile-name text-capitalize">{{ $pengguna->nama_lengkap }}</h2>
                             <div class="profile-details">
                                 <div class="detail-item">
                                     <i class="fas fa-location-dot"></i>
@@ -80,7 +80,7 @@
 
         <!-- Section Header -->
         <div class="section-header">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-start justify-content-lg-between gap-3">
                 <h4 class="section-title">
                     <i class="fas fa-file-medical-alt me-2"></i>Riwayat Test Kualitas Tidur
                 </h4>
@@ -97,42 +97,90 @@
         @forelse($pengguna->sleepTests as $test)
         <div class="test-card test-status-{{ $test->status }}">
             <div class="test-card-header">
-                <div class="row align-items-center g-3">
-                    <div class="col-lg-8">
+                <div class="row align-items-start align-items-lg-center g-3">
+                    <div class="col-12 col-lg-8">
                         <div class="d-flex align-items-start gap-3">
                             <div class="test-number">
                                 <span>#{{ $loop->iteration }}</span>
                             </div>
-                            <div class="test-info">
-                                <h5 class="test-title">Test Kualitas Tidur #{{ $loop->iteration }}</h5>
+                            <div class="test-info grow">
+                                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                    <h5 class="test-title mb-0">Test Kualitas Tidur #{{ $loop->iteration }}</h5>
+                                    <!-- Mobile Action Button -->
+                                    <div class="dropdown d-lg-none">
+                                        <button class="btn-action-menu" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" 
+                                                   data-bs-target="#testDetailModal{{ $test->id }}">
+                                                    <i class="fas fa-eye me-2"></i>Lihat Detail
+                                                </a>
+                                            </li>
+                                            @if($test->status == 'ongoing')
+                                            <li>
+                                                <a class="dropdown-item" 
+                                                   href="{{ route('admin.test-quality.create', ['test' => $test->id]) }}">
+                                                    <i class="fas fa-edit me-2"></i>Isi Test
+                                                </a>
+                                            </li>
+                                            @endif
+                                            @if($test->firstTest && !$test->firstTest->is_confirmed)
+                                            <li>
+                                                <form action="{{ route('admin.test-quality.confirm', ['test' => $test->id, 'type' => 'first']) }}" 
+                                                      method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-check me-2"></i>Konfirmasi Test Pertama
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            @endif
+                                            @if($test->lastTest && !$test->lastTest->is_confirmed)
+                                            <li>
+                                                <form action="{{ route('admin.test-quality.confirm', ['test' => $test->id, 'type' => 'last']) }}" 
+                                                      method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-check me-2"></i>Konfirmasi Test Terakhir
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </div>
                                 <div class="test-badges">
                                     <span class="info-badge">
                                         <i class="fas fa-calendar"></i>
-                                        {{ \Carbon\Carbon::parse($test->created_at)->format('d M Y') }}
+                                        <span class="d-none d-sm-inline">{{ \Carbon\Carbon::parse($test->created_at)->format('d M Y') }}</span>
+                                        <span class="d-inline d-sm-none">{{ \Carbon\Carbon::parse($test->created_at)->format('d/m/y') }}</span>
                                     </span>
                                     <span class="info-badge">
                                         <i class="fas fa-flag"></i>
-                                        {{ $test->current_test == 'first' ? 'Test Pertama' : 'Test Terakhir' }}
+                                        <span class="d-none d-md-inline">{{ $test->current_test == 'first' ? 'Test Pertama' : 'Test Terakhir' }}</span>
+                                        <span class="d-inline d-md-none">{{ $test->current_test == 'first' ? 'Pertama' : 'Terakhir' }}</span>
                                     </span>
                                     <span class="status-badge status-{{ $test->status }}">
                                         @if($test->status == 'completed')
-                                            <i class="fas fa-check-circle"></i> Selesai
+                                            <i class="fas fa-check-circle"></i> <span class="d-none d-sm-inline">Selesai</span>
                                         @elseif($test->status == 'ongoing')
-                                            <i class="fas fa-spinner"></i> Berjalan
+                                            <i class="fas fa-spinner"></i> <span class="d-none d-sm-inline">Berjalan</span>
                                         @else
-                                            <i class="fas fa-times-circle"></i> Dibatalkan
+                                            <i class="fas fa-times-circle"></i> <span class="d-none d-sm-inline">Dibatalkan</span>
                                         @endif
                                     </span>
                                 </div>
                                 <div class="test-period">
                                     <i class="fas fa-hourglass-half me-1"></i>
-                                    Periode: {{ \Carbon\Carbon::parse($test->start_date)->format('d M Y') }} 
-                                    - {{ \Carbon\Carbon::parse($test->end_date)->format('d M Y') }}
+                                    <span class="d-none d-md-inline">Periode: {{ \Carbon\Carbon::parse($test->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($test->end_date)->format('d M Y') }}</span>
+                                    <span class="d-inline d-md-none">{{ \Carbon\Carbon::parse($test->start_date)->format('d/m') }} - {{ \Carbon\Carbon::parse($test->end_date)->format('d/m/y') }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-12 col-lg-4">
                         <div class="test-actions">
                             @php
                                 $progressPercentage = 0;
@@ -148,7 +196,8 @@
                                 </div>
                                 <span class="progress-label">Progress</span>
                             </div>
-                            <div class="dropdown">
+                            <!-- Desktop Action Button -->
+                            <div class="dropdown d-none d-lg-block">
                                 <button class="btn-action-menu" type="button" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
@@ -752,6 +801,7 @@
 
         .test-info {
             flex: 1;
+            min-width: 0; /* Prevents flex item overflow */
         }
 
         .test-title {
@@ -759,6 +809,7 @@
             font-weight: 700;
             color: #212529;
             margin-bottom: 0.75rem;
+            word-wrap: break-word;
         }
 
         .test-badges {
@@ -779,6 +830,7 @@
             font-size: 0.8125rem;
             font-weight: 600;
             color: #6c757d;
+            white-space: nowrap;
         }
 
         .status-badge {
@@ -789,6 +841,7 @@
             border-radius: 20px;
             font-size: 0.8125rem;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .status-completed {
@@ -809,6 +862,9 @@
         .test-period {
             color: #6c757d;
             font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         /* Test Actions */
@@ -1034,7 +1090,7 @@
             margin: 0;
         }
 
-        /* Comparison Section */
+        /* ===== Comparison Section - IMPROVED RESPONSIVE ===== */
         .comparison-section {
             margin-top: 1.5rem;
             padding: 1.5rem;
@@ -1048,13 +1104,14 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 1rem;
+            text-align: center;
         }
 
         .comparison-body {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto;
             align-items: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .comparison-item {
@@ -1069,6 +1126,7 @@
             color: #6c757d;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .comparison-value {
@@ -1076,6 +1134,8 @@
             font-weight: 700;
             padding: 0.5rem 1rem;
             border-radius: 12px;
+            min-width: 80px;
+            text-align: center;
         }
 
         .comparison-value.good {
@@ -1089,12 +1149,18 @@
         }
 
         .comparison-arrow {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .comparison-result {
-            margin-left: auto;
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
         }
 
         .result-badge {
@@ -1372,7 +1438,7 @@
             margin: 0;
         }
 
-        /* Responsive Design */
+        /* ===== Responsive Design ===== */
         @media (max-width: 991.98px) {
             .profile-stats {
                 justify-content: flex-start;
@@ -1383,12 +1449,9 @@
                 justify-content: flex-start;
                 margin-top: 1rem;
             }
-
-            .comparison-body {
-                justify-content: center;
-            }
         }
 
+        /* Tablet Responsive - Comparison Section */
         @media (max-width: 767.98px) {
             .profile-header-card {
                 padding: 1.5rem;
@@ -1411,8 +1474,69 @@
                 font-size: 1.5rem;
             }
 
+            /* Test Card Header - Tablet */
             .test-card-header {
                 padding: 1.25rem;
+            }
+
+            .test-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .test-title {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .test-badges {
+                gap: 0.375rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .info-badge {
+                padding: 0.25rem 0.625rem;
+                font-size: 0.75rem;
+            }
+
+            .status-badge {
+                padding: 0.25rem 0.625rem;
+                font-size: 0.75rem;
+            }
+
+            .test-period {
+                font-size: 0.8125rem;
+            }
+
+            .test-actions {
+                justify-content: space-between;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #e9ecef;
+            }
+
+            .progress-indicator {
+                flex-direction: row;
+                gap: 0.75rem;
+            }
+
+            .progress-circle {
+                width: 50px;
+                height: 50px;
+            }
+
+            .progress-circle::before {
+                width: 40px;
+                height: 40px;
+            }
+
+            .progress-value {
+                font-size: 0.75rem;
+            }
+
+            .progress-label {
+                font-size: 0.8125rem;
             }
 
             .test-card-body {
@@ -1427,18 +1551,45 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .comparison-body {
-                flex-direction: column;
-                align-items: stretch;
+            /* Comparison Section - Tablet */
+            .comparison-section {
+                padding: 1.25rem;
             }
 
-            .comparison-arrow {
+            .comparison-body {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .comparison-item:nth-child(1) {
+                order: 1;
+            }
+
+            .comparison-arrow:nth-child(2) {
+                order: 3;
                 transform: rotate(90deg);
-                margin: 0;
+            }
+
+            .comparison-item:nth-child(3) {
+                order: 5;
+            }
+
+            .comparison-arrow:nth-child(4) {
+                display: none;
             }
 
             .comparison-result {
-                margin-left: 0;
+                order: 7;
+                margin-top: 0.5rem;
+            }
+
+            .comparison-value {
+                font-size: 1.75rem;
+                padding: 0.625rem 1.25rem;
+            }
+
+            .comparison-arrow {
+                font-size: 1.25rem;
             }
 
             .modal-body-modern {
@@ -1446,6 +1597,7 @@
             }
         }
 
+        /* Mobile Responsive - Comparison Section */
         @media (max-width: 575.98px) {
             .profile-avatar {
                 width: 64px;
@@ -1457,18 +1609,188 @@
                 font-size: 1.25rem;
             }
 
+            /* Test Card Header - Mobile */
+            .test-card-header {
+                padding: 1rem;
+            }
+
             .test-number {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
             }
 
             .test-title {
-                font-size: 1rem;
+                font-size: 0.9375rem;
+                line-height: 1.3;
+            }
+
+            .test-badges {
+                gap: 0.25rem;
+            }
+
+            .info-badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.6875rem;
+                gap: 0.25rem;
+            }
+
+            .info-badge i {
+                font-size: 0.75rem;
+            }
+
+            .status-badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.6875rem;
+                gap: 0.25rem;
+            }
+
+            .status-badge i {
+                font-size: 0.75rem;
+            }
+
+            .test-period {
+                font-size: 0.75rem;
+            }
+
+            .test-period i {
+                font-size: 0.875rem;
+            }
+
+            .test-actions {
+                gap: 0.75rem;
+                padding-top: 0.75rem;
+                margin-top: 0.75rem;
+            }
+
+            .progress-circle {
+                width: 45px;
+                height: 45px;
+            }
+
+            .progress-circle::before {
+                width: 36px;
+                height: 36px;
+            }
+
+            .progress-value {
+                font-size: 0.6875rem;
+            }
+
+            .progress-label {
+                font-size: 0.75rem;
+            }
+
+            .btn-action-menu {
+                width: 32px;
+                height: 32px;
+            }
+
+            .test-card-body {
+                padding: 1rem;
             }
 
             .components-grid {
                 grid-template-columns: 1fr;
+            }
+
+            /* Comparison Section - Mobile */
+            .comparison-section {
+                padding: 1rem;
+            }
+
+            .comparison-title {
+                font-size: 0.9375rem;
+                margin-bottom: 1rem;
+            }
+
+            .comparison-body {
+                gap: 1rem;
+            }
+
+            .comparison-label {
+                font-size: 0.6875rem;
+            }
+
+            .comparison-value {
+                font-size: 1.5rem;
+                padding: 0.5rem 1rem;
+                min-width: 70px;
+            }
+
+            .comparison-arrow {
+                font-size: 1rem;
+                padding: 0.5rem 0;
+            }
+
+            .result-badge {
+                font-size: 0.8125rem;
+                padding: 0.625rem 1rem;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 374.98px) {
+            /* Test Card Header - Extra Small */
+            .test-card-header {
+                padding: 0.875rem;
+            }
+
+            .test-number {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+            }
+
+            .test-title {
+                font-size: 0.875rem;
+            }
+
+            .test-badges {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.375rem;
+            }
+
+            .info-badge,
+            .status-badge {
+                font-size: 0.625rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .test-period {
+                font-size: 0.6875rem;
+            }
+
+            .test-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .progress-indicator {
+                justify-content: center;
+            }
+
+            .btn-action-menu {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Comparison Section - Extra Small */
+            .comparison-value {
+                font-size: 1.25rem;
+                padding: 0.5rem 0.75rem;
+                min-width: 60px;
+            }
+
+            .comparison-label {
+                font-size: 0.625rem;
+            }
+
+            .result-badge {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.875rem;
             }
         }
     </style>

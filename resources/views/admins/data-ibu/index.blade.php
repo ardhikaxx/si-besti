@@ -25,6 +25,21 @@
             </div>
         </div>
 
+        <!-- Alert Messages -->
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <!-- Statistics Cards -->
         <div class="row g-3 g-lg-4 mb-4">
             <div class="col-12 col-sm-6 col-lg-3">
@@ -137,10 +152,10 @@
                                         </td>
                                         <td class="td-name">
                                             <div class="user-info">
-                                                <div class="user-avatar-small">
+                                                <div class="user-avatar-small text-capitalize">
                                                     {{ substr($ibu['nama_lengkap'], 0, 1) }}
                                                 </div>
-                                                <span class="user-name">{{ $ibu['nama_lengkap'] }}</span>
+                                                <span class="user-name text-capitalize">{{ $ibu['nama_lengkap'] }}</span>
                                             </div>
                                         </td>
                                         <td class="td-status">
@@ -232,7 +247,7 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="modal-body-modern">
+                <div class="modal-body-modern" style="min-height: 70vh; overflow-y: auto;">
                     <div id="modalLoading" class="loading-state">
                         <div class="spinner-wrapper">
                             <div class="spinner-border text-primary" role="status">
@@ -250,18 +265,6 @@
                                         <img id="detailAvatar" src="" alt="Avatar" class="profile-avatar">
                                     </div>
                                     <div id="detailStatusBadge" class="profile-status"></div>
-                                    <div class="profile-meta">
-                                        <div class="meta-item">
-                                            <i class="fas fa-calendar-plus me-2"></i>
-                                            <span class="meta-label">Bergabung:</span>
-                                            <span id="detailCreatedAt" class="meta-value"></span>
-                                        </div>
-                                        <div class="meta-item">
-                                            <i class="fas fa-calendar-edit me-2"></i>
-                                            <span class="meta-label">Update:</span>
-                                            <span id="detailUpdatedAt" class="meta-value"></span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -822,29 +825,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .profile-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-size: 0.8125rem;
-            color: #6c757d;
-        }
-
-        .meta-label {
-            font-weight: 600;
-        }
-
-        .meta-value {
-            color: #495057;
-        }
-
         /* Detail Section */
         .detail-header {
             margin-bottom: 2rem;
@@ -1256,8 +1236,6 @@
             document.getElementById('detailJumlahAnak').textContent = data.jumlah_anak + ' anak';
             document.getElementById('detailUsiaKehamilan').textContent = data.usia_kehamilan;
             document.getElementById('detailAlamat').textContent = data.alamat;
-            document.getElementById('detailCreatedAt').textContent = data.created_at;
-            document.getElementById('detailUpdatedAt').textContent = data.updated_at;
 
             // Avatar
             const avatar = document.getElementById('detailAvatar');

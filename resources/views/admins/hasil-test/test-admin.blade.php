@@ -437,7 +437,7 @@
         <!-- Header -->
         <div class="card border-0 header-card">
             <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-4">
+                <div class="d-flex flex-column flex-lg-row justify-content-start justify-content-lg-between align-items-start align-items-lg-center gap-3 mb-4">
                     <div>
                         <h2 class="mb-2 header-title">
                             <i class="fas fa-user-cog me-2"></i>Isi Bagian Admin
@@ -459,14 +459,14 @@
 
                 <!-- User Info -->
                 <div class="user-info-card">
-                    <div class="row align-items-center">
+                    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3">
                         <div class="col-md-6">
                             <div class="d-flex align-items-center">
-                                <div class="user-avatar me-3">
+                                <div class="user-avatar me-3 text-capitalize">
                                     {{ substr($sleepTest->pengguna->nama_lengkap, 0, 1) }}
                                 </div>
                                 <div>
-                                    <h5 class="mb-1 fw-bold">{{ $sleepTest->pengguna->nama_lengkap }}</h5>
+                                    <h5 class="mb-1 fw-bold text-capitalize">{{ $sleepTest->pengguna->nama_lengkap }}</h5>
                                     <p class="mb-0 text-muted">{{ $sleepTest->pengguna->nomor_telepon }}</p>
                                 </div>
                             </div>

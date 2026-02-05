@@ -10,7 +10,7 @@
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <div class="brand-icon me-2 d-flex align-items-center justify-content-center"
                     style="width: 40px; height: 40px; background: var(--gradient-primary); border-radius: var(--border-radius-sm);">
-                    <i class="fas fa-gem text-white"></i>
+                    <i class="fas fa-user-shield text-white"></i>
                 </div>
                 <span class="fw-bold" style="color: var(--primary);">SI-BESTI</span>
             </a>

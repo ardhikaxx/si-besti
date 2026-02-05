@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center">
             <div class="sidebar-logo me-3 d-flex align-items-center justify-content-center"
                 style="width: 40px; height: 40px; background: var(--gradient-primary); border-radius: var(--border-radius-sm);">
-                <i class="fas fa-gem text-white"></i>
+                <i class="fas fa-user-shield text-white"></i>
             </div>
             <div>
                 <h5 class="mb-0 fw-bold" style="color: var(--primary);">SI-BESTI</h5>
