@@ -770,7 +770,7 @@
                     <p class="page-subtitle">Pantau dan catat kualitas tidur Anda setiap hari</p>
                 </div>
                 <div class="add-button-container">
-                    <button class="add-button" onclick="openAddModal()">
+                    <button class="add-button" data-bs-toggle="modal" data-bs-target="#sleepModal" onclick="openAddModal()">
                         <i class="fas fa-plus"></i>
                         Tambah Catatan Tidur
                     </button>
@@ -898,7 +898,7 @@
                     </div>
                     <h3 class="no-data-title">Belum Ada Catatan Tidur</h3>
                     <p class="no-data-text">Mulai catat tidur Anda untuk memantau kualitas tidur harian.</p>
-                    <button class="add-button" onclick="openAddModal()" style="background: var(--gradient-primary); border: none;">
+                    <button class="add-button" data-bs-toggle="modal" data-bs-target="#sleepModal" onclick="openAddModal()" style="background: var(--gradient-primary); border: none;">
                         <i class="fas fa-plus"></i>
                         Tambah Catatan Pertama
                     </button>
@@ -1011,15 +1011,21 @@
         let detailModal = null;
 
         document.addEventListener('DOMContentLoaded', function() {
-            modal = new bootstrap.Modal(document.getElementById('sleepModal'));
-            detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+            // Initialize modals
+            const sleepModalEl = document.getElementById('sleepModal');
+            const detailModalEl = document.getElementById('detailModal');
+            
+            if (sleepModalEl) {
+                modal = new bootstrap.Modal(sleepModalEl);
+            }
+            if (detailModalEl) {
+                detailModal = new bootstrap.Modal(detailModalEl);
+            }
 
             loadStatistics();
             setDefaultTimes();
             calculateDuration();
             toggleWakeBackTimeField(0);
-
-            document.getElementById('sleepForm').addEventListener('submit', handleSubmit);
         });
 
         function setDefaultTimes() {
@@ -1080,7 +1086,7 @@
 
         async function loadStatistics() {
             try {
-                const response = await fetch('{{ route('pengguna.sleep-tracking.statistics') }}');
+                const response = await fetch('/sleep-tracking/statistics');
                 const result = await response.json();
 
                 if (result.success) {
@@ -1104,12 +1110,11 @@
             setDefaultTimes();
             calculateDuration();
             toggleWakeBackTimeField(0);
-            modal.show();
         }
 
         async function openEditModal(id) {
             try {
-                const response = await fetch('{{ route('pengguna.sleep-tracking.index') }}/' + id);
+                const response = await fetch('/sleep-tracking/' + id);
                 const result = await response.json();
 
                 if (result.success) {
@@ -1127,7 +1132,10 @@
 
                     toggleWakeBackTimeField(data.jumlah_kebangunan);
                     setTimeout(calculateDuration, 100);
-                    modal.show();
+                    
+                    if (modal) {
+                        modal.show();
+                    }
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -1149,7 +1157,7 @@
 
         async function viewDetail(id) {
             try {
-                const response = await fetch('{{ route('pengguna.sleep-tracking.index') }}/' + id);
+                const response = await fetch('/sleep-tracking/' + id);
                 const result = await response.json();
 
                 if (result.success) {
@@ -1215,7 +1223,10 @@
                         ${reasonSection}
                         ${notesSection}
                     `;
-                    detailModal.show();
+                    
+                    if (detailModal) {
+                        detailModal.show();
+                    }
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -1254,10 +1265,12 @@
 
         async function deleteRecord(id) {
             try {
-                const response = await fetch('{{ route('pengguna.sleep-tracking.index') }}/' + id, {
+                const response = await fetch('/sleep-tracking/' + id, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     }
                 });
                 const result = await response.json();
@@ -1306,18 +1319,23 @@
 
             try {
                 const url = method === 'PUT'
-                    ? '{{ route('pengguna.sleep-tracking.index') }}/' + id
-                    : '{{ route('pengguna.sleep-tracking.store') }}';
+                    ? '/sleep-tracking/' + id
+                    : '/sleep-tracking';
 
-                const response = await fetch(url, {
-                    method: method === 'PUT' ? 'PUT' : 'POST',
+                const fetchOptions = {
+                    method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json'
                     },
                     body: formData
-                });
+                };
 
+                if (method === 'PUT') {
+                    formData.append('_method', 'PUT');
+                }
+
+                const response = await fetch(url, fetchOptions);
                 const result = await response.json();
 
                 if (result.success) {
@@ -1327,14 +1345,16 @@
                         text: result.message,
                         confirmButtonColor: '#0856C8'
                     }).then(() => {
-                        modal.hide();
+                        if (modal) {
+                            modal.hide();
+                        }
                         window.location.reload();
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: result.message,
+                        text: result.message || 'Terjadi kesalahan saat menyimpan data',
                         confirmButtonColor: '#0856C8'
                     });
                 }
