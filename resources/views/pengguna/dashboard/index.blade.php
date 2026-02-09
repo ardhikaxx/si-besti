@@ -1,8 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Dashboard - SI Besti')
 
-@push('style')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@push('styles')
     <style>
         :root {
             --blue-100: #E8F0FE;
@@ -693,13 +692,10 @@
             </div>
         </div>
     </div>
-@endsection
 
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if ($sleepTrackingData || $qualityTestData)
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @endif
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -992,4 +988,4 @@
         `;
         document.head.appendChild(style);
     </script>
-@endpush
+@endsection

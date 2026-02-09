@@ -34,7 +34,6 @@
             padding: 20px;
         }
 
-        /* Page Header */
         .page-header {
             background: var(--gradient-primary);
             border-radius: 20px;
@@ -103,7 +102,6 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
-        /* Statistics Card */
         .stats-card {
             background: #ffffff;
             border-radius: 20px;
@@ -181,7 +179,6 @@
             font-weight: 500;
         }
 
-        /* Sleep Cards Container */
         .sleep-cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -195,7 +192,6 @@
             }
         }
 
-        /* Sleep Card */
         .sleep-card {
             background: #ffffff;
             border-radius: 20px;
@@ -325,7 +321,6 @@
             max-width: 60%;
         }
 
-        /* Card Actions */
         .card-actions {
             display: flex;
             gap: 10px;
@@ -343,26 +338,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-        }
-
-        .action-btn:hover::before {
-            width: 300px;
-            height: 300px;
         }
 
         .btn-view {
@@ -395,7 +370,6 @@
             box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
         }
 
-        /* Duration Badges */
         .duration-badge {
             background: var(--gradient-success);
             color: white;
@@ -418,12 +392,6 @@
             box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
         }
 
-        .duration-info {
-            background: var(--gradient-info);
-            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
-        }
-
-        /* Empty State */
         .empty-state {
             display: flex;
             flex-direction: column;
@@ -456,15 +424,8 @@
         }
 
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         .no-data-title {
@@ -480,7 +441,6 @@
             color: var(--blue-700);
         }
 
-        /* Modal Styles */
         .modal-content {
             border-radius: 20px;
             border: none;
@@ -569,14 +529,6 @@
             border-left: 4px solid var(--blue-500);
         }
 
-        .form-help {
-            font-size: 0.85rem;
-            color: var(--blue-600);
-            margin-top: 5px;
-            font-style: italic;
-        }
-
-        /* Conditional Field Container */
         .conditional-field {
             padding: 20px;
             background: #f8fafc;
@@ -659,12 +611,9 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
-        /* Detail Modal */
         .detail-modal .modal-body {
             max-height: 65vh;
             overflow-y: auto;
@@ -743,7 +692,6 @@
             border-left: 4px solid var(--blue-500);
         }
 
-        /* Pagination */
         .pagination-container {
             display: flex;
             justify-content: center;
@@ -787,94 +735,34 @@
             border-color: #e5e7eb;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .page-header {
-                padding: 20px;
-            }
-
-            .page-title {
-                font-size: 1.5rem;
-            }
-
-            .stats-card {
-                padding: 20px;
-            }
-
-            .sleep-card {
-                padding: 20px;
-            }
-
-            .time-value {
-                font-size: 1.2rem;
-            }
-
-            .modal-body {
-                padding: 20px;
-            }
-
-            .add-button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-
-            .wake-back-input-container {
-                grid-template-columns: 1fr;
-            }
+            .page-header { padding: 20px; }
+            .page-title { font-size: 1.5rem; }
+            .stats-card { padding: 20px; }
+            .sleep-card { padding: 20px; }
+            .time-value { font-size: 1.2rem; }
+            .modal-body { padding: 20px; }
+            .add-button { padding: 10px 20px; font-size: 0.9rem; }
+            .wake-back-input-container { grid-template-columns: 1fr; }
         }
 
-        /* Animations */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .sleep-card {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .sleep-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .sleep-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .sleep-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .sleep-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .conditional-field {
-            animation: fadeIn 0.3s ease-out;
-        }
+        .sleep-card { animation: fadeInUp 0.6s ease-out; }
+        .conditional-field { animation: fadeIn 0.3s ease-out; }
     </style>
 @endpush
 
 @section('content')
     <div class="sleep-tracking-container">
-        <!-- Page Header -->
         <div class="page-header">
             <div class="d-flex flex-column flex-lg-row align-items-center justify-content-between page-header-content">
                 <div class="text-center text-lg-start mb-3 mb-lg-0">
@@ -890,45 +778,38 @@
             </div>
         </div>
 
-        <!-- Statistics -->
         <div class="stats-card">
-            <h5>
-                <i class="fas fa-chart-line me-2"></i>Statistik Tidur Anda
-            </h5>
+            <h5><i class="fas fa-chart-line me-2"></i>Statistik Tidur Anda</h5>
             <div class="stats-grid" id="statisticsContainer">
-                <!-- Statistics will be loaded here -->
                 <div class="stat-item">
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="statTotal">0</div>
                     <div class="stat-label"><i class="fas fa-book-open me-2"></i>Total Pencatatan</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">0 jam</div>
+                    <div class="stat-value" id="statAverage">0 jam</div>
                     <div class="stat-label"><i class="fas fa-clock me-2"></i>Rata-rata Durasi</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">0x</div>
+                    <div class="stat-value" id="statWakeups">0x</div>
                     <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">0 mnt</div>
-                    <div class="stat-label"><i class="fas fa-redo me-2"></i>Rata-rata Waktu Tidur Kembali</div>
+                    <div class="stat-value" id="statWakeBack">0 mnt</div>
+                    <div class="stat-label"><i class="fas fa-redo me-2"></i>Rata-rata Tidur Kembali</div>
                 </div>
             </div>
         </div>
 
-        <!-- Sleep Cards -->
         <div id="sleepCardsContainer">
             @if ($sleepTrackings->count() > 0)
                 <div class="sleep-cards-container">
                     @foreach ($sleepTrackings as $tracking)
                         @php
-                            // Calculate duration in hours and minutes
                             $hours = floor($tracking->durasi_tidur);
                             $minutes = round(($tracking->durasi_tidur - $hours) * 60);
                             $durationText = $hours > 0 ? $hours . ' jam' : '';
                             $durationText .= $minutes > 0 ? ' ' . $minutes . ' menit' : '';
 
-                            // Determine duration badge color
                             $badgeClass = 'duration-badge';
                             if ($tracking->durasi_tidur >= 7) {
                                 $badgeClass .= '';
@@ -940,10 +821,8 @@
                         @endphp
                         <div class="sleep-card" id="card-{{ $tracking->id }}">
                             <div class="sleep-date">
-                                <i
-                                    class="fas fa-calendar-alt me-2"></i>{{ date('d F Y', strtotime($tracking->tanggal_tidur)) }}
+                                <i class="fas fa-calendar-alt me-2"></i>{{ date('d F Y', strtotime($tracking->tanggal_tidur)) }}
                             </div>
-
                             <div class="sleep-time">
                                 <div class="time-item">
                                     <span class="time-label">Mulai Tidur</span>
@@ -954,14 +833,10 @@
                                     <span class="time-value">{{ date('H:i', strtotime($tracking->waktu_bangun)) }}</span>
                                 </div>
                             </div>
-
                             <div class="sleep-duration">
                                 <i class="fas fa-clock me-2"></i>Durasi: {{ $durationText }}
-                                <span class="{{ $badgeClass }}">
-                                    {{ number_format($tracking->durasi_tidur, 2) }} jam
-                                </span>
+                                <span class="{{ $badgeClass }}">{{ number_format($tracking->durasi_tidur, 2) }} jam</span>
                             </div>
-
                             <div class="sleep-details">
                                 <div class="detail-item">
                                     <span class="detail-label"><i class="fas fa-wind me-2"></i>Kebangunan:</span>
@@ -969,11 +844,8 @@
                                 </div>
                                 @if ($tracking->waktu_tidur_kembali)
                                     <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-redo me-2"></i>Waktu Tidur
-                                            Kembali:</span>
-                                        <span class="detail-value">
-                                            {{ $tracking->waktu_tidur_kembali }} menit
-                                        </span>
+                                        <span class="detail-label"><i class="fas fa-redo me-2"></i>Waktu Tidur Kembali:</span>
+                                        <span class="detail-value">{{ $tracking->waktu_tidur_kembali }} menit</span>
                                     </div>
                                 @endif
                                 @if ($tracking->alasan_kebangunan)
@@ -983,7 +855,6 @@
                                     </div>
                                 @endif
                             </div>
-
                             <div class="card-actions">
                                 <button class="action-btn btn-view" onclick="viewDetail({{ $tracking->id }})">
                                     <i class="fas fa-eye"></i>Lihat
@@ -999,35 +870,24 @@
                     @endforeach
                 </div>
 
-                <!-- Pagination -->
                 @if ($sleepTrackings->hasPages())
                     <div class="pagination-container">
                         <ul class="pagination">
-
-                            {{-- Previous --}}
                             <li class="page-item {{ $sleepTrackings->onFirstPage() ? 'disabled' : '' }}">
-                                <a class="page-link" href="{{ $sleepTrackings->previousPageUrl() ?? '#' }}"
-                                    aria-label="Previous">
+                                <a class="page-link" href="{{ $sleepTrackings->previousPageUrl() ?? '#' }}" aria-label="Previous">
                                     <i class="fas fa-chevron-left"></i>
                                 </a>
                             </li>
-
-                            {{-- Page Numbers --}}
                             @foreach ($sleepTrackings->getUrlRange(max(1, $sleepTrackings->currentPage() - 2), min($sleepTrackings->lastPage(), $sleepTrackings->currentPage() + 2)) as $page => $url)
                                 <li class="page-item {{ $page == $sleepTrackings->currentPage() ? 'active' : '' }}">
-                                    <a class="page-link" href="{{ $url }}">
-                                        {{ $page }}
-                                    </a>
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
                                 </li>
                             @endforeach
-
-                            {{-- Next --}}
                             <li class="page-item {{ $sleepTrackings->hasMorePages() ? '' : 'disabled' }}">
                                 <a class="page-link" href="{{ $sleepTrackings->nextPageUrl() ?? '#' }}" aria-label="Next">
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
                             </li>
-
                         </ul>
                     </div>
                 @endif
@@ -1038,8 +898,7 @@
                     </div>
                     <h3 class="no-data-title">Belum Ada Catatan Tidur</h3>
                     <p class="no-data-text">Mulai catat tidur Anda untuk memantau kualitas tidur harian.</p>
-                    <button class="add-button" onclick="openAddModal()"
-                        style="background: var(--gradient-primary); border: none;">
+                    <button class="add-button" onclick="openAddModal()" style="background: var(--gradient-primary); border: none;">
                         <i class="fas fa-plus"></i>
                         Tambah Catatan Pertama
                     </button>
@@ -1048,7 +907,6 @@
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
     <div class="modal fade" id="sleepModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -1056,78 +914,61 @@
                     <h5 class="modal-title" id="modalTitle">
                         <i class="fas fa-plus-circle me-2"></i>Tambah Catatan Tidur
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="sleepForm">
+                <form id="sleepForm" onsubmit="handleSubmit(event)">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="trackingId" name="id">
+                        <input type="hidden" id="formMethod" name="_method" value="POST">
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-calendar me-2"></i>Tanggal Tidur *</label>
-                            <input type="date" class="form-control" id="tanggal_tidur" name="tanggal_tidur" required
-                                max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}">
+                            <input type="date" class="form-control" id="tanggal_tidur" name="tanggal_tidur" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-clock me-2"></i>Waktu Tidur *</label>
                             <div class="time-input-group">
-                                <input type="time" class="form-control" id="waktu_tidur" name="waktu_tidur" required
-                                    onchange="calculateDuration()">
+                                <input type="time" class="form-control" id="waktu_tidur" name="waktu_tidur" required onchange="calculateDuration()">
                                 <span class="time-separator"><i class="fas fa-arrow-right"></i></span>
-                                <input type="time" class="form-control" id="waktu_bangun" name="waktu_bangun"
-                                    required onchange="calculateDuration()">
+                                <input type="time" class="form-control" id="waktu_bangun" name="waktu_bangun" required onchange="calculateDuration()">
                             </div>
                             <div class="duration-info">
-                                <i class="fas fa-info-circle me-2"></i>Durasi: <strong><span id="durationPreview">0 jam 0
-                                        menit</span></strong>
+                                <i class="fas fa-info-circle me-2"></i>Durasi: <strong><span id="durationPreview">0 jam 0 menit</span></strong>
                                 (<span id="durationDecimal">0.00 jam</span>)
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-wind me-2"></i>Berapa kali kebangun? *</label>
-                            <input type="number" class="form-control" id="jumlah_kebangunan" name="jumlah_kebangunan"
-                                min="0" max="20" value="0" required
-                                onchange="toggleWakeBackTimeField(this.value)">
-                            <div class="form-help">Isi 0 jika tidak terbangun sama sekali</div>
+                            <input type="number" class="form-control" id="jumlah_kebangunan" name="jumlah_kebangunan" min="0" max="20" value="0" required onchange="toggleWakeBackTimeField(this.value)">
+                            <div class="duration-info">Isi 0 jika tidak terbangun sama sekali</div>
                         </div>
 
-                        <!-- Conditional Field for Wake Back Time -->
                         <div class="conditional-field" id="wakeBackTimeContainer" style="display: none;">
                             <div class="form-group mb-2">
-                                <label class="form-label">
-                                    <i class="fas fa-redo me-2"></i>Rata-rata waktu untuk tidur kembali (dalam menit)
-                                </label>
+                                <label class="form-label"><i class="fas fa-redo me-2"></i>Rata-rata waktu untuk tidur kembali (dalam menit)</label>
                                 <div class="wake-back-input-container">
                                     <div class="input-with-unit">
-                                        <input type="number" class="form-control" id="waktu_tidur_kembali"
-                                            name="waktu_tidur_kembali" min="1" max="120"
-                                            placeholder="Misal: 15">
+                                        <input type="number" class="form-control" id="waktu_tidur_kembali" name="waktu_tidur_kembali" min="1" max="120" placeholder="Misal: 15">
                                         <span class="input-unit">menit</span>
                                     </div>
                                 </div>
-                                <div class="form-help mt-2">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Perkiraan waktu yang dibutuhkan untuk kembali tidur setelah terbangun.
-                                    Contoh: 15 menit, 30 menit, dll.
+                                <div class="duration-info">
+                                    <i class="fas fa-info-circle me-1"></i>Perkiraan waktu yang dibutuhkan untuk kembali tidur setelah terbangun.
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-comment-medical me-2"></i>
-                                Alasan kebangunan (jika ada)
-                            </label>
-                            <textarea class="form-control" id="alasan_kebangunan" name="alasan_kebangunan" rows="3"
-                                placeholder="Contoh: ke kamar mandi, mimpi buruk, merasa tidak nyaman, terbangun karena batuk atau rasa nyeri, dll."></textarea>
+                            <label class="form-label"><i class="fas fa-comment-medical me-2"></i>Alasan kebangunan (jika ada)</label>
+                            <textarea class="form-control" id="alasan_kebangunan" name="alasan_kebangunan" rows="3" placeholder="Contoh: ke kamar mandi, mimpi buruk, merasa tidak nyaman, dll."></textarea>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-sticky-note me-2"></i>Catatan lain</label>
-                            <textarea class="form-control" id="catatan_lain" name="catatan_lain" rows="3"
-                                placeholder="Tambah catatan tentang kualitas tidur, mimpi, atau hal lain"></textarea>
+                            <textarea class="form-control" id="catatan_lain" name="catatan_lain" rows="3" placeholder="Tambah catatan tentang kualitas tidur, mimpi, atau hal lain"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1144,19 +985,14 @@
         </div>
     </div>
 
-    <!-- View Detail Modal -->
     <div class="modal fade detail-modal" id="detailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-info-circle me-2"></i>Detail Catatan Tidur
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Detail Catatan Tidur</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="detailContent">
-                    <!-- Detail content will be loaded here -->
-                </div>
+                <div class="modal-body" id="detailContent"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Tutup
@@ -1168,51 +1004,46 @@
 @endsection
 
 @push('scripts')
-    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         let currentTrackingId = null;
-        const modal = new bootstrap.Modal(document.getElementById('sleepModal'));
-        const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+        let modal = null;
+        let detailModal = null;
 
-        // Load statistics on page load
         document.addEventListener('DOMContentLoaded', function() {
+            modal = new bootstrap.Modal(document.getElementById('sleepModal'));
+            detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+
             loadStatistics();
             setDefaultTimes();
-            calculateDuration(); // Calculate initial duration
-            toggleWakeBackTimeField(0); // Initialize wake back time field
+            calculateDuration();
+            toggleWakeBackTimeField(0);
+
+            document.getElementById('sleepForm').addEventListener('submit', handleSubmit);
         });
 
-        // Set default times for new entries
         function setDefaultTimes() {
-            const now = new Date();
-            const sleepTime = new Date(now);
-            sleepTime.setHours(22, 0, 0); // Default sleep time: 22:00
-            const wakeTime = new Date(now);
-            wakeTime.setHours(6, 0, 0); // Default wake time: 06:00
-
-            document.getElementById('waktu_tidur').value = sleepTime.toTimeString().slice(0, 5);
-            document.getElementById('waktu_bangun').value = wakeTime.toTimeString().slice(0, 5);
+            const sleepEl = document.getElementById('waktu_tidur');
+            const wakeEl = document.getElementById('waktu_bangun');
+            if (sleepEl && !sleepEl.value) sleepEl.value = '22:00';
+            if (wakeEl && !wakeEl.value) wakeEl.value = '06:00';
         }
 
-        // Toggle wake back time field based on number of wakeups
         function toggleWakeBackTimeField(wakeups) {
             const container = document.getElementById('wakeBackTimeContainer');
             const input = document.getElementById('waktu_tidur_kembali');
-
-            if (parseInt(wakeups) > 0) {
-                container.style.display = 'block';
-                container.classList.add('active');
-                input.required = false; // Optional field
-            } else {
-                container.style.display = 'none';
-                container.classList.remove('active');
-                input.value = ''; // Clear the input
+            if (container && input) {
+                if (parseInt(wakeups) > 0) {
+                    container.style.display = 'block';
+                    container.classList.add('active');
+                } else {
+                    container.style.display = 'none';
+                    container.classList.remove('active');
+                    input.value = '';
+                }
             }
         }
 
-        // Calculate duration in real-time
         function calculateDuration() {
             const sleepTime = document.getElementById('waktu_tidur').value;
             const wakeTime = document.getElementById('waktu_bangun').value;
@@ -1228,7 +1059,6 @@
             let wakeDate = new Date();
             wakeDate.setHours(parseInt(wakeParts[0]), parseInt(wakeParts[1]), 0);
 
-            // If wake time is earlier than sleep time, assume it's the next day
             if (wakeDate <= sleepDate) {
                 wakeDate.setDate(wakeDate.getDate() + 1);
             }
@@ -1239,32 +1069,15 @@
             const hours = Math.floor(durationInHours);
             const minutes = Math.round((durationInHours - hours) * 60);
 
-            // Update preview
             let durationText = '';
-            if (hours > 0) {
-                durationText += `${hours} jam `;
-            }
-            if (minutes > 0) {
-                durationText += `${minutes} menit`;
-            } else if (hours === 0) {
-                durationText = '0 menit';
-            }
+            if (hours > 0) durationText += hours + ' jam ';
+            if (minutes > 0) durationText += minutes + ' menit';
+            else if (hours === 0) durationText = '0 menit';
 
             document.getElementById('durationPreview').textContent = durationText.trim();
             document.getElementById('durationDecimal').textContent = durationInHours.toFixed(2) + ' jam';
-
-            // Update badge color based on duration
-            const durationBadge = document.getElementById('durationDecimal');
-            if (durationInHours >= 7) {
-                durationBadge.style.color = '#28a745';
-            } else if (durationInHours >= 5) {
-                durationBadge.style.color = '#ffc107';
-            } else {
-                durationBadge.style.color = '#dc3545';
-            }
         }
 
-        // Load statistics
         async function loadStatistics() {
             try {
                 const response = await fetch('{{ route('pengguna.sleep-tracking.statistics') }}');
@@ -1272,43 +1085,21 @@
 
                 if (result.success) {
                     const stats = result.data;
-                    const statsContainer = document.getElementById('statisticsContainer');
-
-                    statsContainer.innerHTML = `
-                    <div class="stat-item">
-                        <div class="stat-value">${stats.total_records}</div>
-                        <div class="stat-label"><i class="fas fa-book-open me-2"></i>Total Pencatatan</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">${stats.formatted_average_duration}</div>
-                        <div class="stat-label"><i class="fas fa-clock me-2"></i>Rata-rata Durasi</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">${stats.average_wakeups}x</div>
-                        <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">${stats.average_wake_back_time || 0}mnt</div>
-                        <div class="stat-label"><i class="fas fa-redo me-2"></i>Rata-rata Waktu Tidur Kembali</div>
-                    </div>
-                `;
+                    document.getElementById('statTotal').textContent = stats.total_records;
+                    document.getElementById('statAverage').textContent = stats.formatted_average_duration || '0 jam';
+                    document.getElementById('statWakeups').textContent = (stats.average_wakeups || 0) + 'x';
+                    document.getElementById('statWakeBack').textContent = (stats.average_wake_back_time || 0) + ' mnt';
                 }
             } catch (error) {
                 console.error('Error loading statistics:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal Memuat Statistik',
-                    text: 'Terjadi kesalahan saat memuat statistik tidur',
-                    confirmButtonColor: '#3a7de4'
-                });
             }
         }
 
-        // Open add modal
         function openAddModal() {
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle me-2"></i>Tambah Catatan Tidur';
             document.getElementById('sleepForm').reset();
             document.getElementById('trackingId').value = '';
+            document.getElementById('formMethod').value = 'POST';
             document.getElementById('tanggal_tidur').value = new Date().toISOString().split('T')[0];
             setDefaultTimes();
             calculateDuration();
@@ -1316,17 +1107,16 @@
             modal.show();
         }
 
-        // Open edit modal
         async function openEditModal(id) {
             try {
-                const response = await fetch(`/sleep-tracking/${id}`);
+                const response = await fetch('{{ route('pengguna.sleep-tracking.index') }}/' + id);
                 const result = await response.json();
 
                 if (result.success) {
                     const data = result.data;
-                    document.getElementById('modalTitle').innerHTML =
-                        '<i class="fas fa-edit me-2"></i>Edit Catatan Tidur';
+                    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Catatan Tidur';
                     document.getElementById('trackingId').value = data.id;
+                    document.getElementById('formMethod').value = 'PUT';
                     document.getElementById('tanggal_tidur').value = data.tanggal_tidur;
                     document.getElementById('waktu_tidur').value = data.waktu_tidur.substring(0, 5);
                     document.getElementById('waktu_bangun').value = data.waktu_bangun.substring(0, 5);
@@ -1335,19 +1125,15 @@
                     document.getElementById('alasan_kebangunan').value = data.alasan_kebangunan || '';
                     document.getElementById('catatan_lain').value = data.catatan_lain || '';
 
-                    // Toggle wake back time field based on existing data
                     toggleWakeBackTimeField(data.jumlah_kebangunan);
-
-                    // Calculate and display duration
                     setTimeout(calculateDuration, 100);
-
                     modal.show();
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal Memuat Data',
                         text: result.message,
-                        confirmButtonColor: '#3a7de4'
+                        confirmButtonColor: '#0856C8'
                     });
                 }
             } catch (error) {
@@ -1356,152 +1142,86 @@
                     icon: 'error',
                     title: 'Terjadi Kesalahan',
                     text: 'Gagal memuat data untuk diedit',
-                    confirmButtonColor: '#3a7de4'
+                    confirmButtonColor: '#0856C8'
                 });
             }
         }
 
-        // View detail
         async function viewDetail(id) {
             try {
-                const response = await fetch(`/sleep-tracking/${id}`);
+                const response = await fetch('{{ route('pengguna.sleep-tracking.index') }}/' + id);
                 const result = await response.json();
 
                 if (result.success) {
                     const data = result.data;
                     const date = new Date(data.tanggal_tidur);
                     const formattedDate = date.toLocaleDateString('id-ID', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                     });
 
-                    // Calculate hours and minutes from duration
                     const hours = Math.floor(data.durasi_tidur);
                     const minutes = Math.round((data.durasi_tidur - hours) * 60);
-                    const durationText = hours > 0 ? hours + ' jam' : '';
-                    const finalDurationText = durationText + (minutes > 0 ? ' ' + minutes + ' menit' : '');
+                    const durationText = (hours > 0 ? hours + ' jam' : '') + (minutes > 0 ? ' ' + minutes + ' menit' : '');
 
-                    // Determine duration badge color
                     let durationBadgeClass = 'duration-badge';
-                    if (data.durasi_tidur >= 7) {
-                        durationBadgeClass += '';
-                    } else if (data.durasi_tidur >= 5) {
-                        durationBadgeClass += ' duration-warning';
-                    } else {
-                        durationBadgeClass += ' duration-danger';
-                    }
+                    if (data.durasi_tidur >= 7) { } else if (data.durasi_tidur >= 5) { durationBadgeClass += ' duration-warning'; } else { durationBadgeClass += ' duration-danger'; }
 
-                    // Prepare wake back time section
-                    const wakeBackTimeSection = data.waktu_tidur_kembali ? `
+                    const wakeBackSection = data.waktu_tidur_kembali ? `
                         <div class="detail-grid">
                             <div class="detail-item-large">
-                                <div class="detail-label-large">Waktu untuk Tidur Kembali</div>
-                                <div class="detail-value-large">
-                                    ${data.waktu_tidur_kembali} menit
-                                </div>
+                                <div class="detail-label-large">Waktu Tidur Kembali</div>
+                                <div class="detail-value-large">${data.waktu_tidur_kembali} menit</div>
                             </div>
                         </div>
                     ` : '';
 
+                    const reasonSection = data.alasan_kebangunan ? `
+                        <div class="detail-section">
+                            <h6 class="detail-section-title"><i class="fas fa-comment-medical"></i>Alasan Kebangunan</h6>
+                            <div class="text-content">${data.alasan_kebangunan}</div>
+                        </div>
+                    ` : '';
+
+                    const notesSection = data.catatan_lain ? `
+                        <div class="detail-section">
+                            <h6 class="detail-section-title"><i class="fas fa-sticky-note"></i>Catatan Lain</h6>
+                            <div class="text-content">${data.catatan_lain}</div>
+                        </div>
+                    ` : '';
+
                     document.getElementById('detailContent').innerHTML = `
-                    <div class="detail-section">
-                        <div class="detail-section-title">
-                            <i class="fas fa-calendar-day"></i>
-                            Informasi Tanggal
-                        </div>
-                        <div class="detail-item-large">
-                            <div class="detail-label-large">Tanggal Tidur</div>
-                            <div class="detail-value-large">${formattedDate}</div>
-                        </div>
-                    </div>
-
-                    <div class="detail-section">
-                        <div class="detail-section-title">
-                            <i class="fas fa-clock"></i>
-                            Waktu Tidur
-                        </div>
-                        <div class="detail-grid">
-                            <div class="detail-item-large">
-                                <div class="detail-label-large">Mulai Tidur</div>
-                                <div class="detail-value-large">${data.waktu_tidur.substring(0,5)}</div>
-                            </div>
-                            <div class="detail-item-large">
-                                <div class="detail-label-large">Bangun</div>
-                                <div class="detail-value-large">${data.waktu_bangun.substring(0,5)}</div>
-                            </div>
-                            <div class="detail-item-large">
-                                <div class="detail-label-large">Durasi Tidur</div>
-                                <div class="detail-value-large">
-                                    ${finalDurationText}
-                                    <span class="${durationBadgeClass}" style="margin-left: 10px;">
-                                        ${parseFloat(data.durasi_tidur).toFixed(2)} jam
-                                    </span>
+                        <div class="detail-section">
+                            <h6 class="detail-section-title"><i class="fas fa-calendar-alt"></i>${formattedDate}</h6>
+                            <div class="detail-grid">
+                                <div class="detail-item-large">
+                                    <div class="detail-label-large">Mulai Tidur</div>
+                                    <div class="detail-value-large">${data.waktu_tidur}</div>
+                                </div>
+                                <div class="detail-item-large">
+                                    <div class="detail-label-large">Waktu Bangun</div>
+                                    <div class="detail-value-large">${data.waktu_bangun}</div>
+                                </div>
+                                <div class="detail-item-large">
+                                    <div class="detail-label-large">Durasi Tidur</div>
+                                    <div class="detail-value-large">${durationText} <span class="${durationBadgeClass}">${Number(data.durasi_tidur).toFixed(2)} jam</span></div>
+                                </div>
+                                <div class="detail-item-large">
+                                    <div class="detail-label-large">Jumlah Kebangunan</div>
+                                    <div class="detail-value-large">${data.jumlah_kebangunan} kali</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="detail-section">
-                        <div class="detail-section-title">
-                            <i class="fas fa-bed"></i>
-                            Kualitas Tidur
-                        </div>
-                        <div class="detail-grid">
-                            <div class="detail-item-large">
-                                <div class="detail-label-large">Jumlah Kebangunan</div>
-                                <div class="detail-value-large">${data.jumlah_kebangunan} kali</div>
-                            </div>
-                        </div>
-                        ${wakeBackTimeSection}
-                    </div>
-
-                    ${data.alasan_kebangunan ? `
-                            <div class="detail-section">
-                                <div class="detail-section-title">
-                                    <i class="fas fa-comment-medical"></i>
-                                    Alasan Kebangunan
-                                </div>
-                                <div class="text-content">${data.alasan_kebangunan}</div>
-                            </div>
-                        ` : ''}
-
-                    ${data.catatan_lain ? `
-                            <div class="detail-section">
-                                <div class="detail-section-title">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Catatan Lain
-                                </div>
-                                <div class="text-content">${data.catatan_lain}</div>
-                            </div>
-                        ` : ''}
-
-                    <div class="detail-section">
-                        <div class="detail-section-title">
-                            <i class="fas fa-history"></i>
-                            Riwayat Pencatatan
-                        </div>
-                        <div class="detail-grid">
-                            <div class="detail-item-large">
-                                <div class="detail-label-large">Dibuat Pada</div>
-                                <div class="detail-value-large">${new Date(data.created_at).toLocaleString('id-ID')}</div>
-                            </div>
-                            <div class="detail-item-large">
-                                <div class="detail-label-large">Terakhir Diperbarui</div>
-                                <div class="detail-value-large">${new Date(data.updated_at).toLocaleString('id-ID')}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
+                        ${wakeBackSection}
+                        ${reasonSection}
+                        ${notesSection}
+                    `;
                     detailModal.show();
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal Memuat Detail',
                         text: result.message,
-                        confirmButtonColor: '#3a7de4'
+                        confirmButtonColor: '#0856C8'
                     });
                 }
             } catch (error) {
@@ -1510,90 +1230,53 @@
                     icon: 'error',
                     title: 'Terjadi Kesalahan',
                     text: 'Gagal memuat detail catatan tidur',
-                    confirmButtonColor: '#3a7de4'
+                    confirmButtonColor: '#0856C8'
                 });
             }
         }
 
-        // Confirm delete with SweetAlert2
         function confirmDelete(id) {
-            currentTrackingId = id;
-
             Swal.fire({
-                title: 'Hapus Catatan Tidur?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus catatan tidur ini?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3a7de4',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    deleteTracking();
+                    deleteRecord(id);
                 }
             });
         }
 
-        // Delete tracking
-        async function deleteTracking() {
-            if (!currentTrackingId) return;
-
+        async function deleteRecord(id) {
             try {
-                // Show loading
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                const response = await fetch(`/sleep-tracking/${currentTrackingId}`, {
+                const response = await fetch('{{ route('pengguna.sleep-tracking.index') }}/' + id, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 });
-
                 const result = await response.json();
 
                 if (result.success) {
-                    // Remove card from DOM
-                    const card = document.getElementById(`card-${currentTrackingId}`);
-                    if (card) {
-                        card.remove();
-                    }
-
-                    // Show success message
                     Swal.fire({
                         icon: 'success',
-                        title: 'Berhasil Dihapus!',
+                        title: 'Berhasil',
                         text: 'Catatan tidur berhasil dihapus',
-                        timer: 2000,
-                        showConfirmButton: false
+                        confirmButtonColor: '#0856C8'
+                    }).then(() => {
+                        window.location.reload();
                     });
-
-                    // Reload statistics
-                    loadStatistics();
-
-                    // Check if no cards left
-                    const cardsContainer = document.getElementById('sleepCardsContainer');
-                    if (!cardsContainer.querySelector('.sleep-card')) {
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
-                    }
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal Menghapus',
+                        title: 'Gagal',
                         text: result.message,
-                        confirmButtonColor: '#3a7de4'
+                        confirmButtonColor: '#0856C8'
                     });
                 }
             } catch (error) {
@@ -1602,97 +1285,71 @@
                     icon: 'error',
                     title: 'Terjadi Kesalahan',
                     text: 'Gagal menghapus catatan tidur',
-                    confirmButtonColor: '#3a7de4'
+                    confirmButtonColor: '#0856C8'
                 });
-            } finally {
-                currentTrackingId = null;
             }
         }
 
-        // Handle form submission
-        document.getElementById('sleepForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoading = document.getElementById('submitLoading');
 
-            const formData = new FormData(this);
+            submitText.style.display = 'none';
+            submitLoading.style.display = 'inline-block';
+            submitBtn.disabled = true;
+
             const id = document.getElementById('trackingId').value;
-            const url = id ? `/sleep-tracking/${id}` : '/sleep-tracking';
-            const method = id ? 'PUT' : 'POST';
+            const method = document.getElementById('formMethod').value;
+            const formData = new FormData(document.getElementById('sleepForm'));
 
             try {
-                showLoading(document.getElementById('submitBtn'), true);
+                const url = method === 'PUT'
+                    ? '{{ route('pengguna.sleep-tracking.index') }}/' + id
+                    : '{{ route('pengguna.sleep-tracking.store') }}';
 
                 const response = await fetch(url, {
-                    method: method,
+                    method: method === 'PUT' ? 'PUT' : 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json'
                     },
-                    body: new URLSearchParams(formData)
+                    body: formData
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    modal.hide();
-
                     Swal.fire({
                         icon: 'success',
-                        title: 'Berhasil!',
+                        title: 'Berhasil',
                         text: result.message,
-                        timer: 2000,
-                        showConfirmButton: false
+                        confirmButtonColor: '#0856C8'
                     }).then(() => {
-                        location.reload();
+                        modal.hide();
+                        window.location.reload();
                     });
                 } else {
-                    // Show validation errors if any
-                    if (result.errors) {
-                        let errorMessages = '';
-                        for (const field in result.errors) {
-                            errorMessages += `<p>• ${result.errors[field][0]}</p>`;
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Validasi Gagal',
-                            html: errorMessages,
-                            confirmButtonColor: '#3a7de4'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal Menyimpan',
-                            text: result.message,
-                            confirmButtonColor: '#3a7de4'
-                        });
-                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: result.message,
+                        confirmButtonColor: '#0856C8'
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Terjadi Kesalahan',
-                    text: 'Gagal menyimpan data catatan tidur',
-                    confirmButtonColor: '#3a7de4'
+                    text: 'Gagal menyimpan catatan tidur',
+                    confirmButtonColor: '#0856C8'
                 });
             } finally {
-                showLoading(document.getElementById('submitBtn'), false);
-            }
-        });
-
-        // Show loading state
-        function showLoading(button, isLoading) {
-            const text = button.querySelector('#submitText') || button.querySelector('#deleteText');
-            const loading = button.querySelector('#submitLoading') || button.querySelector('#deleteLoading');
-
-            if (isLoading) {
-                text.style.display = 'none';
-                loading.style.display = 'inline-block';
-                button.disabled = true;
-            } else {
-                text.style.display = 'inline';
-                loading.style.display = 'none';
-                button.disabled = false;
+                submitText.style.display = 'inline';
+                submitLoading.style.display = 'none';
+                submitBtn.disabled = false;
             }
         }
     </script>
