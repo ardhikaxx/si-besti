@@ -333,9 +333,10 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <!-- Custom Styles -->
-    <style>
+@push('styles')
+<style>
         /* ===== Page Header ===== */
         .page-header-section {
             padding-bottom: 1rem;
@@ -1066,9 +1067,11 @@
                 display: none !important;
             }
         }
-    </style>
+</style>
+@endpush
 
-    <script>
+@push('scripts')
+<script>
         // Global variables
         let currentIbuId = null;
         let currentIbuStatus = null;
@@ -1253,5 +1256,5 @@
                 </span>
             `;
         }
-    </script>
-@endsection
+</script>
+@endpush

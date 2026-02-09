@@ -492,11 +492,10 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <!-- Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
+@push('styles')
+<style>
         /* ===== Page Header ===== */
         .page-header-section {
             padding-bottom: 1rem;
@@ -1209,9 +1208,14 @@
                 padding: 15px;
             }
         }
-    </style>
+</style>
+@endpush
 
-    <script>
+@push('scripts')
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
         // Global variables
         let sleepChart = null;
         let currentUserId = null;
@@ -1574,5 +1578,5 @@
             if (!minutes) return '-';
             return `${minutes} menit`;
         }
-    </script>
-@endsection
+</script>
+@endpush

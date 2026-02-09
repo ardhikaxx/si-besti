@@ -309,8 +309,10 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <style>
+@push('styles')
+<style>
         :root {
             --primary: #0856C8;
             --primary-dark: #0A47A3;
@@ -492,9 +494,11 @@
         .card-custom {
             animation: fadeIn 0.5s ease;
         }
-    </style>
+</style>
+@endpush
 
-    <script>
+@push('scripts')
+<script>
         // Initialize tooltips
         document.addEventListener('DOMContentLoaded', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -798,5 +802,5 @@
                 }
             });
         }
-    </script>
-@endsection
+</script>
+@endpush
