@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nomor_telepon')->unique();
             $table->string('pin');
             $table->integer('umur');
-            $table->enum('jenis_kelamin', ['L', 'P']);
+            $table->enum('jenis_kelamin', ['P'])->default('P');
             $table->text('alamat');
             $table->integer('usia_kehamilan')->nullable();
             $table->integer('hamil_anak_ke')->nullable();
