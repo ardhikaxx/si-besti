@@ -589,29 +589,43 @@
                                     </div>
                                     <div class="card-body p-4">
                                         @if ($qualityTestData)
-                                            <div class="chart-container" style="position: relative; height: 200px;">
-                                                <canvas id="qualityTestChart"></canvas>
-                                            </div>
-                                            <div class="mt-3">
-                                                @if ($qualityTestData['has_last_test'])
-                                                    <div class="text-center">
-                                                        <small class="text-muted chart-info">
-                                                            <i class="fas fa-info-circle me-1"></i>
-                                                            Perbandingan: {{ $qualityTestData['first_date'] }} vs
-                                                            {{ $qualityTestData['last_date'] }}
-                                                        </small>
-                                                    </div>
-                                                @else
-                                                    <div class="alert alert-custom mb-0 py-2" role="alert">
-                                                        <small>
-                                                            <i class="fas fa-clock me-1"></i>
-                                                            <strong>Status:</strong> Test hari pertama selesai
-                                                            ({{ $qualityTestData['first_date'] }}).
-                                                            Menunggu test hari terakhir.
-                                                        </small>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                            @if ($qualityTestData['type'] === 'multiple')
+                                                <!-- Grafik untuk semua tes completed -->
+                                                <div class="chart-container" style="position: relative; height: 250px;">
+                                                    <canvas id="qualityTestChart"></canvas>
+                                                </div>
+                                                <div class="mt-3 text-center">
+                                                    <small class="text-muted chart-info">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        Total {{ $qualityTestData['total_tests'] }} tes yang telah diselesaikan
+                                                    </small>
+                                                </div>
+                                            @else
+                                                <!-- Grafik untuk satu tes ongoing -->
+                                                <div class="chart-container" style="position: relative; height: 200px;">
+                                                    <canvas id="qualityTestChart"></canvas>
+                                                </div>
+                                                <div class="mt-3">
+                                                    @if ($qualityTestData['has_last_test'])
+                                                        <div class="text-center">
+                                                            <small class="text-muted chart-info">
+                                                                <i class="fas fa-info-circle me-1"></i>
+                                                                Perbandingan: {{ $qualityTestData['first_date'] }} vs
+                                                                {{ $qualityTestData['last_date'] }}
+                                                            </small>
+                                                        </div>
+                                                    @else
+                                                        <div class="alert alert-custom mb-0 py-2" role="alert">
+                                                            <small>
+                                                                <i class="fas fa-clock me-1"></i>
+                                                                <strong>Status:</strong> Test hari pertama selesai
+                                                                ({{ $qualityTestData['first_date'] }}).
+                                                                Menunggu test hari terakhir.
+                                                            </small>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         @else
                                             <div class="text-center py-5 empty-state">
                                                 <div class="empty-icon mb-3">
@@ -746,42 +760,71 @@
             @if ($sleepTrackingData)
                 const sleepTrackingCtx = document.getElementById('sleepTrackingChart');
                 if (sleepTrackingCtx) {
-                    const sleepTrackingChart = new Chart(sleepTrackingCtx, {
+                    new Chart(sleepTrackingCtx, {
                         type: 'bar',
                         data: {
                             labels: {!! json_encode($sleepTrackingData['dates']) !!},
                             datasets: [{
-                                label: 'Durasi Tidur (Jam)',
+                                label: 'Durasi Tidur',
                                 data: {!! json_encode($sleepTrackingData['durations']) !!},
-                                backgroundColor: 'rgba(8, 86, 200, 0.1)',
-                                borderColor: 'rgba(8, 86, 200, 1)',
+                                backgroundColor: 'rgba(8, 86, 200, 0.7)',
+                                borderColor: '#0856C8',
                                 borderWidth: 2,
-                                fill: true,
-                                tension: 0.4,
-                                pointBackgroundColor: 'rgba(8, 86, 200, 1)',
-                                pointBorderColor: '#fff',
-                                pointHoverBackgroundColor: '#fff',
-                                pointHoverBorderColor: 'rgba(8, 86, 200, 1)',
-                                pointRadius: 5,
-                                pointHoverRadius: 7
+                                borderRadius: 6,
+                                borderSkipped: false,
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            interaction: {
+                                mode: 'index',
+                                intersect: false,
+                            },
                             plugins: {
                                 legend: {
                                     display: true,
                                     position: 'top',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 15,
+                                        font: {
+                                            size: 11,
+                                            weight: '600',
+                                            family: "'Poppins', sans-serif"
+                                        }
+                                    }
                                 },
                                 tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                    padding: 10,
+                                    titleFont: {
+                                        size: 12,
+                                        weight: '700',
+                                        family: "'Poppins', sans-serif"
+                                    },
+                                    bodyFont: {
+                                        size: 11,
+                                        family: "'Poppins', sans-serif"
+                                    },
                                     callbacks: {
                                         label: function(context) {
                                             let label = context.dataset.label || '';
                                             if (label) {
                                                 label += ': ';
                                             }
-                                            label += context.parsed.y.toFixed(2) + ' jam';
+                                            label += context.parsed.y.toFixed(1) + ' jam';
+                                            
+                                            // Tambahkan keterangan kualitas tidur
+                                            if (context.parsed.y >= 7 && context.parsed.y <= 9) {
+                                                label += ' (Ideal)';
+                                            } else if (context.parsed.y >= 6 && context.parsed.y < 7) {
+                                                label += ' (Cukup)';
+                                            } else if (context.parsed.y < 6) {
+                                                label += ' (Kurang)';
+                                            } else {
+                                                label += ' (Berlebih)';
+                                            }
                                             return label;
                                         }
                                     }
@@ -790,20 +833,42 @@
                             scales: {
                                 y: {
                                     beginAtZero: true,
+                                    max: 12,
+                                    ticks: {
+                                        stepSize: 2,
+                                        font: {
+                                            size: 10,
+                                            family: "'Poppins', sans-serif"
+                                        },
+                                        callback: function(value) {
+                                            return value + 'j';
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(8, 86, 200, 0.1)',
+                                        drawBorder: false
+                                    },
                                     title: {
                                         display: true,
-                                        text: 'Jam'
-                                    },
-                                    ticks: {
-                                        callback: function(value) {
-                                            return value + ' jam';
-                                        }
+                                        text: 'Durasi (Jam)',
+                                        font: {
+                                            size: 11,
+                                            weight: '600',
+                                            family: "'Poppins', sans-serif"
+                                        },
+                                        color: '#0856C8'
                                     }
                                 },
                                 x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Tanggal'
+                                    ticks: {
+                                        font: {
+                                            size: 10,
+                                            family: "'Poppins', sans-serif"
+                                        }
+                                    },
+                                    grid: {
+                                        display: false,
+                                        drawBorder: false
                                     }
                                 }
                             }
@@ -813,136 +878,258 @@
             @endif
             // Grafik Test Kualitas Tidur
             @if ($qualityTestData)
-                @php
-                    $hasLastTest = $qualityTestData['has_last_test'];
-                    $firstScore = $qualityTestData['first_score'];
-                    $lastScore = $hasLastTest ? $qualityTestData['last_score'] : null;
-                @endphp
-
-                const qualityTestCtx = document.getElementById('qualityTestChart');
-                if (qualityTestCtx) {
-                    const qualityTestChart = new Chart(qualityTestCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Hari Pertama', 'Hari Terakhir'],
-                            datasets: [{
-                                label: 'Skor Kualitas Tidur',
-                                data: [
-                                    {{ $firstScore }},
-                                    @if ($hasLastTest)
-                                        {{ $lastScore }}
-                                    @else
-                                        null
-                                    @endif
-                                ],
-                                backgroundColor: [
-                                    {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
-                                    'rgba(220, 53, 69, 0.7)',
-                                    @if ($hasLastTest)
-                                        {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
-                                            'rgba(220, 53, 69, 0.7)'
-                                    @else
-                                        'rgba(108, 117, 125, 0.3)'
-                                    @endif
-                                ],
-                                borderColor: [
-                                    {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
-                                    'rgba(220, 53, 69, 1)',
-                                    @if ($hasLastTest)
-                                        {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
-                                            'rgba(220, 53, 69, 1)'
-                                    @else
-                                        'rgba(108, 117, 125, 0.5)'
-                                    @endif
-                                ],
-                                borderWidth: 2,
-                                borderDash: function(context) {
-                                    @if (!$hasLastTest)
-                                        if (context.dataIndex === 1) {
-                                            return [5, 5];
-                                        }
-                                    @endif
-                                    return [];
-                                }
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
+                @if ($qualityTestData['type'] === 'multiple')
+                    // Grafik untuk semua tes completed (Bar Chart)
+                    const qualityTestCtx = document.getElementById('qualityTestChart');
+                    if (qualityTestCtx) {
+                        new Chart(qualityTestCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: {!! json_encode($qualityTestData['labels']) !!},
+                                datasets: [
+                                    {
+                                        label: 'Skor Sebelum Intervensi',
+                                        data: {!! json_encode($qualityTestData['scores_before']) !!},
+                                        backgroundColor: 'rgba(108, 117, 125, 0.7)',
+                                        borderColor: '#6c757d',
+                                        borderWidth: 2,
+                                        borderRadius: 6,
+                                        borderSkipped: false,
+                                    },
+                                    {
+                                        label: 'Skor Setelah Intervensi',
+                                        data: {!! json_encode($qualityTestData['scores_after']) !!},
+                                        backgroundColor: 'rgba(8, 86, 200, 0.7)',
+                                        borderColor: '#0856C8',
+                                        borderWidth: 2,
+                                        borderRadius: 6,
+                                        borderSkipped: false,
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                interaction: {
+                                    mode: 'index',
+                                    intersect: false,
                                 },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            let label = context.dataset.label || '';
-                                            if (label) {
-                                                label += ': ';
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                        labels: {
+                                            usePointStyle: true,
+                                            padding: 15,
+                                            font: {
+                                                size: 11,
+                                                weight: '600',
+                                                family: "'Poppins', sans-serif"
                                             }
-
-                                            @if (!$hasLastTest)
-                                                if (context.dataIndex === 1) {
-                                                    return 'Menunggu test hari ke-7';
+                                        }
+                                    },
+                                    tooltip: {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                        padding: 10,
+                                        titleFont: {
+                                            size: 12,
+                                            weight: '700',
+                                            family: "'Poppins', sans-serif"
+                                        },
+                                        bodyFont: {
+                                            size: 11,
+                                            family: "'Poppins', sans-serif"
+                                        },
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.dataset.label || '';
+                                                if (label) {
+                                                    label += ': ';
                                                 }
-                                            @endif
-
-                                            if (context.parsed.y !== null) {
                                                 label += context.parsed.y;
-                                                label += ' (' + (context.parsed.y <= 5 ? 'Baik' :
-                                                    'Buruk') + ')';
+                                                label += ' (';
+                                                label += context.parsed.y <= 5 ? 'Kualitas Baik' : 'Kualitas Buruk';
+                                                label += ')';
+                                                return label;
                                             }
-                                            return label;
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 21,
+                                        ticks: {
+                                            stepSize: 3,
+                                            font: {
+                                                size: 10,
+                                                family: "'Poppins', sans-serif"
+                                            }
+                                        },
+                                        grid: {
+                                            color: 'rgba(8, 86, 200, 0.1)',
+                                            drawBorder: false
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Skor PSQI',
+                                            font: {
+                                                size: 11,
+                                                weight: '600',
+                                                family: "'Poppins', sans-serif"
+                                            },
+                                            color: '#0856C8'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                size: 10,
+                                                family: "'Poppins', sans-serif"
+                                            }
+                                        },
+                                        grid: {
+                                            display: false,
+                                            drawBorder: false
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                @else
+                    // Grafik untuk satu tes ongoing (bar chart)
+                    @php
+                        $hasLastTest = $qualityTestData['has_last_test'];
+                        $firstScore = $qualityTestData['first_score'];
+                        $lastScore = $hasLastTest ? $qualityTestData['last_score'] : null;
+                    @endphp
+
+                    const qualityTestCtx = document.getElementById('qualityTestChart');
+                    if (qualityTestCtx) {
+                        const qualityTestChart = new Chart(qualityTestCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Hari Pertama', 'Hari Terakhir'],
+                                datasets: [{
+                                    label: 'Skor Kualitas Tidur',
+                                    data: [
+                                        {{ $firstScore }},
+                                        @if ($hasLastTest)
+                                            {{ $lastScore }}
+                                        @else
+                                            null
+                                        @endif
+                                    ],
+                                    backgroundColor: [
+                                        {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
+                                        'rgba(220, 53, 69, 0.7)',
+                                        @if ($hasLastTest)
+                                            {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 0.7)' :
+                                                'rgba(220, 53, 69, 0.7)'
+                                        @else
+                                            'rgba(108, 117, 125, 0.3)'
+                                        @endif
+                                    ],
+                                    borderColor: [
+                                        {{ $firstScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
+                                        'rgba(220, 53, 69, 1)',
+                                        @if ($hasLastTest)
+                                            {{ $lastScore }} <= 5 ? 'rgba(40, 167, 69, 1)' :
+                                                'rgba(220, 53, 69, 1)'
+                                        @else
+                                            'rgba(108, 117, 125, 0.5)'
+                                        @endif
+                                    ],
+                                    borderWidth: 2,
+                                    borderDash: function(context) {
+                                        @if (!$hasLastTest)
+                                            if (context.dataIndex === 1) {
+                                                return [5, 5];
+                                            }
+                                        @endif
+                                        return [];
+                                    }
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.dataset.label || '';
+                                                if (label) {
+                                                    label += ': ';
+                                                }
+
+                                                @if (!$hasLastTest)
+                                                    if (context.dataIndex === 1) {
+                                                        return 'Menunggu test hari ke-7';
+                                                    }
+                                                @endif
+
+                                                if (context.parsed.y !== null) {
+                                                    label += context.parsed.y;
+                                                    label += ' (' + (context.parsed.y <= 5 ? 'Baik' :
+                                                        'Buruk') + ')';
+                                                }
+                                                return label;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 21,
+                                        title: {
+                                            display: true,
+                                            text: 'Skor PSQI'
+                                        },
+                                        ticks: {
+                                            stepSize: 3
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Periode Test'
                                         }
                                     }
                                 }
                             },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 21,
-                                    title: {
-                                        display: true,
-                                        text: 'Skor PSQI'
-                                    },
-                                    ticks: {
-                                        stepSize: 3
-                                    }
-                                },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Periode Test'
-                                    }
-                                }
-                            }
-                        },
-                        plugins: [{
-                            @if (!$hasLastTest)
-                                afterDraw: function(chart) {
-                                    const ctx = chart.ctx;
-                                    const xAxis = chart.scales.x;
-                                    const yAxis = chart.scales.y;
+                            plugins: [{
+                                @if (!$hasLastTest)
+                                    afterDraw: function(chart) {
+                                        const ctx = chart.ctx;
+                                        const xAxis = chart.scales.x;
+                                        const yAxis = chart.scales.y;
 
-                                    // Posisi untuk bar kedua (Hari Terakhir)
-                                    const x = xAxis.getPixelForValue(1);
-                                    const y = yAxis.getPixelForValue(10);
+                                        // Posisi untuk bar kedua (Hari Terakhir)
+                                        const x = xAxis.getPixelForValue(1);
+                                        const y = yAxis.getPixelForValue(10);
 
-                                    ctx.save();
-                                    ctx.textAlign = 'center';
-                                    ctx.textBaseline = 'middle';
-                                    ctx.font = 'bold 14px Arial';
-                                    ctx.fillStyle = 'rgba(108, 117, 125, 0.8)';
-                                    ctx.fillText('Menunggu', x, y);
-                                    ctx.font = '12px Arial';
-                                    ctx.fillText('Test Hari Ke-7', x, y + 20);
-                                    ctx.restore();
-                                }
-                            @endif
-                        }]
-                    });
-                }
+                                        ctx.save();
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'middle';
+                                        ctx.font = 'bold 14px Arial';
+                                        ctx.fillStyle = 'rgba(108, 117, 125, 0.8)';
+                                        ctx.fillText('Menunggu', x, y);
+                                        ctx.font = '12px Arial';
+                                        ctx.fillText('Test Hari Ke-7', x, y + 20);
+                                        ctx.restore();
+                                    }
+                                @endif
+                            }]
+                        });
+                    }
+                @endif
             @endif
         });
 

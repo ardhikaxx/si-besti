@@ -361,6 +361,15 @@
             font-weight: 600;
         }
 
+        /* Summary Title */
+        .summary-title {
+            color: var(--blue-900);
+            font-weight: 700;
+            font-size: 1.3rem;
+            border-left: 5px solid var(--blue-600);
+            padding-left: 15px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-title {
@@ -457,6 +466,28 @@
         </div>
 
         @if ($completedTests->count() > 0)
+            <!-- Chart Section -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="result-card">
+                        <div class="card-body p-4">
+                            <h5 class="summary-title mb-4">
+                                <i class="fas fa-chart-line me-2"></i>Grafik Perkembangan Kualitas Tidur
+                            </h5>
+                            <div style="position: relative; height: 400px;">
+                                <canvas id="qualityChart"></canvas>
+                            </div>
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Skor yang lebih rendah menunjukkan kualitas tidur yang lebih baik
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Results List -->
             @foreach ($completedTests as $test)
                 <div class="result-card">
@@ -646,8 +677,151 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            @if ($completedTests->count() > 0)
+            // Prepare data for chart
+            const testLabels = [];
+            const scoresBefore = [];
+            const scoresAfter = [];
+            
+            @foreach ($completedTests->reverse() as $index => $test)
+                testLabels.push('Test #{{ $loop->iteration }}');
+                scoresBefore.push({{ $test->total_score_before ?? 0 }});
+                scoresAfter.push({{ $test->total_score_after ?? 0 }});
+            @endforeach
+
+            // Create chart
+            const ctx = document.getElementById('qualityChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: testLabels,
+                        datasets: [
+                            {
+                                label: 'Skor Sebelum Intervensi',
+                                data: scoresBefore,
+                                backgroundColor: 'rgba(108, 117, 125, 0.7)',
+                                borderColor: '#6c757d',
+                                borderWidth: 2,
+                                borderRadius: 8,
+                                borderSkipped: false,
+                            },
+                            {
+                                label: 'Skor Setelah Intervensi',
+                                data: scoresAfter,
+                                backgroundColor: 'rgba(8, 86, 200, 0.7)',
+                                borderColor: '#0856C8',
+                                borderWidth: 2,
+                                borderRadius: 8,
+                                borderSkipped: false,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20,
+                                    font: {
+                                        size: 14,
+                                        weight: '600',
+                                        family: "'Poppins', sans-serif"
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleFont: {
+                                    size: 14,
+                                    weight: '700',
+                                    family: "'Poppins', sans-serif"
+                                },
+                                bodyFont: {
+                                    size: 13,
+                                    family: "'Poppins', sans-serif"
+                                },
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.parsed.y;
+                                        label += ' (';
+                                        label += context.parsed.y <= 5 ? 'Kualitas Baik' : 'Kualitas Buruk';
+                                        label += ')';
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 21,
+                                ticks: {
+                                    stepSize: 3,
+                                    font: {
+                                        size: 12,
+                                        family: "'Poppins', sans-serif"
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(8, 86, 200, 0.1)',
+                                    drawBorder: false
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Skor PSQI',
+                                    font: {
+                                        size: 14,
+                                        weight: '600',
+                                        family: "'Poppins', sans-serif"
+                                    },
+                                    color: '#0856C8'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: "'Poppins', sans-serif"
+                                    }
+                                },
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Periode Test',
+                                    font: {
+                                        size: 14,
+                                        weight: '600',
+                                        family: "'Poppins', sans-serif"
+                                    },
+                                    color: '#0856C8'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            @endif
+
             // Filter functionality
             const filterBadges = document.querySelectorAll('.filter-badge');
             filterBadges.forEach(badge => {
