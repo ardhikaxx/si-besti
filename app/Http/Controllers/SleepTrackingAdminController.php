@@ -106,7 +106,7 @@ class SleepTrackingAdminController extends Controller
                         'waktu_tidur_kembali' => $record->waktu_tidur_kembali,
                         'waktu_tidur_kembali_formatted' => $record->waktu_tidur_kembali ? 
                             $record->waktu_tidur_kembali . ' menit' : '-',
-                        'alasan_kebangunan' => $record->alasan_kebangunan,
+                        'alasan_kebangun' => $record->alasan_kebangun,
                         'catatan_lain' => $record->catatan_lain,
                         'has_wake_back_time' => $record->hasWakeBackTime()
                     ];

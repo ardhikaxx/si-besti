@@ -791,7 +791,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-value" id="statWakeups">0x</div>
-                    <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangunan</div>
+                    <div class="stat-label"><i class="fas fa-wind me-2"></i>Rata-rata Kebangun</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value" id="statWakeBack">0 mnt</div>
@@ -839,7 +839,7 @@
                             </div>
                             <div class="sleep-details">
                                 <div class="detail-item">
-                                    <span class="detail-label"><i class="fas fa-wind me-2"></i>Kebangunan:</span>
+                                    <span class="detail-label"><i class="fas fa-wind me-2"></i>Kebangun:</span>
                                     <span class="detail-value">{{ $tracking->jumlah_kebangunan }} kali</span>
                                 </div>
                                 @if ($tracking->waktu_tidur_kembali)
@@ -848,10 +848,10 @@
                                         <span class="detail-value">{{ $tracking->waktu_tidur_kembali }} menit</span>
                                     </div>
                                 @endif
-                                @if ($tracking->alasan_kebangunan)
+                                @if ($tracking->alasan_kebangun)
                                     <div class="detail-item">
                                         <span class="detail-label"><i class="fas fa-comment-medical me-2"></i>Alasan:</span>
-                                        <span class="detail-value">{{ Str::limit($tracking->alasan_kebangunan, 50) }}</span>
+                                        <span class="detail-value">{{ Str::limit($tracking->alasan_kebangun, 50) }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -928,6 +928,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label"><i class="fas fa-bed me-2"></i>Durasi di tempat tidur sebelum tidur (menit) <span class="text-danger">*</span></label>
+                            <div class="input-with-unit">
+                                <input type="number" class="form-control" id="durasi_di_tempat_tidur" name="durasi_di_tempat_tidur" min="1" max="180" placeholder="Misal: 15" required>
+                                <span class="input-unit">menit</span>
+                            </div>
+                            <div class="duration-info">
+                                <i class="fas fa-info-circle me-1"></i>Berapa lama Anda berbaring di tempat tidur sebelum benar-benar tertidur?
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label"><i class="fas fa-clock me-2"></i>Waktu Tidur *</label>
                             <div class="time-input-group">
                                 <input type="time" class="form-control" id="waktu_tidur" name="waktu_tidur" required onchange="calculateDuration()">
@@ -962,8 +973,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label"><i class="fas fa-comment-medical me-2"></i>Alasan kebangunan (jika ada)</label>
-                            <textarea class="form-control" id="alasan_kebangunan" name="alasan_kebangunan" rows="3" placeholder="Contoh: ke kamar mandi, mimpi buruk, merasa tidak nyaman, dll."></textarea>
+                            <label class="form-label"><i class="fas fa-comment-medical me-2"></i>Alasan kebangun <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="alasan_kebangun" name="alasan_kebangun" rows="3" placeholder="Contoh: ke kamar mandi, mimpi buruk, merasa tidak nyaman, dll." required></textarea>
+                            <div class="duration-info">
+                                <i class="fas fa-info-circle me-1"></i>Wajib diisi. Jelaskan alasan Anda terbangun di malam hari.
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1123,11 +1137,12 @@
                     document.getElementById('trackingId').value = data.id;
                     document.getElementById('formMethod').value = 'PUT';
                     document.getElementById('tanggal_tidur').value = data.tanggal_tidur;
+                    document.getElementById('durasi_di_tempat_tidur').value = data.durasi_di_tempat_tidur || '';
                     document.getElementById('waktu_tidur').value = data.waktu_tidur.substring(0, 5);
                     document.getElementById('waktu_bangun').value = data.waktu_bangun.substring(0, 5);
                     document.getElementById('jumlah_kebangunan').value = data.jumlah_kebangunan;
                     document.getElementById('waktu_tidur_kembali').value = data.waktu_tidur_kembali || '';
-                    document.getElementById('alasan_kebangunan').value = data.alasan_kebangunan || '';
+                    document.getElementById('alasan_kebangun').value = data.alasan_kebangun || '';
                     document.getElementById('catatan_lain').value = data.catatan_lain || '';
 
                     toggleWakeBackTimeField(data.jumlah_kebangunan);
@@ -1183,10 +1198,10 @@
                         </div>
                     ` : '';
 
-                    const reasonSection = data.alasan_kebangunan ? `
+                    const reasonSection = data.alasan_kebangun ? `
                         <div class="detail-section">
-                            <h6 class="detail-section-title"><i class="fas fa-comment-medical"></i>Alasan Kebangunan</h6>
-                            <div class="text-content">${data.alasan_kebangunan}</div>
+                            <h6 class="detail-section-title"><i class="fas fa-comment-medical"></i>Alasan Kebangun</h6>
+                            <div class="text-content">${data.alasan_kebangun}</div>
                         </div>
                     ` : '';
 
@@ -1214,7 +1229,7 @@
                                     <div class="detail-value-large">${durationText} <span class="${durationBadgeClass}">${Number(data.durasi_tidur).toFixed(2)} jam</span></div>
                                 </div>
                                 <div class="detail-item-large">
-                                    <div class="detail-label-large">Jumlah Kebangunan</div>
+                                    <div class="detail-label-large">Jumlah Kebangun</div>
                                     <div class="detail-value-large">${data.jumlah_kebangunan} kali</div>
                                 </div>
                             </div>

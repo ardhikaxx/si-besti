@@ -1559,8 +1559,8 @@
                     <td>${wakeUpBadge}</td>
                     ${wakeBackCell}
                     <td>
-                        ${item.alasan_kebangunan ? 
-                            `<span class="text-muted small">${item.alasan_kebangunan}</span>` : 
+                        ${item.alasan_kebangun ? 
+                            `<span class="text-muted small">${item.alasan_kebangun}</span>` : 
                             `<span class="text-muted">-</span>`}
                     </td>
                     <td>

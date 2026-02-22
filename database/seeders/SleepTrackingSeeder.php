@@ -30,8 +30,8 @@ class SleepTrackingSeeder extends Seeder
         $this->command->info('Membuat 20 data sleep tracking untuk: ' . $pengguna->nama_lengkap);
         $this->command->info('===========================================');
 
-        // Data alasan kebangunan yang umum untuk ibu hamil
-        $alasanKebangunanOptions = [
+        // Data alasan kebangun yang umum untuk ibu hamil
+        $alasanKebangunOptions = [
             null,
             'Perut terasa tidak nyaman',
             'Harus ke kamar mandi',
@@ -73,6 +73,11 @@ class SleepTrackingSeeder extends Seeder
             5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60
         ];
 
+        // Data durasi di tempat tidur sebelum tidur (dalam menit)
+        $durasiDiTempatTidurOptions = [
+            5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60
+        ];
+
         $sleepTrackingData = [];
 
         // Buat data untuk 20 hari terakhir
@@ -109,9 +114,12 @@ class SleepTrackingSeeder extends Seeder
                 $jumlahKebangunan = 5;
             }
             
-            // Alasan kebangunan
-            $alasanIndex = $jumlahKebangunan > 0 ? rand(1, count($alasanKebangunanOptions) - 1) : 0;
-            $alasanKebangunan = $alasanKebangunanOptions[$alasanIndex] ?? null;
+            // Alasan kebangun - WAJIB DIISI
+            $alasanIndex = rand(1, count($alasanKebangunOptions) - 1); // Selalu ambil dari index 1 ke atas (skip null)
+            $alasanKebangun = $alasanKebangunOptions[$alasanIndex];
+            
+            // Durasi di tempat tidur sebelum tidur (dalam menit)
+            $durasiDiTempatTidur = $durasiDiTempatTidurOptions[array_rand($durasiDiTempatTidurOptions)];
             
             // Waktu tidur kembali - hanya diisi jika jumlah kebangunan > 0
             $waktuTidurKembali = null;
@@ -166,11 +174,12 @@ class SleepTrackingSeeder extends Seeder
             $sleepTrackingData[] = [
                 'pengguna_id' => $pengguna->id,
                 'tanggal_tidur' => $sleepDate,
+                'durasi_di_tempat_tidur' => $durasiDiTempatTidur,
                 'waktu_tidur' => $waktuTidur,
                 'waktu_bangun' => $waktuBangun,
                 'jumlah_kebangunan' => $jumlahKebangunan,
-                'waktu_tidur_kembali' => $waktuTidurKembali, // Ditambahkan
-                'alasan_kebangunan' => $alasanKebangunan,
+                'waktu_tidur_kembali' => $waktuTidurKembali,
+                'alasan_kebangun' => $alasanKebangun,
                 'catatan_lain' => $catatanLain,
                 'durasi_tidur' => round($durationInHours, 2),
                 'created_at' => $sleepDate->copy()->addHours(rand(6, 9)), // Dibuat pagi hari setelah bangun

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('waktu_bangun');
             $table->integer('jumlah_kebangunan')->default(0);
             $table->integer('waktu_tidur_kembali')->nullable()->comment('Durasi dalam menit untuk kembali tidur');
-            $table->text('alasan_kebangunan')->nullable();
+            $table->text('alasan_kebangun')->nullable();
             $table->text('catatan_lain')->nullable();
             $table->decimal('durasi_tidur', 5, 2)->nullable()->comment('Dalam jam, contoh: 7.5 untuk 7 jam 30 menit');
             $table->timestamps();

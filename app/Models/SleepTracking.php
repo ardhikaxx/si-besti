@@ -14,11 +14,12 @@ class SleepTracking extends Model
     protected $fillable = [
         'pengguna_id',
         'tanggal_tidur',
+        'durasi_di_tempat_tidur',
         'waktu_tidur',
         'waktu_bangun',
         'jumlah_kebangunan',
-        'waktu_tidur_kembali', // Ditambahkan
-        'alasan_kebangunan',
+        'waktu_tidur_kembali',
+        'alasan_kebangun',
         'catatan_lain',
         'durasi_tidur'
     ];

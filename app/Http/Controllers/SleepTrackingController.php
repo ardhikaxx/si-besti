@@ -36,11 +36,12 @@ class SleepTrackingController extends Controller
         try {
             $request->validate([
                 'tanggal_tidur' => 'required|date',
+                'durasi_di_tempat_tidur' => 'required|integer|min:1|max:180',
                 'waktu_tidur' => 'required|date_format:H:i',
                 'waktu_bangun' => 'required|date_format:H:i',
                 'jumlah_kebangunan' => 'required|integer|min:0',
-                'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120', // Validasi baru
-                'alasan_kebangunan' => 'nullable|string|max:500',
+                'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120',
+                'alasan_kebangun' => 'required|string|max:500',
                 'catatan_lain' => 'nullable|string|max:1000',
             ]);
 
@@ -61,6 +62,7 @@ class SleepTrackingController extends Controller
             $sleepTracking = new SleepTracking();
             $sleepTracking->pengguna_id = $pengguna->id;
             $sleepTracking->tanggal_tidur = $request->tanggal_tidur;
+            $sleepTracking->durasi_di_tempat_tidur = $request->durasi_di_tempat_tidur;
             $sleepTracking->waktu_tidur = $request->waktu_tidur;
             $sleepTracking->waktu_bangun = $request->waktu_bangun;
             $sleepTracking->jumlah_kebangunan = $request->jumlah_kebangunan;
@@ -72,7 +74,7 @@ class SleepTrackingController extends Controller
                 $sleepTracking->waktu_tidur_kembali = null;
             }
             
-            $sleepTracking->alasan_kebangunan = $request->alasan_kebangunan;
+            $sleepTracking->alasan_kebangun = $request->alasan_kebangun;
             $sleepTracking->catatan_lain = $request->catatan_lain;
             
             // Hitung durasi tidur dalam jam
@@ -137,11 +139,12 @@ class SleepTrackingController extends Controller
         try {
             $request->validate([
                 'tanggal_tidur' => 'required|date',
+                'durasi_di_tempat_tidur' => 'required|integer|min:1|max:180',
                 'waktu_tidur' => 'required|date_format:H:i',
                 'waktu_bangun' => 'required|date_format:H:i',
                 'jumlah_kebangunan' => 'required|integer|min:0',
-                'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120', // Validasi baru
-                'alasan_kebangunan' => 'nullable|string|max:500',
+                'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120',
+                'alasan_kebangun' => 'required|string|max:500',
                 'catatan_lain' => 'nullable|string|max:1000',
             ]);
 
@@ -165,6 +168,7 @@ class SleepTrackingController extends Controller
             }
 
             $sleepTracking->tanggal_tidur = $request->tanggal_tidur;
+            $sleepTracking->durasi_di_tempat_tidur = $request->durasi_di_tempat_tidur;
             $sleepTracking->waktu_tidur = $request->waktu_tidur;
             $sleepTracking->waktu_bangun = $request->waktu_bangun;
             $sleepTracking->jumlah_kebangunan = $request->jumlah_kebangunan;
@@ -176,7 +180,7 @@ class SleepTrackingController extends Controller
                 $sleepTracking->waktu_tidur_kembali = null;
             }
             
-            $sleepTracking->alasan_kebangunan = $request->alasan_kebangunan;
+            $sleepTracking->alasan_kebangun = $request->alasan_kebangun;
             $sleepTracking->catatan_lain = $request->catatan_lain;
             
             // Hitung durasi tidur dalam jam
