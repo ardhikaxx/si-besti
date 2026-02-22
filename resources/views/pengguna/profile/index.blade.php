@@ -635,33 +635,64 @@
                                     <!-- Jenis Kelamin -->
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <i class="fas fa-venus-mars"></i>Jenis Kelamin
+                                            <i class="fas fa-venus"></i>Jenis Kelamin
                                         </label>
                                         <div class="d-flex flex-row justify-content-center align-items-center gap-1 mt-3">
                                             <div class="form-check gender-option">
                                                 <input class="form-check-input" type="radio" name="jenis_kelamin"
-                                                    id="jenis_kelamin_L" value="L"
-                                                    {{ old('jenis_kelamin', $pengguna->jenis_kelamin) == 'L' ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="jenis_kelamin_L">
-                                                    <div class="gender-card">
-                                                        <i class="fas fa-mars"></i>
-                                                        <span>Laki-laki</span>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div class="form-check gender-option">
-                                                <input class="form-check-input" type="radio" name="jenis_kelamin"
-                                                    id="jenis_kelamin_P" value="P"
-                                                    {{ old('jenis_kelamin', $pengguna->jenis_kelamin) == 'P' ? 'checked' : '' }}>
+                                                    id="jenis_kelamin_P" value="P" checked>
                                                 <label class="form-check-label" for="jenis_kelamin_P">
                                                     <div class="gender-card">
                                                         <i class="fas fa-venus"></i>
-                                                        <span>Perempuan</span>
+                                                        <span>Wanita</span>
                                                     </div>
                                                 </label>
                                             </div>
                                         </div>
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i>Aplikasi ini khusus untuk ibu hamil
+                                        </div>
                                         <div class="invalid-feedback" id="jenis_kelamin_error"></div>
+                                    </div>
+
+                                    <!-- Pekerjaan -->
+                                    <div class="form-group">
+                                        <label for="pekerjaan" class="form-label">
+                                            <i class="fas fa-briefcase"></i>Pekerjaan
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-briefcase"></i>
+                                            </span>
+                                            <input type="text" class="form-control form-control-lg" id="pekerjaan"
+                                                name="pekerjaan"
+                                                value="{{ old('pekerjaan', $pengguna->pekerjaan) }}"
+                                                placeholder="Masukkan pekerjaan">
+                                        </div>
+                                        <div class="invalid-feedback" id="pekerjaan_error"></div>
+                                    </div>
+
+                                    <!-- Pendidikan Terakhir -->
+                                    <div class="form-group">
+                                        <label for="pendidikan_terakhir" class="form-label">
+                                            <i class="fas fa-graduation-cap"></i>Pendidikan Terakhir
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-graduation-cap"></i>
+                                            </span>
+                                            <select class="form-control form-control-lg" id="pendidikan_terakhir" name="pendidikan_terakhir">
+                                                <option value="">Pilih pendidikan terakhir</option>
+                                                <option value="SD" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'SD' ? 'selected' : '' }}>SD</option>
+                                                <option value="SMP" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'SMP' ? 'selected' : '' }}>SMP</option>
+                                                <option value="SMA/SMK" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                                                <option value="D3" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'D3' ? 'selected' : '' }}>D3</option>
+                                                <option value="S1" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'S1' ? 'selected' : '' }}>S1</option>
+                                                <option value="S2" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'S2' ? 'selected' : '' }}>S2</option>
+                                                <option value="S3" {{ old('pendidikan_terakhir', $pengguna->pendidikan_terakhir) == 'S3' ? 'selected' : '' }}>S3</option>
+                                            </select>
+                                        </div>
+                                        <div class="invalid-feedback" id="pendidikan_terakhir_error"></div>
                                     </div>
                                 </div>
 
@@ -858,19 +889,11 @@
             }
 
             // Toggle visibility of additional info based on gender
-            jenisKelaminInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    if (this.value === 'P') {
-                        additionalInfo.style.display = 'block';
-                    } else {
-                        additionalInfo.style.display = 'none';
-                        // Clear female-specific fields
-                        document.getElementById('usia_kehamilan').value = '';
-                        document.getElementById('hamil_anak_ke').value = '';
-                        document.getElementById('jumlah_anak').value = '';
-                    }
-                });
-            });
+            // Karena hanya ada pilihan wanita, langsung tampilkan additional info
+            if (additionalInfo) {
+                additionalInfo.style.display = 'block';
+            }
+
 
             // Toggle PIN visibility
             togglePinButtons.forEach(button => {

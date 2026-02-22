@@ -22,6 +22,8 @@ class PenggunaSeeder extends Seeder
                 'pin' => Hash::make('2222'),
                 'umur' => 28,
                 'jenis_kelamin' => 'P',
+                'pekerjaan' => 'Ibu Rumah Tangga',
+                'pendidikan_terakhir' => 'S1',
                 'alamat' => 'Jl. Melati No. 123, Jakarta Selatan',
                 'usia_kehamilan' => 24,
                 'hamil_anak_ke' => 2,

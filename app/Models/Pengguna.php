@@ -19,6 +19,8 @@ class Pengguna extends Authenticatable
         'pin',
         'umur',
         'jenis_kelamin',
+        'pekerjaan',
+        'pendidikan_terakhir',
         'alamat',
         'usia_kehamilan',
         'hamil_anak_ke',
