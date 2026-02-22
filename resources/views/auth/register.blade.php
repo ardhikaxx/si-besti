@@ -86,26 +86,56 @@
                     <!-- Jenis Kelamin -->
                     <div class="auth-form-group">
                         <label class="auth-label">
-                            <i class="fas fa-venus-mars"></i> Jenis Kelamin <span class="text-danger">*</span>
+                            <i class="fas fa-venus"></i> Jenis Kelamin <span class="text-danger">*</span>
                         </label>
-                        <div class="d-flex gap-4">
-                            <label class="auth-radio">
-                                <input type="radio" name="jenis_kelamin" value="L"
-                                    {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} required>
-                                <span class="auth-radio-label">
-                                    <i class="fas fa-male"></i> Laki-laki
-                                </span>
-                            </label>
-                            <label class="auth-radio">
-                                <input type="radio" name="jenis_kelamin" value="P"
-                                    {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }} required>
-                                <span class="auth-radio-label">
-                                    <i class="fas fa-female"></i> Perempuan
-                                </span>
-                            </label>
+                        <input type="hidden" name="jenis_kelamin" value="P">
+                        <div class="alert mb-3" style="background: linear-gradient(135deg, #E8F0FE 0%, #C6DAFC 100%); border: 2px solid #A3C4FA; border-radius: 12px; padding: 15px; margin: 0;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-female" style="font-size: 2rem; color: #0856C8; margin-right: 15px;"></i>
+                                <div>
+                                    <strong style="color: #0856C8;">Perempuan</strong>
+                                    <p class="mb-0 small text-muted">Aplikasi ini khusus untuk ibu hamil</p>
+                                </div>
+                            </div>
                         </div>
-                        <span id="jenisKelaminError" class="auth-error"></span>
-                        @error('jenis_kelamin')
+                    </div>
+
+                    <!-- Pekerjaan -->
+                    <div class="auth-form-group">
+                        <label for="pekerjaan" class="auth-label">
+                            <i class="fas fa-briefcase"></i> Pekerjaan <span class="text-danger">*</span>
+                        </label>
+                        <div class="auth-input-group">
+                            <input type="text" class="auth-input @error('pekerjaan') is-invalid @enderror" id="pekerjaan"
+                                name="pekerjaan" placeholder="Contoh: Ibu Rumah Tangga, Guru, Pegawai Swasta" required
+                                value="{{ old('pekerjaan') }}">
+                        </div>
+                        <span id="pekerjaanError" class="auth-error"></span>
+                        @error('pekerjaan')
+                            <span class="auth-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Pendidikan Terakhir -->
+                    <div class="auth-form-group">
+                        <label for="pendidikan_terakhir" class="auth-label">
+                            <i class="fas fa-graduation-cap"></i> Pendidikan Terakhir <span class="text-danger">*</span>
+                        </label>
+                        <div class="auth-input-group">
+                            <select class="auth-input @error('pendidikan_terakhir') is-invalid @enderror" id="pendidikan_terakhir"
+                                name="pendidikan_terakhir" required>
+                                <option value="">-- Pilih Pendidikan Terakhir --</option>
+                                <option value="SD" {{ old('pendidikan_terakhir') == 'SD' ? 'selected' : '' }}>SD</option>
+                                <option value="SMP" {{ old('pendidikan_terakhir') == 'SMP' ? 'selected' : '' }}>SMP</option>
+                                <option value="SMA/SMK" {{ old('pendidikan_terakhir') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                                <option value="D3" {{ old('pendidikan_terakhir') == 'D3' ? 'selected' : '' }}>D3</option>
+                                <option value="S1" {{ old('pendidikan_terakhir') == 'S1' ? 'selected' : '' }}>S1</option>
+                                <option value="S2" {{ old('pendidikan_terakhir') == 'S2' ? 'selected' : '' }}>S2</option>
+                                <option value="S3" {{ old('pendidikan_terakhir') == 'S3' ? 'selected' : '' }}>S3</option>
+                            </select>
+                        </div>
+                        <span id="pendidikanError" class="auth-error"></span>
+                        @error('pendidikan_terakhir')
                             <span class="auth-error">{{ $message }}</span>
                         @enderror
                     </div>
