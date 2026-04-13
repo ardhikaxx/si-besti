@@ -758,6 +758,33 @@
 
         .sleep-card { animation: fadeInUp 0.6s ease-out; }
         .conditional-field { animation: fadeIn 0.3s ease-out; }
+
+        /* File Upload Styles */
+        .file-upload-wrapper { margin-top: 10px; }
+        .file-upload-area {
+            border: 2px dashed var(--blue-300); border-radius: 12px; padding: 25px;
+            text-align: center; background: var(--blue-100); transition: all 0.3s ease; cursor: pointer;
+        }
+        .file-upload-area:hover { border-color: var(--blue-500); background: var(--blue-200); }
+        .file-upload-area.drag-over { border-color: var(--blue-700); background: var(--blue-300); }
+        .upload-icon { font-size: 2.5rem; color: var(--blue-500); margin-bottom: 10px; }
+        .upload-text { color: var(--blue-800); font-size: 0.9rem; margin-bottom: 5px; }
+        .upload-link { color: var(--blue-700); font-weight: 600; text-decoration: underline; }
+        .upload-hint { color: var(--blue-600); font-size: 0.75rem; margin: 0; }
+        .file-preview { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .file-info {
+            display: flex; align-items: center; gap: 10px; background: white;
+            padding: 10px 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%; max-width: 350px;
+        }
+        .file-icon { font-size: 1.3rem; color: var(--blue-600); }
+        .file-name { flex: 1; color: var(--blue-900); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .btn-remove-file {
+            background: #dc3545; color: white; border: none; border-radius: 50%;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .btn-remove-file:hover { background: #c82333; transform: scale(1.1); }
     </style>
 @endpush
 
@@ -836,6 +863,11 @@
                             <div class="sleep-duration">
                                 <i class="fas fa-clock me-2"></i>Durasi: {{ $durationText }}
                                 <span class="{{ $badgeClass }}">{{ number_format($tracking->durasi_tidur, 2) }} jam</span>
+                                @if ($tracking->bukti_gambar)
+                                    <span class="badge bg-success-light ms-2" style="color: #28a745; background: #d4edda;">
+                                        <i class="fas fa-camera"></i>
+                                    </span>
+                                @endif
                             </div>
                             <div class="sleep-details">
                                 <div class="detail-item">
@@ -916,7 +948,7 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="sleepForm" onsubmit="handleSubmit(event)">
+                <form id="sleepForm" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="trackingId" name="id">
@@ -983,6 +1015,37 @@
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-sticky-note me-2"></i>Catatan lain</label>
                             <textarea class="form-control" id="catatan_lain" name="catatan_lain" rows="3" placeholder="Tambah catatan tentang kualitas tidur, mimpi, atau hal lain"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-camera me-2"></i>Bukti Kegiatan (Opsional)</label>
+                            <div class="file-upload-wrapper">
+                                <div class="file-upload-area" id="fileUploadArea"
+                                     ondragover="handleDragOver(event)"
+                                     ondragleave="handleDragLeave(event)"
+                                     ondrop="handleDrop(event)"
+                                     onclick="document.getElementById('bukti_gambar').click()">
+                                    <input type="file" id="bukti_gambar" name="bukti_gambar" accept="image/*,.pdf" style="display: none;" onchange="handleFileSelect(event)">
+                                    <div class="upload-placeholder" id="uploadPlaceholder">
+                                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                        <p class="upload-text">Seret & letakkan file di sini, atau <span class="upload-link">klik untuk memilih file</span></p>
+                                        <p class="upload-hint">Format: JPG, JPEG, PNG, PDF (Maks. 5MB)</p>
+                                    </div>
+                                    <div class="file-preview" id="filePreview" style="display: none;">
+                                        <img id="imagePreview" src="" alt="Preview" style="display: none; max-width: 100%; max-height: 200px; border-radius: 8px;">
+                                        <div class="file-info" id="fileInfo">
+                                            <i class="fas fa-file file-icon"></i>
+                                            <span class="file-name" id="fileName"></span>
+                                            <button type="button" class="btn-remove-file" onclick="removeFile(event)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="duration-info">
+                                <i class="fas fa-info-circle me-1"></i>Unggah bukti foto kegiatan tidur Anda (opsional).
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1124,6 +1187,7 @@
             setDefaultTimes();
             calculateDuration();
             toggleWakeBackTimeField(0);
+            clearFileInput();
         }
 
         async function openEditModal(id) {
@@ -1212,6 +1276,22 @@
                         </div>
                     ` : '';
 
+                    const imageSection = data.bukti_gambar ? `
+                        <div class="detail-section">
+                            <h6 class="detail-section-title"><i class="fas fa-camera"></i>Bukti Kegiatan</h6>
+                            <div style="text-align: center;">
+                                <img src="/storage-file/${data.bukti_gambar}" alt="Bukti Kegiatan" 
+                                     style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer;"
+                                     onclick="window.open(this.src, '_blank')">
+                                <div style="margin-top: 10px;">
+                                    <a href="/storage-file/${data.bukti_gambar}" download class="btn btn-sm btn-primary">
+                                        <i class="fas fa-download me-2"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ` : '';
+
                     document.getElementById('detailContent').innerHTML = `
                         <div class="detail-section">
                             <h6 class="detail-section-title"><i class="fas fa-calendar-alt"></i>${formattedDate}</h6>
@@ -1237,6 +1317,7 @@
                         ${wakeBackSection}
                         ${reasonSection}
                         ${notesSection}
+                        ${imageSection}
                     `;
                     
                     if (detailModal) {
@@ -1386,6 +1467,90 @@
                 submitLoading.style.display = 'none';
                 submitBtn.disabled = false;
             }
+        }
+
+        // File Upload Functions
+        let selectedFile = null;
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('fileUploadArea').classList.add('drag-over');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('fileUploadArea').classList.remove('drag-over');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('fileUploadArea').classList.remove('drag-over');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) handleFile(files[0]);
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (files.length > 0) handleFile(files[0]);
+        }
+
+        function handleFile(file) {
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+            const maxSize = 5 * 1024 * 1024;
+
+            if (!allowedTypes.includes(file.type)) {
+                Swal.fire({ icon: 'error', title: 'Format File Tidak Valid', text: 'File harus berformat JPG, JPEG, PNG, atau PDF', confirmButtonColor: '#0856C8' });
+                return;
+            }
+
+            if (file.size > maxSize) {
+                Swal.fire({ icon: 'error', title: 'Ukuran File Terlalu Besar', text: 'Ukuran file maksimal adalah 5MB', confirmButtonColor: '#0856C8' });
+                return;
+            }
+
+            selectedFile = file;
+            document.getElementById('uploadPlaceholder').style.display = 'none';
+            document.getElementById('filePreview').style.display = 'flex';
+            document.getElementById('fileName').textContent = file.name;
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    document.getElementById('fileInfo').style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('fileInfo').style.display = 'flex';
+                const fileIcon = document.getElementById('fileInfo').querySelector('.file-icon');
+                fileIcon.className = 'fas fa-file-pdf file-icon';
+                fileIcon.style.color = '#dc3545';
+            }
+        }
+
+        function removeFile(event) {
+            event.stopPropagation();
+            selectedFile = null;
+            document.getElementById('bukti_gambar').value = '';
+            document.getElementById('uploadPlaceholder').style.display = 'block';
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('fileName').textContent = '';
+        }
+
+        function clearFileInput() {
+            selectedFile = null;
+            document.getElementById('bukti_gambar').value = '';
+            document.getElementById('uploadPlaceholder').style.display = 'block';
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('fileName').textContent = '';
         }
     </script>
 @endpush

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SleepTracking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class SleepTrackingController extends Controller
@@ -43,15 +44,16 @@ class SleepTrackingController extends Controller
                 'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120',
                 'alasan_kebangun' => 'required|string|max:500',
                 'catatan_lain' => 'nullable|string|max:1000',
+                'bukti_gambar' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             ]);
 
             $pengguna = Auth::user();
-            
+
             // Cek apakah sudah ada data untuk tanggal yang sama
             $existingData = SleepTracking::where('pengguna_id', $pengguna->id)
                 ->where('tanggal_tidur', $request->tanggal_tidur)
                 ->first();
-            
+
             if ($existingData) {
                 return response()->json([
                     'success' => false,
@@ -66,20 +68,34 @@ class SleepTrackingController extends Controller
             $sleepTracking->waktu_tidur = $request->waktu_tidur;
             $sleepTracking->waktu_bangun = $request->waktu_bangun;
             $sleepTracking->jumlah_kebangunan = $request->jumlah_kebangunan;
-            
+
             // Set waktu tidur kembali hanya jika jumlah kebangunan > 0
             if ($request->jumlah_kebangunan > 0 && $request->filled('waktu_tidur_kembali')) {
                 $sleepTracking->waktu_tidur_kembali = $request->waktu_tidur_kembali;
             } else {
                 $sleepTracking->waktu_tidur_kembali = null;
             }
-            
+
             $sleepTracking->alasan_kebangun = $request->alasan_kebangun;
             $sleepTracking->catatan_lain = $request->catatan_lain;
-            
+
+            // Handle image upload
+            if ($request->hasFile('bukti_gambar')) {
+                $file = $request->file('bukti_gambar');
+                $directory = storage_path('sleep-tracking-proofs');
+                
+                if (!is_dir($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                $filename = now()->format('YmdHis') . '_proof_' . uniqid('', true) . '.' . $file->getClientOriginalExtension();
+                $file->move($directory, $filename);
+                $sleepTracking->bukti_gambar = 'sleep-tracking-proofs/' . $filename;
+            }
+
             // Hitung durasi tidur dalam jam
             $sleepTracking->calculateDuration();
-            
+
             $sleepTracking->save();
 
             return response()->json([
@@ -146,10 +162,11 @@ class SleepTrackingController extends Controller
                 'waktu_tidur_kembali' => 'nullable|integer|min:1|max:120',
                 'alasan_kebangun' => 'required|string|max:500',
                 'catatan_lain' => 'nullable|string|max:1000',
+                'bukti_gambar' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             ]);
 
             $pengguna = Auth::user();
-            
+
             $sleepTracking = SleepTracking::where('pengguna_id', $pengguna->id)
                 ->where('id', $id)
                 ->firstOrFail();
@@ -159,7 +176,7 @@ class SleepTrackingController extends Controller
                 ->where('tanggal_tidur', $request->tanggal_tidur)
                 ->where('id', '!=', $id)
                 ->first();
-            
+
             if ($existingData) {
                 return response()->json([
                     'success' => false,
@@ -172,20 +189,54 @@ class SleepTrackingController extends Controller
             $sleepTracking->waktu_tidur = $request->waktu_tidur;
             $sleepTracking->waktu_bangun = $request->waktu_bangun;
             $sleepTracking->jumlah_kebangunan = $request->jumlah_kebangunan;
-            
+
             // Set waktu tidur kembali hanya jika jumlah kebangunan > 0
             if ($request->jumlah_kebangunan > 0 && $request->filled('waktu_tidur_kembali')) {
                 $sleepTracking->waktu_tidur_kembali = $request->waktu_tidur_kembali;
             } else {
                 $sleepTracking->waktu_tidur_kembali = null;
             }
-            
+
             $sleepTracking->alasan_kebangun = $request->alasan_kebangun;
             $sleepTracking->catatan_lain = $request->catatan_lain;
-            
+
+            // Handle image deletion
+            if ($request->filled('existing_bukti_gambar') && $request->existing_bukti_gambar === '__delete__') {
+                // Delete existing image
+                if ($sleepTracking->bukti_gambar) {
+                    $oldPath = storage_path($sleepTracking->bukti_gambar);
+                    if (File::exists($oldPath)) {
+                        File::delete($oldPath);
+                    }
+                    $sleepTracking->bukti_gambar = null;
+                }
+            }
+
+            // Handle image upload
+            if ($request->hasFile('bukti_gambar')) {
+                // Delete old image if exists
+                if ($sleepTracking->bukti_gambar) {
+                    $oldPath = storage_path($sleepTracking->bukti_gambar);
+                    if (File::exists($oldPath)) {
+                        File::delete($oldPath);
+                    }
+                }
+
+                $file = $request->file('bukti_gambar');
+                $directory = storage_path('sleep-tracking-proofs');
+                
+                if (!is_dir($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                $filename = now()->format('YmdHis') . '_proof_' . uniqid('', true) . '.' . $file->getClientOriginalExtension();
+                $file->move($directory, $filename);
+                $sleepTracking->bukti_gambar = 'sleep-tracking-proofs/' . $filename;
+            }
+
             // Hitung durasi tidur dalam jam
             $sleepTracking->calculateDuration();
-            
+
             $sleepTracking->save();
 
             return response()->json([
@@ -220,10 +271,18 @@ class SleepTrackingController extends Controller
     {
         try {
             $pengguna = Auth::user();
-            
+
             $sleepTracking = SleepTracking::where('pengguna_id', $pengguna->id)
                 ->where('id', $id)
                 ->firstOrFail();
+
+            // Delete image file if exists
+            if ($sleepTracking->bukti_gambar) {
+                $filePath = storage_path($sleepTracking->bukti_gambar);
+                if (File::exists($filePath)) {
+                    File::delete($filePath);
+                }
+            }
 
             $sleepTracking->delete();
 

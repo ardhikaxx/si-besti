@@ -1,7 +1,7 @@
-@extends('layouts.admin')
 
-@section('title', 'Sleep Tracking')
-@section('content')
+
+<?php $__env->startSection('title', 'Sleep Tracking'); ?>
+<?php $__env->startSection('content'); ?>
     <div class="container-fluid">
         <!-- Page Header -->
         <div class="page-header-section mb-4">
@@ -131,72 +131,75 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (count($dataUsers) > 0)
-                                @foreach ($dataUsers as $index => $user)
-                                    <tr data-id="{{ $user['id'] }}" class="table-row">
+                            <?php if(count($dataUsers) > 0): ?>
+                                <?php $__currentLoopData = $dataUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr data-id="<?php echo e($user['id']); ?>" class="table-row">
                                         <td class="td-number">
-                                            <span class="row-number">{{ $index + 1 }}</span>
+                                            <span class="row-number"><?php echo e($index + 1); ?></span>
                                         </td>
                                         <td class="td-name">
                                             <div class="user-info">
                                                 <div class="user-avatar-small text-capitalize">
-                                                    {{ substr($user['nama_lengkap'], 0, 1) }}
+                                                    <?php echo e(substr($user['nama_lengkap'], 0, 1)); ?>
+
                                                 </div>
-                                                <span class="user-name text-capitalize">{{ $user['nama_lengkap'] }}</span>
+                                                <span class="user-name text-capitalize"><?php echo e($user['nama_lengkap']); ?></span>
                                             </div>
                                         </td>
                                         <td class="td-age">
-                                            <span class="age-text">{{ $user['umur'] }} tahun</span>
+                                            <span class="age-text"><?php echo e($user['umur']); ?> tahun</span>
                                         </td>
                                         <td class="td-pregnancy">
-                                            <span class="pregnancy-text">{{ $user['usia_kehamilan'] }}</span>
+                                            <span class="pregnancy-text"><?php echo e($user['usia_kehamilan']); ?></span>
                                         </td>
                                         <td class="td-child">
-                                            <span class="child-badge">{{ $user['hamil_anak_ke'] }}</span>
+                                            <span class="child-badge"><?php echo e($user['hamil_anak_ke']); ?></span>
                                         </td>
                                         <td class="td-data">
                                             <span class="data-badge d-flex flex-column flex-lg-row justify-content-center justify-content-lg-start align-items-center">
                                                 <i class="fas fa-bed me-0 me-lg-2"></i>
-                                                {{ $user['total_sleep_records'] }} data
+                                                <?php echo e($user['total_sleep_records']); ?> data
                                             </span>
                                         </td>
                                         <td class="td-latest">
-                                            @if ($user['latest_sleep'])
+                                            <?php if($user['latest_sleep']): ?>
                                                 <div class="latest-sleep-info">
-                                                    <div class="sleep-date">{{ $user['latest_sleep']['tanggal'] }}</div>
+                                                    <div class="sleep-date"><?php echo e($user['latest_sleep']['tanggal']); ?></div>
                                                     <div class="sleep-time">
-                                                        {{ $user['latest_sleep']['waktu_tidur'] }} - {{ $user['latest_sleep']['waktu_bangun'] }}
+                                                        <?php echo e($user['latest_sleep']['waktu_tidur']); ?> - <?php echo e($user['latest_sleep']['waktu_bangun']); ?>
+
                                                     </div>
                                                     <div class="sleep-duration">
                                                         <i class="fas fa-clock me-1"></i>
-                                                        {{ $user['latest_sleep']['durasi'] }}
+                                                        <?php echo e($user['latest_sleep']['durasi']); ?>
+
                                                     </div>
                                                 </div>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="text-muted">-</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-center">
-                                            @if ($user['latest_sleep'] && isset($user['latest_sleep']['bukti_gambar']) && $user['latest_sleep']['bukti_gambar'])
+                                            <?php if($user['latest_sleep'] && isset($user['latest_sleep']['bukti_gambar']) && $user['latest_sleep']['bukti_gambar']): ?>
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                        onclick="showImageModal('/storage-file/{{ $user['latest_sleep']['bukti_gambar'] }}')" 
+                                                        onclick="showImageModal('/storage-file/<?php echo e($user['latest_sleep']['bukti_gambar']); ?>')" 
                                                         title="Lihat Bukti">
                                                     <i class="fas fa-image"></i>
                                                 </button>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="text-muted"><i class="fas fa-times"></i></span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td class="td-action">
                                             <button type="button" class="action-btn action-btn-view"
-                                                onclick="showDetail({{ $user['id'] }})" title="Lihat Detail">
+                                                onclick="showDetail(<?php echo e($user['id']); ?>)" title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                                 <span class="action-text">Detail</span>
                                             </button>
                                         </td>
                                     </tr>
-                                @endforeach
-                            @else
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
                                 <tr>
                                     <td colspan="9" class="empty-state">
                                         <div class="empty-state-content">
@@ -205,18 +208,18 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endif
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-            @if (count($dataUsers) > 0)
+            <?php if(count($dataUsers) > 0): ?>
                 <div class="data-table-footer">
                     <div class="row align-items-center g-3">
                         <div class="col-12 col-md-6">
                             <div class="footer-info">
                                 <span class="text-muted">
-                                    Menampilkan <strong class="text-dark">{{ count($dataUsers) }}</strong> pengguna dengan data sleep tracking
+                                    Menampilkan <strong class="text-dark"><?php echo e(count($dataUsers)); ?></strong> pengguna dengan data sleep tracking
                                 </span>
                             </div>
                         </div>
@@ -243,7 +246,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 
@@ -530,9 +533,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
         /* ===== Page Header ===== */
         .page-header-section {
@@ -1247,9 +1250,9 @@
             }
         }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <!-- Chart.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -1266,7 +1269,7 @@
 
         // Load statistics data
         function loadStatistics() {
-            fetch('{{ route("admin.sleep-tracking.statistics") }}')
+            fetch('<?php echo e(route("admin.sleep-tracking.statistics")); ?>')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -1636,4 +1639,5 @@
             return `${minutes} menit`;
         }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\si-besti\resources\views/admins/sleep-tracking/index.blade.php ENDPATH**/ ?>

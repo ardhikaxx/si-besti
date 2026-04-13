@@ -21,7 +21,8 @@ class SleepTracking extends Model
         'waktu_tidur_kembali',
         'alasan_kebangun',
         'catatan_lain',
-        'durasi_tidur'
+        'durasi_tidur',
+        'bukti_gambar'
     ];
 
     protected $casts = [

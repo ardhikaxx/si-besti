@@ -11,10 +11,23 @@ use App\Http\Controllers\AuthAdminController;
 use App\Http\Controllers\DataIbuController;
 use App\Http\Controllers\SleepTrackingAdminController;
 use App\Http\Controllers\HasilTestAdminController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Route to serve files from storage directory (no symlink required)
+Route::get('/storage-file/{path}', function ($path) {
+    $fullPath = storage_path($path);
+
+    if (!File::exists($fullPath)) {
+        abort(404);
+    }
+
+    return Response::file($fullPath);
+})->where('path', '.*')->name('storage.show');
 
 
 // ==================== ROUTES PENGGUNA ====================

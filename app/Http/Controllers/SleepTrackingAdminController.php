@@ -41,7 +41,8 @@ class SleepTrackingAdminController extends Controller
                     'durasi' => $user->sleepTrackings->first()->formatted_duration,
                     'waktu_tidur' => $user->sleepTrackings->first()->formatted_sleep_time,
                     'waktu_bangun' => $user->sleepTrackings->first()->formatted_wake_time,
-                    'waktu_tidur_kembali' => $user->sleepTrackings->first()->waktu_tidur_kembali
+                    'waktu_tidur_kembali' => $user->sleepTrackings->first()->waktu_tidur_kembali,
+                    'bukti_gambar' => $user->sleepTrackings->first()->bukti_gambar
                 ] : null
             ];
         }
@@ -104,10 +105,11 @@ class SleepTrackingAdminController extends Controller
                         'durasi_formatted' => $record->formatted_duration,
                         'jumlah_kebangunan' => $record->jumlah_kebangunan,
                         'waktu_tidur_kembali' => $record->waktu_tidur_kembali,
-                        'waktu_tidur_kembali_formatted' => $record->waktu_tidur_kembali ? 
+                        'waktu_tidur_kembali_formatted' => $record->waktu_tidur_kembali ?
                             $record->waktu_tidur_kembali . ' menit' : '-',
                         'alasan_kebangun' => $record->alasan_kebangun,
                         'catatan_lain' => $record->catatan_lain,
+                        'bukti_gambar' => $record->bukti_gambar,
                         'has_wake_back_time' => $record->hasWakeBackTime()
                     ];
                 })
