@@ -15,7 +15,7 @@ class MurottalController extends Controller
     {
         try {
             // Fetch only Ar-Rahman surah (nomor 55)
-            $response = Http::get('https://quran-api.santrikoding.com/api/surah/55');
+            $response = Http::get('https://api.myquran.com/v3/quran/55');
             
             if ($response->successful()) {
                 $surah = $response->json();
@@ -39,7 +39,7 @@ class MurottalController extends Controller
     {
         try {
             // Fetch Ar-Rahman surah detail from API
-            $response = Http::get("https://quran-api.santrikoding.com/api/surah/55");
+            $response = Http::get("https://api.myquran.com/v3/quran/55");
             
             if ($response->successful()) {
                 $surah = $response->json();

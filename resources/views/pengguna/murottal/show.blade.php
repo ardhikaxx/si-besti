@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', $surah['nama_latin'] . ' - Murottal Al-Qur\'an - SI Besti')
+@section('title', $surah['data']['name_latin'] . ' - Murottal Al-Qur\'an - SI Besti')
 
 @section('content')
     <div class="surah-detail-container">
         <!-- Header Section -->
-        <div class="row mb-4">
+        <div class="row mb-4 mt-5">
             <div class="col-12">
                 <div class="card border-0 shadow-lg" style="background: var(--gradient-primary);">
                     <div class="card-body p-3 p-md-4">
@@ -18,12 +18,12 @@
                                     </a>
                                     <div class="text-truncate">
                                         <h1 class="h4 h3-md mb-1 text-white fw-bold">
-                                            <span class="d-block d-md-inline">{{ $surah['nama_latin'] }}</span>
-                                            <small class="h6 h5-md opacity-75">({{ $surah['nama'] }})</small>
+                                            <span class="d-block d-md-inline">{{ $surah['data']['name_latin'] }}</span>
+                                            <small class="h6 h5-md opacity-75">({{ $surah['data']['name'] }})</small>
                                         </h1>
                                         <p class="text-white mb-0 opacity-75 small text-truncate">
-                                            {{ $surah['arti'] }} • {{ $surah['jumlah_ayat'] }} Ayat •
-                                            {{ ucfirst($surah['tempat_turun']) }}
+                                            {{ $surah['data']['translation'] }} • {{ $surah['data']['number_of_ayahs'] }} Ayat •
+                                            {{ ucfirst($surah['data']['revelation']) }}
                                         </p>
                                     </div>
                                 </div>
@@ -40,12 +40,12 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-3 p-md-4">
                         <h5 class="card-title mb-3 text-primary">
-                            <i class="fas fa-play-circle me-2"></i>Murottal {{ $surah['nama_latin'] }}
+                            <i class="fas fa-play-circle me-2"></i>Murottal {{ $surah['data']['name_latin'] }}
                         </h5>
                         <div class="audio-player-wrapper">
                             <div class="audio-container">
                                 <audio id="quranAudio" controls class="w-100">
-                                    <source src="{{ $surah['audio'] }}" type="audio/mpeg">
+                                    <source src="{{ $surah['data']['audio_url'] }}" type="audio/mpeg">
                                     Browser Anda tidak mendukung pemutar audio.
                                 </audio>
                             </div>
@@ -54,7 +54,7 @@
                                     <div class="col-12 col-md-6 mb-2 mb-md-0">
                                         <small class="text-muted d-flex align-items-center">
                                             <i class="fas fa-headphones me-2 shrink-0"></i>
-                                            <span class="text-truncate">Sedang diputar: {{ $surah['nama_latin'] }}</span>
+                                            <span class="text-truncate">Sedang diputar: {{ $surah['data']['name_latin'] }}</span>
                                         </small>
                                     </div>
                                     <div class="col-12 col-md-6 text-start text-md-end">
@@ -130,17 +130,17 @@
                             <i class="fas fa-list me-2"></i>Daftar Ayat
                         </h5>
                         <span class="badge bg-primary">
-                            {{ $surah['jumlah_ayat'] }} Ayat
+                            {{ $surah['data']['number_of_ayahs'] }} Ayat
                         </span>
                     </div>
                     <div class="card-body p-0">
                         <div class="ayat-list-container">
-                            @foreach ($surah['ayat'] as $ayat)
+                            @foreach ($surah['data']['ayahs'] as $ayat)
                                 <div class="ayat-item p-3 p-md-4 border-bottom">
                                     <div class="d-flex align-items-start">
                                         <div class="ayat-number me-3 shrink-0">
                                             <div class="ayat-circle">
-                                                {{ $ayat['nomor'] }}
+                                                {{ $ayat['ayah_number'] }}
                                             </div>
                                         </div>
                                         <div class="grow min-width-0">
@@ -148,16 +148,12 @@
                                                 style="direction: rtl;">
                                                 <span
                                                     style="font-size: clamp(1.5rem, 4vw, 2rem); font-family: 'Amiri', serif;">
-                                                    {{ $ayat['ar'] }}
+                                                    {{ $ayat['arab'] }}
                                                 </span>
-                                            </div>
-                                            <div class="transliteration mb-2 text-muted small">
-                                                <i class="fas fa-language me-2"></i>
-                                                <span class="text-break">{{ strip_tags($ayat['tr']) }}</span>
                                             </div>
                                             <div class="translation text-primary">
                                                 <i class="fas fa-book me-2"></i>
-                                                <span class="text-break">{{ $ayat['idn'] }}</span>
+                                                <span class="text-break">{{ $ayat['translation'] }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -471,11 +467,11 @@
 
             // Store playback position
             audio.addEventListener('pause', function() {
-                localStorage.setItem('surahAudioPosition_{{ $surah['nomor'] }}', audio.currentTime);
+                localStorage.setItem('surahAudioPosition_{{ $surah['data']['number'] }}', audio.currentTime);
             });
 
             // Restore playback position
-            const savedPosition = localStorage.getItem('surahAudioPosition_{{ $surah['nomor'] }}');
+            const savedPosition = localStorage.getItem('surahAudioPosition_{{ $surah['data']['number'] }}');
             if (savedPosition) {
                 audio.currentTime = savedPosition;
             }

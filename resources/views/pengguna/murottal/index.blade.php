@@ -465,24 +465,24 @@
                             </div>
                             <div class="grow min-width-0">
                                 <h2 class="card-title mb-3">
-                                    <i class="fas fa-book-quran me-2"></i>{{ $surah['nama_latin'] }}
+                                    <i class="fas fa-book-quran me-2"></i>{{ $surah['data']['name_latin'] }}
                                 </h2>
                                 <div class="mb-3">
                                     <h4 class="arabic-title mb-3 text-end">
-                                        {{ $surah['nama'] }}
+                                        {{ $surah['data']['name'] }}
                                     </h4>
                                     <p class="text-muted mb-3">
                                         <i class="fas fa-language me-2"></i>
-                                        <strong>{{ $surah['arti'] }}</strong>
+                                        <strong>{{ $surah['data']['translation'] }}</strong>
                                     </p>
                                     <div class="d-flex flex-wrap gap-2">
                                         <span class="badge bg-primary-light">
                                             <i class="fas fa-book-open"></i>
-                                            {{ $surah['jumlah_ayat'] }} Ayat
+                                            {{ $surah['data']['number_of_ayahs'] }} Ayat
                                         </span>
                                         <span class="badge bg-primary text-white">
                                             <i class="fas fa-location-dot"></i>
-                                            {{ ucfirst($surah['tempat_turun']) }}
+                                            {{ ucfirst($surah['data']['revelation']) }}
                                         </span>
                                     </div>
                                 </div>
@@ -494,7 +494,7 @@
                                 <i class="fas fa-info-circle me-2"></i>Deskripsi Surah
                             </h5>
                             <div class="surah-description">
-                                {!! $surah['deskripsi'] !!}
+                                {!! $surah['data']['description'] !!}
                             </div>
                         </div>
 
