@@ -501,6 +501,35 @@
                         </div>
                         @endif
 
+                        @if($test->lastTest)
+                        <div class="modal-section">
+                            <h6 class="modal-section-title">Skor Komponen PSQI (Test Terakhir)</h6>
+                            <div class="components-grid">
+                                @for($i = 1; $i <= 7; $i++)
+                                    @php
+                                        $componentKey = "component_$i";
+                                        $score = $test->lastTest->$componentKey ?? 0;
+                                        $class = $score == 0 ? 'low' : ($score <= 2 ? 'medium' : 'high');
+                                        $labels = [
+                                            1 => 'Kualitas Tidur',
+                                            2 => 'Latensi Tidur',
+                                            3 => 'Durasi Tidur',
+                                            4 => 'Efisiensi Tidur',
+                                            5 => 'Gangguan Tidur',
+                                            6 => 'Penggunaan Obat',
+                                            7 => 'Disfungsi Siang Hari'
+                                        ];
+                                    @endphp
+                                    <div class="component-card component-{{ $class }}">
+                                        <div class="component-number">C{{ $i }}</div>
+                                        <div class="component-label">{{ $labels[$i] }}</div>
+                                        <div class="component-score">{{ $score }}</div>
+                                    </div>
+                                @endfor
+                            </div>
+                        </div>
+                        @endif
+
                         <!-- Detailed Data First Test -->
                         @if($test->firstTest)
                         <div class="modal-section">
