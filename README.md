@@ -1,4 +1,4 @@
-# SI-BESTI
+﻿# SI-BESTI
 Sistem Bimbingan & Evaluasi Siklus Tidur Ibu
 (SI-BESTI — Sistem Bimbingan & Evaluasi untuk Siklus Tidur Ibu)
 
@@ -109,7 +109,7 @@ Jika project ini bermanfaat, Anda dapat mendukung pengembangan selanjutnya melal
 
 <div align="center">
 
-![QRIS](public/assets/qris.png)
+<img src="public/assets/qris.png" alt="QRIS" width="250" />
 
 **Scan QRIS di atas untuk berdonasi**
 
