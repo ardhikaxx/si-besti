@@ -102,5 +102,23 @@ Jika project menyediakan seeder akun admin/pengguna, sertakan kredensialnya di s
 
 ---
 
+
+## Donasi
+
+Jika project ini bermanfaat, Anda dapat mendukung pengembangan selanjutnya melalui donasi:
+
+<div align="center">
+
+![QRIS](public/assets/qris.png)
+
+**Scan QRIS di atas untuk berdonasi**
+
+Setiap donasi akan digunakan untuk:
+- Pengembangan fitur baru
+- Perbaikan bug & maintenance
+- Infrastruktur server
+
+</div>
+
 ## Lisensi
 Proyek ini menggunakan lisensi MIT.
